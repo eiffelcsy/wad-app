@@ -1,80 +1,105 @@
 <template>
   <div
-    class="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6 md:p-8"
+    class="min-h-screen bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center p-4 md:p-6 lg:p-8"
   >
-    <Card
-      class="w-full"
-    >
+  <div class="w-full md:flex md:flex-row">
+    <Card class="w-full bg-white dark:bg-zinc-800">
       <CardHeader>
         <CardTitle
-          class="text-2xl sm:text-3xl lg:text-4xl font-bold text-center"
+          class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-zinc-900 dark:text-white"
         >
           {{ authType === "login" ? "Login" : "Register" }}
         </CardTitle>
-        <CardDescription class="text-sm sm:text-base text-center">
+        <CardDescription class="text-sm sm:text-base text-center text-zinc-600 dark:text-zinc-300">
           {{ authType === "login" ? "Welcome back!" : "Join us today!" }}
         </CardDescription>
       </CardHeader>
-        <CardContent>
-          <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-6">
-            <div class="space-y-2">
-              <Label for="email" class="text-sm sm:text-base">Email</Label>
-              <Input
-                id="email"
-                v-model="email"
-                type="email"
-                placeholder="example@mail.com"
-                required
-                class="w-full text-sm sm:text-base p-2 sm:p-3"
-                autocomplete="email"
-              />
-            </div>
-            <div class="space-y-2">
-              <Label for="password" class="text-sm sm:text-base"
-                >Password</Label
-              >
-              <Input
-                id="password"
-                v-model="password"
-                type="password"
-                placeholder="Password"
-                required
-                class="w-full text-sm sm:text-base p-2 sm:p-3"
-                autocomplete="new-password"
-              />
-            </div>
-            <Button
-              type="submit"
-              class="w-full text-sm sm:text-base py-2 sm:py-3"
+      <CardContent>
+        <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-6">
+          <div class="space-y-2">
+            <Label for="email" class="text-sm sm:text-base text-zinc-900 dark:text-zinc-300">Email</Label>
+            <Input
+              id="email"
+              v-model="email"
+              type="email"
+              placeholder="example@mail.com"
+              required
+              class="w-full text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600"
+              autocomplete="email"
+            />
+          </div>
+          <div class="space-y-2">
+            <Label for="password" class="text-sm sm:text-base text-zinc-900 dark:text-zinc-300">Password</Label>
+            <Input
+              id="password"
+              v-model="password"
+              type="password"
+              placeholder="Password"
+              required
+              class="w-full text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600"
+              autocomplete="new-password"
+            />
+          </div>
+          <div v-if="authType === 'register'" class="space-y-2">
+            <Label for="confirmPassword" class="text-sm sm:text-base text-zinc-900 dark:text-zinc-300"
+              >Confirm Password</Label
             >
-              {{ authType === "login" ? "Sign In" : "Sign Up" }}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter class="flex justify-center">
+            <Input
+              id="confirmPassword"
+              v-model="confirmPassword"
+              type="password"
+              placeholder="Re-enter Password"
+              required
+              class="w-full text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600"
+              autocomplete="new-password"
+            />
+          </div>
           <Button
-            variant="link"
-            @click="toggleAuthType"
-            class="text-xs sm:text-sm md:text-base"
+            type="submit"
+            class="w-full text-sm sm:text-base py-2 sm:py-3 bg-zinc-500 dark:bg-zinc-600 text-white"
           >
-            {{
-              authType === "login"
-                ? "Don't have an account? Sign Up"
-                : "Already have an account? Sign In"
-            }}
+            {{ authType === "login" ? "Sign In" : "Sign Up" }}
           </Button>
-        </CardFooter>
+        </form>
+      </CardContent>
+      <CardFooter class="flex justify-center">
+        <Button
+          variant="link"
+          @click="toggleAuthType"
+          class="text-xs sm:text-sm md:text-base text-zinc-500 dark:text-zinc-400"
+        >
+          {{
+            authType === "login"
+              ? "Don't have an account? Sign Up"
+              : "Already have an account? Sign In"
+          }}
+        </Button>
+      </CardFooter>
     </Card>
+      <Button @click="toggleDarkMode" class="absolute top-2 right-2 p-2 size-9 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white rounded-full">
+        <SunIcon v-if="isDark" />
+        <MoonIcon v-else />
+      </Button>
+    </div>
+    <Toaster />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { h, ref } from "vue";
+import { SunIcon, MoonIcon } from "@radix-icons/vue";
+import { useToast } from '@/components/ui/toast/use-toast';
+import { Toaster, ToastAction } from '@/components/ui/toast';
+
 const { $supabase } = useNuxtApp();
+const { toast } = useToast();
 
 const email = ref("");
 const password = ref("");
+const confirmPassword = ref("");
 const authType = ref("login");
+const passwordMismatch = ref(false);
+const isDark = ref(false);
 
 const toggleAuthType = () => {
   authType.value = authType.value === "login" ? "register" : "login";
@@ -87,19 +112,74 @@ const handleSubmit = async () => {
       password: password.value,
     });
     if (error) {
-      console.log("Login failed: " + error.message);
+      toast({
+        title: "Login Failed",
+        description: error.message,
+        variant: "destructive",
+        action: h(ToastAction, {
+          altText: 'Try again',
+        }, {
+          default: () => 'Try again',
+        }),
+      });
     } else {
-      console.log("Login Success!");
-      navigateTo('/');
+      toast({
+        title: "Login Successful",
+        description: "You have successfully logged in.",
+        variant: "success",
+        duration: 1000,
+      });
+      setTimeout(() => {
+        navigateTo("/");
+      }, 1200);
     }
   } else {
+    if (password.value !== confirmPassword.value) {
+      passwordMismatch.value = true;
+      toast({
+        title: "Uh oh! Something went wrong.",
+        description: "Passwords do not match.",
+        variant: "destructive",
+        action: h(ToastAction, {
+          altText: 'Try again',
+        }, {
+          default: () => 'Try again',
+        }),
+      });
+      return;
+    }
+
     const { error } = await $supabase.auth.signUp({
       email: email.value,
       password: password.value,
     });
-    if (error) console.log("Registration failed: " + error.message);
+    if (error) {
+      toast({
+        title: "Registration Failed",
+        description: error.message,
+        variant: "destructive",
+        action: h(ToastAction, {
+          altText: 'Try again',
+        }, {
+          default: () => 'Try again',
+        }),
+      });
+    } else {
+      toast({
+        title: "Email Confirmation Sent",
+        description: "Check your inbox.",
+        variant: "success",
+      });
+    }
+  }
+};
+
+const toggleDarkMode = () => {
+  isDark.value = !isDark.value;
+  if (isDark.value) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
   }
 };
 </script>
-
-<style scoped></style>
