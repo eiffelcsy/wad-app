@@ -26,4 +26,3 @@ const logout = async () => {
   }
 };
 </script>
-<script src="https://accounts.google.com/gsi/client" async></script>
