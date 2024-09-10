@@ -6,11 +6,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const { data: { session } } = await $supabase.auth.getSession();
 
-  if (!session && to.path !== '/auth') {
+  if (!session && !(to.path === '/auth' || to.path === '/')) {
     return navigateTo('/auth');
-  }
-
-  if (session && to.path === '/auth') {
-    return navigateTo('/');
   }
 });

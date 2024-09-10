@@ -1,54 +1,14 @@
 <template>
   <div
-    class="min-h-screen bg-zinc-100 dark:bg-zinc-900 flex flex-col lg:flex-row items-center justify-between"
+    class="min-h-screen bg-zinc-100 dark:bg-zinc-900 flex flex-col justify-center items-center"
   >
-    <div class="hidden lg:block lg:w-3/5">
-      <Carousel
-        class="w-full"
-        :plugins="[
-          Autoplay({
-            delay: 3800,
-          }),
-        ]"
-        @select="updateSlide"
-        :slideIndex="currentSlide"
-      >
-        <CarouselContent class="-ml-0">
-          <CarouselItem class="pl-0">
-            <img
-              class="w-full h-screen dark:brightness-90"
-              src="/public/auth-stock-1.webp"
-            />
-          </CarouselItem>
-          <CarouselItem class="pl-0"><img
-              class="w-full h-screen dark:brightness-90"
-              src="/public/auth-stock-2.webp"
-            /></CarouselItem>
-          <CarouselItem class="pl-0"><img
-              class="w-full h-screen dark:brightness-90"
-              src="/public/auth-stock-3.webp"
-            /></CarouselItem>
-        </CarouselContent>
-        <div class="absolute bottom-4 w-full flex justify-center space-x-2">
-          <span
-            v-for="(slide, index) in slides"
-            :key="index"
-            :class="[
-              'w-3 h-3 rounded-full cursor-pointer transition-all duration-300',
-              currentSlide === index ? 'bg-zinc-500 dark:bg-zinc-300' : 'bg-zinc-300 dark:bg-zinc-600'
-            ]"
-            @click="goToSlide(index)"
-          ></span>
-        </div>
-      </Carousel>
-    </div>
-    <div class="w-full h-screen lg:w-2/5 p-8 flex lg:justify-center">
-      <Card class="w-full self-center lg:order-last bg-white dark:bg-zinc-800">
+    <div class="w-full p-8 flex justify-center">
+      <Card class="w-[32rem] px-4 pt-8 pb-8 self-center lg:order-last bg-white dark:bg-zinc-800">
         <CardHeader>
           <CardTitle
             class="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-zinc-900 dark:text-white"
           >
-            {{ authType === "login" ? "Login" : "Register" }}
+            {{ authType === "login" ? "Log in to Rendez" : "Register an account" }}
           </CardTitle>
           <CardDescription
             class="text-sm sm:text-base text-center text-zinc-600 dark:text-zinc-300"
@@ -108,7 +68,7 @@
             </div>
             <Button
               type="submit"
-              class="w-full text-sm sm:text-base py-2 sm:py-3 bg-zinc-500 dark:bg-zinc-600 text-white"
+              class="w-full text-sm sm:text-base py-2 sm:py-3 bg-zinc-700 dark:bg-zinc-600 text-white"
             >
               {{ authType === "login" ? "Sign In" : "Sign Up" }}
             </Button>
@@ -130,27 +90,23 @@
       </Card>
       <Button
         @click="toggleDarkMode"
-        class="absolute top-2 right-2 p-2 size-9 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white rounded-full"
+        class="absolute bottom-4 right-4 p-2 size-9 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white rounded-full"
       >
         <SunIcon v-if="isDark" />
         <MoonIcon v-else />
       </Button>
     </div>
+    <Button @click="back" variant="link" class="w-96 text-zinc-500 dark:text-zinc-400"><ArrowLeftIcon class="w-4 h-4 mr-2"/>Back to Home</Button>
     <Toaster />
   </div>
 </template>
 
 <script setup>
 import { h, ref } from "vue";
-import { SunIcon, MoonIcon } from "@radix-icons/vue";
+import { SunIcon, MoonIcon, ArrowLeftIcon } from "@radix-icons/vue";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { Toaster, ToastAction } from "@/components/ui/toast";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+import { navigateTo } from "nuxt/app";
 
 const { $supabase } = useNuxtApp();
 const { toast } = useToast();
@@ -161,21 +117,6 @@ const confirmPassword = ref("");
 const authType = ref("login");
 const passwordMismatch = ref(false);
 const isDark = ref(false);
-const currentSlide = ref(0);
-
-const slides = ref([
-  { src: "/public/auth-stock.webp" },
-  { src: "/public/another-slide.webp" },
-  { src: "/public/third-slide.webp" },
-]);
-
-const updateSlide = (index) => {
-  currentSlide.value = index;
-};
-
-const goToSlide = (index) => {
-  currentSlide.value = index;
-};
 
 const toggleAuthType = () => {
   authType.value = authType.value === "login" ? "register" : "login";
@@ -261,6 +202,10 @@ const handleSubmit = async () => {
     }
   }
 };
+
+const back = () => {
+  navigateTo("/")
+}
 
 const toggleDarkMode = () => {
   isDark.value = !isDark.value;
