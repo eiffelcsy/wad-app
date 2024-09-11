@@ -259,9 +259,9 @@ async function handleLoginWithGoogle(response) {
   }
 }
 
-Vue.prototype.handleLoginWithGoogle = handleLoginWithGoogle;
-
 onMounted(() => {
+  window.handleLoginWithGoogle = handleLoginWithGoogle;
+
   if (!document.getElementById("google-identity-script")) {
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
