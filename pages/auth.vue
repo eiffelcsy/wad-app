@@ -231,6 +231,32 @@ async function handleLoginWithGoogle(response) {
     provider: "google",
     token: response.credential,
   });
+  if (error) {
+    toast({
+      title: "Login Failed",
+      description: error.message,
+      variant: "destructive",
+      action: h(
+        ToastAction,
+        {
+          altText: "Try again",
+        },
+        {
+          default: () => "Try again",
+        }
+      ),
+    });
+  } else {
+    toast({
+      title: "Login Successful",
+      description: "You have successfully logged in.",
+      variant: "success",
+      duration: 1000,
+    });
+    setTimeout(() => {
+      navigateTo("/");
+    }, 1200);
+  }
 }
 
 onMounted(() => {
@@ -249,19 +275,15 @@ onMounted(() => {
   }
 });
 
-
 const renderGoogleButton = () => {
-  window.google.accounts.id.renderButton(
-    googleButton.value,
-    {
-      type: "standard",
-      shape: "pill",
-      theme: "outline",
-      text: authType.value === "login" ? "signin_with" : "signup_with",
-      size: "large",
-      logo_alignment: "left",
-    }
-  );
+  window.google.accounts.id.renderButton(googleButton.value, {
+    type: "standard",
+    shape: "pill",
+    theme: "outline",
+    text: authType.value === "login" ? "signin_with" : "signup_with",
+    size: "large",
+    logo_alignment: "left",
+  });
 };
 
 watch(authType, () => {
