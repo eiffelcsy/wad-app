@@ -1,6 +1,6 @@
 <template>
     <div class="container h-screen">
-      <h1 class="absolute top-8 left-8 lg:left-12 text-2xl">Rendez</h1>
+      <h1 class="absolute top-8 left-8 lg:left-12 text-2xl">Rendez.</h1>
       <p class="absolute top-8 right-8 lg:right-12" v-if="user">{{ email }}</p>
       <Button
         @click="toLogin"
