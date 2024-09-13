@@ -4,7 +4,50 @@
     <h1 class="absolute top-8 left-8 lg:left-12 text-2xl">Rendez.</h1>
 
     <!-- If the user is logged in, display their email, otherwise show the login button -->
-    <p class="absolute top-8 right-8 lg:right-12" v-if="user">{{ email }}</p>
+    <Sheet v-if="user">
+      <SheetTrigger as-child>
+        <Button
+          @click=""
+          variant="outline"
+          class="absolute px-2 top-8 right-8 lg:right-12 font-normal border-zinc-300 dark:border-zinc-600"
+        >
+          <Avatar class="w-6 h-6 mr-2 bg-zinc-100 dark:bg-zinc-600">
+            <PersonIcon class="w-4 h-4 opacity-65"/>
+          </Avatar>
+          {{ displayName }}
+        </Button>
+      </SheetTrigger>
+      <SheetContent class="flex flex-col">
+        <SheetHeader>
+          <SheetTitle>Edit profile</SheetTitle>
+          <SheetDescription>
+            Make changes to your profile here. Click save when you're done.
+          </SheetDescription>
+        </SheetHeader>
+        <div class="grid gap-4 py-4">
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="name" class="text-right"> Name </Label>
+            <Input id="name" value="Pedro Duarte" class="col-span-3" />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="username" class="text-right"> Username </Label>
+            <Input id="username" value="@peduarte" class="col-span-3" />
+          </div>
+        </div>
+        <SheetFooter class="absolute bottom-4 w-3/4 sm:w-auto self-center">
+          <Button
+            @click="logout"
+            class="px-4 py-2 mt-2 sm:mt-0 bg-red-500 text-white rounded-md"
+            v-if="user"
+          >
+            Logout
+          </Button>
+          <SheetClose as-child>
+            <Button type="submit"> Save changes </Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
     <Button
       @click="toLogin"
       variant="outline"
@@ -46,15 +89,30 @@
         Join Event <PlusCircledIcon class="ml-2" />
       </Button>
     </div>
+    <Dialog :open="showDialog">
+      <DialogOverlay />
+      <DialogContent>
+        <DialogTitle>Update Display Name</DialogTitle>
+        <DialogDescription>
+          Please enter your display name to continue.
+        </DialogDescription>
 
-    <!-- Logout button appears if user is logged in -->
-    <Button
-      @click="logout"
-      class="px-4 py-2 bg-red-500 text-white rounded-md"
-      v-if="user"
-    >
-      Logout
-    </Button>
+        <Input
+          v-model="newDisplayName"
+          placeholder="Enter your display name"
+          class="my-4"
+        />
+
+        <div class="flex justify-end">
+          <Button
+            @click="saveDisplayName"
+            class="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+          >
+            Save
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
@@ -63,13 +121,15 @@
  * Importing necessary icons from @radix-icons/vue and
  * the navigateTo method from Nuxt's app navigation system.
  */
-import { CalendarIcon, EnterIcon, PlusCircledIcon } from "@radix-icons/vue";
+import { CalendarIcon, EnterIcon, PlusCircledIcon, PersonIcon } from "@radix-icons/vue";
 import { navigateTo } from "nuxt/app"; // Function for page navigation
 
 // Using Supabase authentication for user management
 const { $supabase } = useNuxtApp();
 
-const email = ref(""); // Stores the user's email, initialized as an empty string
+const displayName = ref(""); // Stores the user's display name, initialized as an empty string
+const showDialog = ref(false); // Controls the dialog visibility
+const newDisplayName = ref(""); // Holds the user input for the display name
 
 /**
  * Fetch the currently authenticated user from Supabase.
@@ -80,8 +140,30 @@ const {
 } = await $supabase.auth.getUser();
 
 if (user) {
-  email.value = user.email; // Update the email if a user is logged in
+  if (user.user_metadata.name) {
+    displayName.value = user.user_metadata.name; // Update the email if a user is logged in
+  } else {
+    showDialog.value = true;
+    console.log(showDialog.value);
+  }
 }
+
+// Function to save the display name
+const saveDisplayName = async () => {
+  if (newDisplayName.value) {
+    // Update the user profile in Supabase
+    const { error } = await $supabase.auth.updateUser({
+      data: { name: newDisplayName.value },
+    });
+
+    if (error) {
+      console.error("Error updating profile:", error.message);
+    } else {
+      displayName.value = newDisplayName.value; // Update local displayName variable
+      showDialog.value = false; // Close the dialog
+    }
+  }
+};
 
 /**
  * Logs the user out using Supabase's authentication.
@@ -93,7 +175,7 @@ const logout = async () => {
     console.error("Error logging out:", error.message); // Logs the error if something goes wrong
   } else {
     console.log("Logged out successfully!");
-    navigateTo("/"); // Redirects to the homepage after successful logout
+    location.reload();
   }
 };
 
@@ -110,7 +192,7 @@ const toLogin = () => {
  */
 const toCreate = () => {
   if (user) {
-    navigateTo("/create"); 
+    navigateTo("/create");
   } else {
     navigateTo("/auth");
   }
