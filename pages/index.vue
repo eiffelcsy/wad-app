@@ -13,18 +13,18 @@
         <Button
           @click=""
           variant="outline"
+          size="icon"
           class="absolute px-2 top-7 right-8 lg:right-12 font-semibold border-zinc-300 dark:border-zinc-600"
         >
-          <Avatar class="w-6 h-6 mr-2 bg-zinc-100 dark:bg-zinc-600">
-            <PersonIcon class="w-4 h-4 opacity-65" />
+          <Avatar class="w-8 h-8 bg-zinc-100 dark:bg-zinc-600">
+            <UserRoundIcon size="20px" strokeWidth="{1}" class="opacity-60"/>
           </Avatar>
-          {{ displayName }}
         </Button>
       </SheetTrigger>
       <SheetContent class="flex flex-col">
         <SheetHeader class="flex flex-row items-center">
           <Avatar class="w-10 h-10 mr-2 bg-zinc-100 dark:bg-zinc-600">
-            <PersonIcon class="w-2/3 h-2/3 opacity-65" />
+            <UserRoundIcon size="24px" strokeWidth="{1}" class="opacity-60" />
           </Avatar>
           <div>
             <SheetTitle class="text-left">
@@ -112,12 +112,16 @@
     </div>
 
     <!-- Main content section for logged-in users -->
-    <div class="w-full pt-24 md:pt-28 lg:pt-32 md:w-2/3 md:px-8 lg:w-1/2 lg:px-16" v-else>
-      <h1 class="text-4xl md:text-5xl lg:text-6x; font-semibold">Hi, {{ displayName }}!</h1>
+    <div
+      class="w-full pt-24 md:pt-28 md:w-2/3 md:px-8 lg:w-1/2 lg:pt-32 lg:px-12"
+      v-else
+    >
+      <h1 class="text-4xl md:text-5xl lg:text-6x; font-semibold">
+        Hi, {{ displayName }}!
+      </h1>
       <!-- TODO: Add homepage content for logged-in users -->
       Insert homepage content for logged-in users here
     </div>
-    
 
     <Dialog :open="showDialog">
       <DialogOverlay />
