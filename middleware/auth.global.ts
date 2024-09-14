@@ -5,7 +5,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const allowedPaths = [
     '/',
     '/auth',
-    '/join'
+    '/join',
+    '/event',
   ]
 
   const { $supabase } = useNuxtApp();

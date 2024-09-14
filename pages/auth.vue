@@ -27,7 +27,7 @@
           <div ref="googleButton"></div>
         </div>
 
-        <hr class="mt-8" />
+        <Separator label="OR" class="mt-8"/>
 
         <!-- Authentication form (handles both login and registration) -->
         <form @submit.prevent="handleLogin" class="w-full mt-2">

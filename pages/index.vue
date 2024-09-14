@@ -1,7 +1,11 @@
 <template>
   <div class="container h-screen">
     <!-- Header section with the title and user email or login button -->
-    <h1 class="absolute top-8 left-8 lg:left-12 text-2xl">Rendez.</h1>
+    <h1
+      class="absolute top-8 left-8 lg:left-12 text-lg font-bold tracking-widest"
+    >
+      RENDEZ
+    </h1>
 
     <!-- If the user is logged in, display their email, otherwise show the login button -->
     <Sheet v-if="user">
@@ -9,42 +13,58 @@
         <Button
           @click=""
           variant="outline"
-          class="absolute px-2 top-8 right-8 lg:right-12 font-normal border-zinc-300 dark:border-zinc-600"
+          class="absolute px-2 top-7 right-8 lg:right-12 font-semibold border-zinc-300 dark:border-zinc-600"
         >
           <Avatar class="w-6 h-6 mr-2 bg-zinc-100 dark:bg-zinc-600">
-            <PersonIcon class="w-4 h-4 opacity-65"/>
+            <PersonIcon class="w-4 h-4 opacity-65" />
           </Avatar>
           {{ displayName }}
         </Button>
       </SheetTrigger>
       <SheetContent class="flex flex-col">
-        <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
-          </SheetDescription>
+        <SheetHeader class="flex flex-row items-center">
+          <Avatar class="w-10 h-10 mr-2 bg-zinc-100 dark:bg-zinc-600">
+            <PersonIcon class="w-2/3 h-2/3 opacity-65" />
+          </Avatar>
+          <div>
+            <SheetTitle class="text-left">
+              {{ displayName }}
+            </SheetTitle>
+            <SheetDescription class="text-left">
+              {{ email }}
+            </SheetDescription>
+          </div>
         </SheetHeader>
-        <div class="grid gap-4 py-4">
-          <div class="grid grid-cols-4 items-center gap-4">
-            <Label for="name" class="text-right"> Name </Label>
-            <Input id="name" value="Pedro Duarte" class="col-span-3" />
-          </div>
-          <div class="grid grid-cols-4 items-center gap-4">
-            <Label for="username" class="text-right"> Username </Label>
-            <Input id="username" value="@peduarte" class="col-span-3" />
-          </div>
-        </div>
-        <SheetFooter class="absolute bottom-4 w-3/4 sm:w-auto self-center">
+        <div class="flex flex-col gap-2 py-4">
+          <NuxtLink to="/profile" class="flex flex-row items-center h-6">
+            <UserRoundIcon size="16px" strokeWidth="{1}" class="mr-2" /> Your
+            profile
+          </NuxtLink>
+          <NuxtLink to="/events" class="flex flex-row items-center h-6">
+            <CalendarDaysIcon size="16px" strokeWidth="{1}" class="mr-2" /> Your
+            events
+          </NuxtLink>
+          <NuxtLink to="/teams" class="flex flex-row items-center h-6">
+            <UsersRoundIcon size="16px" strokeWidth="{1}" class="mr-2" /> Your
+            teams
+          </NuxtLink>
+          <NuxtLink to="/projects" class="flex flex-row items-center h-6">
+            <BoxesIcon size="16px" strokeWidth="{1}" class="mr-2" /> Your
+            projects
+          </NuxtLink>
+          <Separator class="my-2" />
           <Button
             @click="logout"
-            class="px-4 py-2 mt-2 sm:mt-0 bg-red-500 text-white rounded-md"
+            variant="link"
+            class="justify-start font-normal text-base p-0 h-6"
             v-if="user"
           >
+            <LogOutIcon size="16px" strokeWidth="{1}" class="mr-2" />
             Logout
           </Button>
-          <SheetClose as-child>
-            <Button type="submit"> Save changes </Button>
-          </SheetClose>
+        </div>
+        <SheetFooter class="absolute bottom-4 w-3/4 sm:w-auto self-center">
+          <SheetClose as-child> </SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>
@@ -57,9 +77,10 @@
       <EnterIcon class="w-4 h-4 mr-2" />Login
     </Button>
 
-    <!-- Main content section with title, description, and action buttons -->
+    <!-- Main content section with title, description, and action buttons for anonymous users -->
     <div
       class="w-full h-[95%] content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
+      v-if="!user"
     >
       <h1
         class="text-3xl md:text-4xl lg:text-5xl text-zinc-800 dark:text-zinc-100 font-bold my-2"
@@ -89,6 +110,15 @@
         Join Event <PlusCircledIcon class="ml-2" />
       </Button>
     </div>
+
+    <!-- Main content section for logged-in users -->
+    <div class="w-full pt-24 md:pt-28 lg:pt-32 md:w-2/3 md:px-8 lg:w-1/2 lg:px-16" v-else>
+      <h1 class="text-4xl md:text-5xl lg:text-6x; font-semibold">Hi, {{ displayName }}!</h1>
+      <!-- TODO: Add homepage content for logged-in users -->
+      Insert homepage content for logged-in users here
+    </div>
+    
+
     <Dialog :open="showDialog">
       <DialogOverlay />
       <DialogContent>
@@ -121,19 +151,32 @@
  * Importing necessary icons from @radix-icons/vue and
  * the navigateTo method from Nuxt's app navigation system.
  */
-import { CalendarIcon, EnterIcon, PlusCircledIcon, PersonIcon } from "@radix-icons/vue";
+import {
+  CalendarIcon,
+  EnterIcon,
+  PlusCircledIcon,
+  PersonIcon,
+} from "@radix-icons/vue";
+import {
+  UserRoundIcon,
+  UsersRoundIcon,
+  CalendarDaysIcon,
+  BoxesIcon,
+  LogOutIcon,
+} from "lucide-vue-next";
 import { navigateTo } from "nuxt/app"; // Function for page navigation
 
 // Using Supabase authentication for user management
 const { $supabase } = useNuxtApp();
 
-const displayName = ref(""); // Stores the user's display name, initialized as an empty string
 const showDialog = ref(false); // Controls the dialog visibility
 const newDisplayName = ref(""); // Holds the user input for the display name
+const displayName = ref(""); // Stores the user's display name, initialized as an empty string
+const email = ref("");
 
 /**
  * Fetch the currently authenticated user from Supabase.
- * If a user is logged in, their email is stored in the 'email' variable.
+ * If a user is logged in, their details are stored in the respective variables.
  */
 const {
   data: { user },
@@ -141,11 +184,11 @@ const {
 
 if (user) {
   if (user.user_metadata.name) {
-    displayName.value = user.user_metadata.name; // Update the email if a user is logged in
+    displayName.value = user.user_metadata.name;
   } else {
     showDialog.value = true;
-    console.log(showDialog.value);
   }
+  email.value = user.email;
 }
 
 // Function to save the display name

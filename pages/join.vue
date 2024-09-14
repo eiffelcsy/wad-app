@@ -5,7 +5,7 @@
       <h1
         class="text-4xl md:text-5xl lg:text-6xl text-zinc-800 dark:text-zinc-100 font-bold"
       >
-        Join Event.
+        Join Event
       </h1>
     </div>
 
