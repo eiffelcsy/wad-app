@@ -1,9 +1,11 @@
 <template>
-  <div class="container h-screen flex flex-col items-left justify-center">
+  <div
+    class="container w-full max-w-[32rem] p-16 h-screen flex flex-col items-left justify-center"
+  >
     <!-- Header section with the title -->
     <div class="my-2">
       <h1
-        class="text-4xl md:text-5xl lg:text-6xl text-zinc-800 dark:text-zinc-100 font-bold"
+        class="text-4xl md:text-5xl lg:text-6xl text-zinc-800 dark:text-zinc-100 font-semibold"
       >
         Join Event
       </h1>
@@ -14,7 +16,7 @@
       <!-- Prevents default form submission and triggers handleJoin when the form is submitted -->
       <form @submit.prevent="handleJoin" class="space-y-4 sm:space-y-6">
         <!-- Input field for the event code -->
-        <div class="mt-2">
+        <div class="mt-4">
           <Input
             v-model="joinCode"
             id="join-code"
@@ -26,7 +28,10 @@
         </div>
 
         <!-- Join button that submits the form -->
-        <Button class="w-full mt-0">Join</Button>
+        <Button
+          class="w-full mt-0 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+          >Join</Button
+        >
       </form>
     </div>
 
