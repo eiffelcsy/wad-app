@@ -14,10 +14,10 @@
           @click=""
           variant="outline"
           size="icon"
-          class="absolute px-2 top-7 right-8 lg:right-12 font-semibold border-zinc-300 dark:border-zinc-600"
+          class="absolute px-2 top-7 right-8 lg:right-12 font-semibold border-zinc-200 dark:border-zinc-700"
         >
           <Avatar class="w-8 h-8 bg-zinc-100 dark:bg-zinc-600">
-            <UserRoundIcon size="20px" strokeWidth="{1}" class="opacity-60"/>
+            <UserRoundIcon size="20px" strokeWidth="{1}" class="opacity-60" />
           </Avatar>
         </Button>
       </SheetTrigger>
@@ -36,22 +36,35 @@
           </div>
         </SheetHeader>
         <div class="flex flex-col gap-2 py-4">
-          <NuxtLink to="/profile" class="flex flex-row items-center h-6">
+          <NuxtLink
+            to="/profile"
+            class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-1"
+          >
             <UserRoundIcon size="16px" strokeWidth="{1}" class="mr-2" /> Your
             profile
           </NuxtLink>
-          <NuxtLink to="/events" class="flex flex-row items-center h-6">
+          <NuxtLink
+            to="/events"
+            class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-1"
+          >
             <CalendarDaysIcon size="16px" strokeWidth="{1}" class="mr-2" /> Your
             events
           </NuxtLink>
-          <NuxtLink to="/teams" class="flex flex-row items-center h-6">
+          <NuxtLink
+            to="/teams"
+            class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-1"
+          >
             <UsersRoundIcon size="16px" strokeWidth="{1}" class="mr-2" /> Your
             teams
           </NuxtLink>
-          <NuxtLink to="/projects" class="flex flex-row items-center h-6">
+          <NuxtLink
+            to="/projects"
+            class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-1"
+          >
             <BoxesIcon size="16px" strokeWidth="{1}" class="mr-2" /> Your
             projects
           </NuxtLink>
+
           <Separator class="my-2" />
           <Button
             @click="logout"
@@ -121,11 +134,18 @@
       </h1>
       <!-- TODO: Add homepage content for logged-in users -->
       Insert homepage content for logged-in users here
+      <Button
+        variant="outline"
+        class="mt-2 ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+        @click="toJoin"
+      >
+        Join Event <PlusCircledIcon class="ml-2" />
+      </Button>
     </div>
 
     <Dialog :open="showDialog">
       <DialogOverlay />
-      <DialogContent>
+      <DialogContent class="w-5/6 rounded-md">
         <DialogTitle>Update Display Name</DialogTitle>
         <DialogDescription>
           Please enter your display name to continue.

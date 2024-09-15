@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { SunIcon, MoonIcon } from '@radix-icons/vue';
+import { SunIcon, MoonIcon } from "@radix-icons/vue";
 
 const isDark = ref(false);
 
@@ -25,5 +25,16 @@ const toggleDarkMode = () => {
     document.documentElement.classList.remove("dark");
   }
 };
-
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  filter: blur(1px);
+}
+</style>
