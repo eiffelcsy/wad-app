@@ -3,29 +3,52 @@
     <div>
       <h1>{{ event_title }}</h1>
       <h1>Welcome, {{ displayName }}</h1>
-      <p>Existing Participants: {{ event_participants }}</p>
+      <p class="text-xs">{{ event_participants }}</p>
     </div>
 
     <client-only>
-      <!-- Interval Grid -->
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th v-for="(date, dateIndex) in dates" :key="dateIndex">{{ formatDate(date) }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-            <td>{{ time }}</td>
-            <td v-for="(date, dateIndex) in dates" :key="dateIndex" @click="toggleInterval(dateIndex, timeIndex)"
-              :class="{ selected: isSelected(dateIndex, timeIndex) }" class="interval-cell">
-              <!-- Interval Cell -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
+      <div class="flex flex-row gap-32">
+        <div>
+          <!-- Interval Grid -->
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th v-for="(date, dateIndex) in dates" :key="dateIndex">{{ formatDate(date) }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                <td>{{ time }}</td>
+                <td v-for="(date, dateIndex) in dates" :key="dateIndex" @click="toggleInterval(dateIndex, timeIndex)"
+                  :class="{ selected: isSelected(dateIndex, timeIndex) }" class="interval-cell">
+                  <!-- Interval Cell -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <!-- Heatmap Grid -->
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th v-for="(date, dateIndex) in dates" :key="dateIndex">{{ formatDate(date) }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                <td>{{ time }}</td>
+                <td v-for="(date, dateIndex) in dates" :key="dateIndex"
+                  :style="{ backgroundColor: getHeatmapColor(dateIndex, timeIndex) }" class="heatmap-cell">
+                  {{ getAvailabilityCount(dateIndex, timeIndex) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <!-- Existing Dialog and Toast Components -->
       <Dialog :open="showDialog">
         <DialogOverlay />
@@ -111,106 +134,138 @@ onMounted(async () => {
     generateIntervals();
 
     // Fetch participants
-    const { data: findParticipants } = await $supabase
-      .from('participants')
-      .select('name')
-      .eq('event_id', event_id.value);
+    await fetchParticipants();
 
-    if (findParticipants) {
-      event_participants.value = findParticipants.map((p) => p.name);
-    }
-
-    // Fetch participant availability
+    // Fetch participant data
     await fetchParticipantData();
   }
 });
 
-async function fetchParticipantData() {
-  const { data: userData } = await $supabase.auth.getUser();
-  const user = userData.user;
+async function fetchParticipants() {
+  const { data: findParticipants, error } = await $supabase
+    .from('participants')
+    .select('*')
+    .eq('event_id', event_id.value);
 
-  if (!user && event_code) {
-    showDialog.value = true;
-  } else {
-    let existingParticipant = null;
+  if (error) {
+    console.error('Error fetching participants:', error.message);
+    return;
+  }
 
-    if (user) {
-      // Fetch participant by user_id
-      const { data } = await $supabase
-        .from('participants')
-        .select('*')
-        .eq('event_id', event_id.value)
-        .eq('user_id', user.id)
-        .single();
-
-      existingParticipant = data;
-    } else if (newDisplayName.value) {
-      // Fetch participant by name
-      const { data } = await $supabase
-        .from('participants')
-        .select('*')
-        .eq('event_id', event_id.value)
-        .eq('name', newDisplayName.value)
-        .single();
-
-      existingParticipant = data;
-    }
-
-    if (existingParticipant) {
-      // Participant exists
-      displayName.value = existingParticipant.name;
-      participant_name.value = existingParticipant.name;
-
-      // Load availability
-      loadAvailability(existingParticipant.availability);
-    } else {
-      // Create new participant
-      const newParticipant = {
-        event_id: event_id.value,
-        name: user ? user.user_metadata.name : newDisplayName.value,
-        user_id: user ? user.id : null,
-        email: user ? user.email : null,
-      };
-
-      const { data: insertedParticipant, error } = await $supabase
-        .from('participants')
-        .insert(newParticipant)
-        .select('*')
-        .single();
-
-      if (error) {
-        console.error('Error inserting participant:', error);
-      } else {
-        displayName.value = insertedParticipant.name;
-        participant_name.value = insertedParticipant.name;
-
-        // Load availability
-        loadAvailability(insertedParticipant.availability);
-      }
-    }
+  if (findParticipants) {
+    event_participants.value = findParticipants.map(
+      ({ name, availability }) => ({ [name]: availability })
+    );
   }
 }
 
-const saveDisplayName = async () => {
-  if (newDisplayName.value) {
+async function fetchParticipantData() {
+  const participant = await getOrCreateParticipant();
+
+  if (participant) {
+    setParticipantData(participant);
+    await fetchParticipants(); // Refresh participants list
+  }
+}
+
+async function getOrCreateParticipant() {
+  const { data: userData } = await $supabase.auth.getUser();
+  const user = userData.user;
+  let name = '';
+
+  if (user) {
+    name = user.user_metadata.name || user.email || 'Anonymous';
+    const participant = await ensureParticipant(name, user.id, user.email);
+    return participant;
+  } else {
+    if (!newDisplayName.value) {
+      showDialog.value = true;
+      return null;
+    }
+
+    name = newDisplayName.value;
+    const participant = await ensureParticipant(name);
+    return participant;
+  }
+}
+
+async function ensureParticipant(name, user_id = null, email = null) {
+  let participant = null;
+
+  // Try to fetch participant by user_id if provided
+  if (user_id) {
     const { data, error } = await $supabase
+      .from('participants')
+      .select('*')
+      .eq('event_id', event_id.value)
+      .eq('user_id', user_id)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching participant by user_id:', error.message);
+      return null;
+    }
+
+    participant = data;
+  }
+
+  // If not found by user_id, or user_id not provided, try fetching by name
+  if (!participant) {
+    const { data, error } = await $supabase
+      .from('participants')
+      .select('*')
+      .eq('event_id', event_id.value)
+      .eq('name', name)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching participant by name:', error.message);
+      return null;
+    }
+
+    participant = data;
+  }
+
+  // If participant does not exist, create one
+  if (!participant) {
+    const { data: newParticipant, error: insertError } = await $supabase
       .from('participants')
       .insert({
         event_id: event_id.value,
-        name: newDisplayName.value,
+        name: name,
+        user_id: user_id,
+        email: email,
       })
       .select('*')
       .single();
 
-    if (error) {
-      console.error('Error creating participant:', error.message);
-    } else {
-      displayName.value = data.name;
-      participant_name.value = data.name;
-      showDialog.value = false;
+    if (insertError) {
+      console.error('Error creating participant:', insertError.message);
+      return null;
+    }
 
-      // Load availability
-      loadAvailability(data.availability);
+    participant = newParticipant;
+  }
+
+  return participant;
+}
+
+function setParticipantData(participant) {
+  displayName.value = participant.name;
+  participant_name.value = participant.name;
+  showDialog.value = false;
+
+  // Load availability
+  loadAvailability(participant.availability);
+}
+
+const saveDisplayName = async () => {
+  if (newDisplayName.value) {
+    const participant = await ensureParticipant(newDisplayName.value);
+
+    if (participant) {
+      setParticipantData(participant);
+      await fetchParticipants(); // Refresh participants list
     }
   }
 };
@@ -308,6 +363,9 @@ const saveAvailability = async () => {
       description: 'Failed to save availability.',
       variant: 'destructive',
     });
+  } else {
+    // Refresh participants list to update heatmap
+    await fetchParticipants();
   }
 };
 
@@ -325,7 +383,42 @@ function loadAvailability(availabilityString) {
     intervals.value[index].selected = char === '1';
   });
 }
+
+// Computed property to calculate availability counts for the heatmap
+const availabilityCounts = computed(() => {
+  if (!intervals.value.length) return [];
+  const counts = Array(intervals.value.length).fill(0);
+  event_participants.value.forEach((participant) => {
+    const name = Object.keys(participant)[0];
+    const availabilityString = participant[name];
+    if (availabilityString && availabilityString.length === intervals.value.length) {
+      for (let i = 0; i < availabilityString.length; i++) {
+        if (availabilityString[i] === '1') {
+          counts[i]++;
+        }
+      }
+    }
+  });
+  return counts;
+});
+
+// Function to get the heatmap color for a cell
+function getHeatmapColor(dateIndex, timeIndex) {
+  const intervalIndex = dateIndex * times.value.length + timeIndex;
+  const count = availabilityCounts.value[intervalIndex] || 0;
+  const totalParticipants = event_participants.value.length || 1; // Prevent division by zero
+  const opacity = count / totalParticipants;
+  return `rgba(102, 204, 102, ${opacity})`; // Adjust the color as needed
+}
+
+// Function to get the availability count for a cell
+function getAvailabilityCount(dateIndex, timeIndex) {
+  const intervalIndex = dateIndex * times.value.length + timeIndex;
+  return availabilityCounts.value[intervalIndex] || 0;
+}
+
 </script>
+
 
 <style>
 .interval-cell {
@@ -339,8 +432,17 @@ function loadAvailability(availabilityString) {
   background-color: #66cc66;
 }
 
+.heatmap-cell {
+  width: 50px;
+  height: 30px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
 table {
   border-collapse: collapse;
+  margin-bottom: 20px;
+  /* Add some spacing between the grids */
 }
 
 th,
