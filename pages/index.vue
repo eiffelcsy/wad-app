@@ -110,7 +110,7 @@
           Rendez makes it easy to coordinate meetings and events. Share your
           availability, let others pick a time, and get notified instantly.
         </p>
-        <!-- Button to create an event (visible if logged in) -->
+        <!-- Button to create an event -->
         <Button
           class="mt-2 mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
           @click="toCreate"
@@ -144,6 +144,12 @@
           @click="toJoin"
         >
           Join Event <PlusCircledIcon class="ml-2" />
+        </Button>
+        <Button
+          class="mt-2 mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+          @click="toCreate"
+        >
+          Create Event <CalendarIcon class="ml-2" />
         </Button>
       </div>
 
