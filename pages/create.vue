@@ -1,17 +1,17 @@
 <template>
   <div>
     <transition name="fade" mode="out-in">
-      <div v-if="currentView === 1" key="view1">
+      <div v-if="currentView === 1" key="view1" class="w-5/6">
         <!-- View 1: Title and Description -->
         <h2>Create Task - Step 1</h2>
-        <div>
-          <label>Title</label>
-          <input type="text" v-model="title" />
+        <div class="w-full">
+          <Label for="title">Title</Label>
+          <Input id="title" type="text" v-model="title"/>
           <div v-if="errors.title" class="error">{{ errors.title }}</div>
         </div>
         <div>
-          <label>Description</label>
-          <textarea v-model="description"></textarea>
+          <Label for="description">Description</label>
+          <Textarea id="description" type="text" v-model="description"/>
           <div v-if="errors.description" class="error">
             {{ errors.description }}
           </div>
@@ -74,8 +74,7 @@
           {{ formatDate(dateRange.end) }}
         </div>
         <div>
-          <strong>Time:</strong> {{ startTime }} to
-          {{ endTime }}
+          <strong>Time:</strong> {{ startTime }} to {{ endTime }}
         </div>
         <div>
           <strong>Number of Participants:</strong> {{ numberOfParticipants }}
@@ -97,27 +96,40 @@ import { RangeCalendar } from "@/components/ui/range-calendar";
 
 const { $supabase } = useNuxtApp();
 
+// Define types
+interface Errors {
+  title?: string;
+  description?: string;
+  dateRange?: string;
+  startTime?: string;
+  endTime?: string;
+  numberOfParticipants?: string;
+}
+
+// Initial date values
 const start = today(getLocalTimeZone());
 const end = start.add({ days: 7 });
 
-const title = ref("");
-const description = ref("");
-const startTime = ref(null);
-const endTime = ref(null);
-const numberOfParticipants = ref(1);
-const currentView = ref(1);
-const errors = ref({});
-const dateRange = ref({
+const title = ref<string>("");  // Title is a string
+const description = ref<string>("");  // Description is a string
+const startTime = ref<string | null>(null);  // startTime can be string or null
+const endTime = ref<string | null>(null);  // endTime can be string or null
+const numberOfParticipants = ref<number>(1);  // numberOfParticipants is a number
+const currentView = ref<number>(1);  // currentView is a number
+const errors = ref<Errors>({});  // errors is an object with optional fields
+const dateRange = ref<DateRange>({
   start,
   end,
-}) as Ref<DateRange>;
+}) as Ref<DateRange>;  // dateRange uses DateRange type
 
+// Get the current user from Supabase
 const {
   data: { user },
 } = await $supabase.auth.getUser();
 
-const validateCurrentView = () => {
-  errors.value = {};
+// Validation function for each view
+const validateCurrentView = (): boolean => {
+  errors.value = {};  // Clear previous errors
 
   if (currentView.value === 1) {
     if (!title.value.trim()) {
@@ -147,6 +159,7 @@ const validateCurrentView = () => {
   return Object.keys(errors.value).length === 0;
 };
 
+// Navigation functions
 const nextView = () => {
   if (validateCurrentView()) {
     currentView.value++;
@@ -157,7 +170,8 @@ const prevView = () => {
   currentView.value--;
 };
 
-const generateEventCode = async () => {
+// Function to generate a unique event code
+const generateEventCode = async (): Promise<string | null> => {
   let code = "";
   let exists = true;
   const characters =
@@ -188,6 +202,7 @@ const generateEventCode = async () => {
   return code;
 };
 
+// Function to submit the event
 const submitEvent = async () => {
   const eventCode = await generateEventCode();
 
@@ -222,7 +237,8 @@ const submitEvent = async () => {
   navigateTo(`/event/${eventCode}`);
 };
 
-const formatDate = (date) => {
+// Utility function to format date
+const formatDate = (date: Date) => {
   return dayjs(date).format("YYYY-MM-DD");
 };
 </script>
