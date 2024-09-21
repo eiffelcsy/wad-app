@@ -1,3 +1,4 @@
+<!-- TODO: Styling, API connections, Edit Profile -->
 <template>
   <div>
     Profile Page for {{ user }}

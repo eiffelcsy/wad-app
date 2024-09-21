@@ -1,3 +1,4 @@
+<!-- TODO: styling -->
 <template>
   <div>
     <transition name="fade" mode="out-in">
@@ -6,12 +7,12 @@
         <h2>Create Task - Step 1</h2>
         <div class="w-full">
           <Label for="title">Title</Label>
-          <Input id="title" type="text" v-model="title"/>
+          <Input id="title" type="text" v-model="title" />
           <div v-if="errors.title" class="error">{{ errors.title }}</div>
         </div>
         <div>
           <Label for="description">Description</label>
-          <Textarea id="description" type="text" v-model="description"/>
+          <Textarea id="description" type="text" v-model="description" />
           <div v-if="errors.description" class="error">
             {{ errors.description }}
           </div>
@@ -234,7 +235,7 @@ const submitEvent = async () => {
   }
 
   // Redirect to event/[event-code]
-  navigateTo(`/event/${eventCode}`);
+  navigateTo(`/event/${eventCode}`); // TODO: fix redirect, somehow its not working
 };
 
 // Utility function to format date
@@ -248,10 +249,12 @@ const formatDate = (date: Date) => {
 .fade-leave-active {
   transition: opacity 0.5s;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
+
 .error {
   color: red;
 }

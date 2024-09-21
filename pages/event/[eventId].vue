@@ -1,7 +1,9 @@
+<!-- TODO: styling -->
 <template>
   <div>
     <div>
       <h1>{{ event_title }}</h1>
+      <h1>{{ event_code }}</h1>
       <h1>Welcome, {{ displayName }}</h1>
       <p class="text-xs">{{ event_participants }}</p>
     </div>
