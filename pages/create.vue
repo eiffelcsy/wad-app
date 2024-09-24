@@ -1,87 +1,232 @@
-<!-- TODO: styling -->
 <template>
-  <div>
+  <div class="w-full p-16 h-screen flex flex-col justify-center">
     <transition name="fade" mode="out-in">
-      <div v-if="currentView === 1" key="view1" class="w-5/6">
+      <div v-if="currentView === 1" key="view1" class="">
         <!-- View 1: Title and Description -->
-        <h2>Create Task - Step 1</h2>
-        <div class="w-full">
-          <Label for="title">Title</Label>
-          <Input id="title" type="text" v-model="title" />
-          <div v-if="errors.title" class="error">{{ errors.title }}</div>
+        <div class="mb-8">
+          <h1
+            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+          >
+            Title
+          </h1>
+          <Input
+            id="title"
+            type="text"
+            placeholder="Enter Title"
+            v-model="title"
+            class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-4"
+          />
+          <div v-if="errors.title" class="error absolute text-xs mt-1">
+            {{ errors.title }}
+          </div>
         </div>
-        <div>
-          <Label for="description">Description</label>
-          <Textarea id="description" type="text" v-model="description" />
-          <div v-if="errors.description" class="error">
+        <div class="mt-8 mb-4">
+          <h1
+            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+          >
+            Description
+          </h1>
+          <Textarea
+            id="description"
+            type="text"
+            placeholder="Enter Description"
+            v-model="description"
+            class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-2"
+          />
+          <div v-if="errors.description" class="error absolute text-xs mt-1">
             {{ errors.description }}
           </div>
         </div>
-        <button @click="nextView">Next</button>
+        <Button
+          @click="nextView"
+          class="w-full mt-4 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+          >Next</Button
+        >
       </div>
 
       <div v-else-if="currentView === 2" key="view2">
         <!-- View 2: Date Range Picker for start_date and end_date -->
-        <h2>Create Task - Step 2</h2>
-        <label>Date Range</label>
-        <RangeCalendar v-model="dateRange" />
-        <div v-if="errors.dateRange" class="error">{{ errors.dateRange }}</div>
-        <button @click="prevView">Back</button>
-        <button @click="nextView">Next</button>
+        <div class="mb-8">
+          <h1
+            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+          >
+            Select Date Range
+          </h1>
+          <div class="mt-4 flex justify-center items-center">
+            <RangeCalendar v-model="dateRange" class="rounded-md border" />
+          </div>
+          <div v-if="errors.dateRange" class="error absolute text-xs mt-1">
+            {{ errors.dateRange }}
+          </div>
+        </div>
+        <div class="flex justify-between mt-8">
+          <Button
+            @click="prevView"
+            class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
+            >Back</Button
+          >
+          <Button
+            @click="nextView"
+            class="w-full ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+            >Next</Button
+          >
+        </div>
       </div>
 
       <div v-else-if="currentView === 3" key="view3">
         <!-- View 3: Time Selection for start_time and end_time -->
-        <h2>Create Task - Step 3</h2>
-        <div>
-          <label>Start Time</label>
-          <input type="time" v-model="startTime" />
-          <div v-if="errors.startTime" class="error">
-            {{ errors.startTime }}
+        <div class="mb-8">
+          <h1
+            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+          >
+            Select Time Range
+          </h1>
+          <div class="mt-4 flex flex-row justify-center gap-8">
+            <div>
+              <label
+                class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                >Start Time</label
+              >
+              <input
+                type="time"
+                v-model="startTime"
+                step="1800"
+                class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200 self-center"
+              />
+              <div v-if="errors.startTime" class="error absolute text-xs mt-1">
+                {{ errors.startTime }}
+              </div>
+            </div>
+            <div>
+              <label
+                class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                >End Time</label
+              >
+              <input
+                type="time"
+                v-model="endTime"
+                step="1800"
+                class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
+              />
+              <div v-if="errors.endTime" class="error absolute text-xs mt-1">
+                {{ errors.endTime }}
+              </div>
+            </div>
           </div>
         </div>
-        <div>
-          <label>End Time</label>
-          <input type="time" v-model="endTime" />
-          <div v-if="errors.endTime" class="error">{{ errors.endTime }}</div>
+        <div class="flex justify-between mt-8">
+          <Button
+            @click="prevView"
+            class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
+            >Back</Button
+          >
+          <Button
+            @click="nextView"
+            class="w-full ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+            >Next</Button
+          >
         </div>
-        <button @click="prevView">Back</button>
-        <button @click="nextView">Next</button>
       </div>
 
       <div v-else-if="currentView === 4" key="view4">
         <!-- View 4: Number of Participants -->
-        <h2>Create Task - Step 4</h2>
-        <div>
-          <label>Number of Participants</label>
-          <input type="number" v-model="numberOfParticipants" min="1" />
-          <div v-if="errors.numberOfParticipants" class="error">
-            {{ errors.numberOfParticipants }}
+        <div class="mb-8">
+          <h1
+            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+          >
+            Number of Participants
+          </h1>
+          <div class="mt-4">
+            <label
+              class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >Participants</label
+            >
+            <Input
+              type="number"
+              v-model="numberOfParticipants"
+              min="1"
+              class="w-full mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
+            />
+            <div v-if="errors.numberOfParticipants" class="error text-xs mt-1">
+              {{ errors.numberOfParticipants }}
+            </div>
           </div>
         </div>
-        <button @click="prevView">Back</button>
-        <button @click="nextView">Next</button>
+        <div class="flex justify-between mt-8">
+          <Button
+            @click="prevView"
+            class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
+            >Back</Button
+          >
+          <Button
+            @click="nextView"
+            class="w-full ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+            >Next</Button
+          >
+        </div>
       </div>
 
       <div v-else-if="currentView === 5" key="view5">
-        <!-- View 5: Submit -->
-        <h2>Create Task - Review and Submit</h2>
-        <p>Please review your information before submitting.</p>
-        <!-- Display summary of inputs -->
-        <div><strong>Title:</strong> {{ title }}</div>
-        <div><strong>Description:</strong> {{ description }}</div>
-        <div>
-          <strong>Date Range:</strong> {{ formatDate(dateRange.start) }} to
-          {{ formatDate(dateRange.end) }}
+        <!-- View 5: Review and Submit -->
+        <div class="mb-8">
+          <h1
+            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+          >
+            Review and Submit
+          </h1>
+          <p class="text-zinc-700 dark:text-zinc-300 mt-4">
+            Please review your information before submitting.
+          </p>
+          <div class="mt-6 space-y-2">
+            <div>
+              <strong class="text-zinc-800 dark:text-zinc-100">Title:</strong>
+              <span class="text-zinc-700 dark:text-zinc-300">{{ title }}</span>
+            </div>
+            <div>
+              <strong class="text-zinc-800 dark:text-zinc-100"
+                >Description:</strong
+              >
+              <span class="text-zinc-700 dark:text-zinc-300">{{
+                description
+              }}</span>
+            </div>
+            <div>
+              <strong class="text-zinc-800 dark:text-zinc-100"
+                >Date Range:</strong
+              >
+              <span class="text-zinc-700 dark:text-zinc-300"
+                >{{ formatDate(dateRange.start) }} to
+                {{ formatDate(dateRange.end) }}</span
+              >
+            </div>
+            <div>
+              <strong class="text-zinc-800 dark:text-zinc-100">Time:</strong>
+              <span class="text-zinc-700 dark:text-zinc-300"
+                >{{ startTime }} to {{ endTime }}</span
+              >
+            </div>
+            <div>
+              <strong class="text-zinc-800 dark:text-zinc-100"
+                >Number of Participants:</strong
+              >
+              <span class="text-zinc-700 dark:text-zinc-300">{{
+                numberOfParticipants
+              }}</span>
+            </div>
+          </div>
         </div>
-        <div>
-          <strong>Time:</strong> {{ startTime }} to {{ endTime }}
+        <div class="flex justify-between mt-8">
+          <Button
+            @click="prevView"
+            class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
+            >Back</Button
+          >
+          <Button
+            @click="submitEvent"
+            class="w-full ml-2 bg-green-600 dark:bg-green-400 text-white dark:text-black"
+            >Submit</Button
+          >
         </div>
-        <div>
-          <strong>Number of Participants:</strong> {{ numberOfParticipants }}
-        </div>
-        <button @click="prevView">Back</button>
-        <button @click="submitEvent">Submit</button>
       </div>
     </transition>
   </div>
@@ -109,19 +254,19 @@ interface Errors {
 
 // Initial date values
 const start = today(getLocalTimeZone());
-const end = start.add({ days: 7 });
+const end = start.add({ days: 2 });
 
-const title = ref<string>("");  // Title is a string
-const description = ref<string>("");  // Description is a string
-const startTime = ref<string | null>(null);  // startTime can be string or null
-const endTime = ref<string | null>(null);  // endTime can be string or null
-const numberOfParticipants = ref<number>(1);  // numberOfParticipants is a number
-const currentView = ref<number>(1);  // currentView is a number
-const errors = ref<Errors>({});  // errors is an object with optional fields
+const title = ref<string>(""); // Title is a string
+const description = ref<string>(""); // Description is a string
+const startTime = ref<string | null>(null); // startTime can be string or null
+const endTime = ref<string | null>(null); // endTime can be string or null
+const numberOfParticipants = ref<number>(1); // numberOfParticipants is a number
+const currentView = ref<number>(1); // currentView is a number
+const errors = ref<Errors>({}); // errors is an object with optional fields
 const dateRange = ref<DateRange>({
   start,
   end,
-}) as Ref<DateRange>;  // dateRange uses DateRange type
+}) as Ref<DateRange>; // dateRange uses DateRange type
 
 // Get the current user from Supabase
 const {
@@ -130,7 +275,7 @@ const {
 
 // Validation function for each view
 const validateCurrentView = (): boolean => {
-  errors.value = {};  // Clear previous errors
+  errors.value = {}; // Clear previous errors
 
   if (currentView.value === 1) {
     if (!title.value.trim()) {
@@ -247,7 +392,7 @@ const formatDate = (date: Date) => {
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s;
+  transition: opacity 0.3s;
 }
 
 .fade-enter-from,
