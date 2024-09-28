@@ -142,7 +142,6 @@ import {
   CalendarIcon,
   EnterIcon,
   PlusCircledIcon,
-  PersonIcon,
 } from "@radix-icons/vue";
 import {
   UserRoundIcon,
