@@ -25,6 +25,10 @@ export default defineNuxtConfig({
     public: {
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_KEY: process.env.SUPABASE_KEY,
+      GAPI_CLIENT_ID: process.env.GAPI_CLIENT_ID,
+      GAPI_CLIENT_SECRET: process.env.GAPI_CLIENT_SECRET,
+      GAPI_KEY: process.env.GAPI_KEY,
+      GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI
     },
   },
   head: {
@@ -36,4 +40,7 @@ export default defineNuxtConfig({
       },
     ],
   },
+  serverMiddleware: [
+    { path: '/api', handler: '~/api/index.js' },
+  ],
 });

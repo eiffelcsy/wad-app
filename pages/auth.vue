@@ -13,7 +13,7 @@
         </h1>
 
         <!-- Google Sign-In button container -->
-        <div class="mt-12">
+        <div class="mt-12 items-center">
           <div
             id="g_id_onload"
             :data-context="authType === 'login' ? 'signin' : 'signup'"
