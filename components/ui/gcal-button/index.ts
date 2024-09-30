@@ -1,0 +1,1 @@
+export { default as gCalButton } from './gCalButton.vue'
