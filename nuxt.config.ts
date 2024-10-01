@@ -1,7 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
-    pageTransition: { name: 'fade', mode: 'out-in' }
+    pageTransition: { name: 'fade', mode: 'out-in' },
+    head: {
+      meta: [
+        {
+          name: "viewport",
+          content:
+            "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
+        },
+      ],
+    },
   },
   imports: {
     autoImport: true,
@@ -30,15 +39,6 @@ export default defineNuxtConfig({
       GAPI_KEY: process.env.GAPI_KEY,
       GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI
     },
-  },
-  head: {
-    meta: [
-      {
-        name: "viewport",
-        content:
-          "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
-      },
-    ],
   },
   serverMiddleware: [
     { path: '/api', handler: '~/api/index.js' },
