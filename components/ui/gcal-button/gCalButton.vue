@@ -1,43 +1,32 @@
 <template>
   <div>
-    <button @click="handleClick">{{ buttonText }}</button>
-    <div v-html="output"></div>
+    <Button class="w-full" @click="connectGoogleCalendar">
+      <img
+        src="/icons/google.svg"
+        alt="gIcon"
+        class="mr-4 h-4 w-4 invert dark:invert-0"
+      />
+      Connect to Google Calendar
+    </Button>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
+import { useRoute } from "vue-router";
 
-const output = ref('');
-const buttonText = 'Get Calendar Events';
+const route = useRoute();
+const connectionStatus = ref("");
 
-async function handleClick() {
+async function connectGoogleCalendar() {
   try {
-    const response = await fetch('/api/calendar/events');
-    if (response.status === 401) {
-      // User is not authenticated; redirect to login
-      window.location.href = '/api/auth/google';
-    } else if (response.ok) {
-      const events = await response.json();
-      if (events.length === 0) {
-        output.value = 'No events found.';
-      } else {
-        output.value = events
-          .map(
-            (event) =>
-              `${event.summary} (${event.start.dateTime || event.start.date}) - ${event.calendarName}`
-          )
-          .join('<br/>');
-      }
-    } else {
-      output.value = 'Error fetching events.';
-    }
+    const redirectFrom = route.fullPath
+    window.location.href = `/api/auth/google?redirect_uri=${encodeURIComponent(redirectFrom)}`;
   } catch (error) {
-    console.error('Error:', error);
-    output.value = 'An error occurred.';
+    console.error("Error:", error);
+    connectionStatus.value = "An error occurred during calendar connection.";
   }
 }
-
 </script>
 
 <style scoped>

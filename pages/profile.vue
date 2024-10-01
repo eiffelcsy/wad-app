@@ -30,14 +30,7 @@
         <div
           class="w-5/6 flex flex-col lg:flex-row mt-16 h-40 justify-between lg:justify-center"
         >
-          <Button id="gCal">
-            <img
-              src="/icons/google.svg"
-              alt="gIcon"
-              class="mr-4 h-4 w-4 invert dark:invert-0"
-            />
-            Connect to Google Calendar</Button
-          >
+          <GCalButton></GCalButton>
           <Button
             ><img
               src="/icons/microsoft.svg"
@@ -62,6 +55,7 @@
 import { useNuxtApp } from "nuxt/app";
 import { ref } from "vue";
 import Header from "../components/ui/header/header.vue";
+import GCalButton from "../components/ui/gcal-button/gCalButton.vue";
 
 const { $supabase } = useNuxtApp();
 
