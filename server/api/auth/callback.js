@@ -1,12 +1,10 @@
 import { OAuth2Client } from "google-auth-library";
-import { createClient } from "@supabase/supabase-js";
+import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server';
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig();
-  const supabase = createClient(
-    config.public.SUPABASE_URL,
-    config.public.SUPABASE_KEY
-  );
+  const config = useRuntimeConfig(event);
+  const supabase = await serverSupabaseClient(event);
+  const user = await serverSupabaseUser(event);
 
   const oauth2Client = new OAuth2Client(
     config.public.GAPI_CLIENT_ID,
@@ -26,13 +24,9 @@ export default defineEventHandler(async (event) => {
     const { tokens } = await oauth2Client.getToken(code);
     const { access_token, refresh_token, expiry_date } = tokens;
 
-    const { data: user, error: userError } = await supabase.auth.getUser();
-
-    const userId = user.id;
-
-    const { error } = await supabase.from("gTokens").upsert(
+    const { error } = await supabase.from("gtokens").upsert(
       {
-        user_id: userId,
+        user_id: user.id,
         access_token: access_token,
         refresh_token: refresh_token,
         expires_at: new Date(expiry_date),
@@ -41,13 +35,13 @@ export default defineEventHandler(async (event) => {
     );
 
     if (error) {
-      throw createError({ statusCode: 500, message: "Failed to store tokens" });
+      throw createError({ statusCode: 500, message: error.message });
     }
 
     const redirectTo = state ? decodeURIComponent(state) : "/";
     return sendRedirect(event, redirectTo);
   } catch (error) {
     console.error("Error getting tokens:", error);
-    throw createError({ statusCode: 500, message: "Authentication failed" });
+    throw createError({ statusCode: 500, message: error });
   }
 });

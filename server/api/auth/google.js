@@ -1,7 +1,7 @@
 import { OAuth2Client } from 'google-auth-library';
 
 export default defineEventHandler(async (event) => {
-    const config = useRuntimeConfig();
+    const config = useRuntimeConfig(event);
     const query = getQuery(event);
 
     const redirectUri = query.redirect_uri || "/";
