@@ -53,7 +53,7 @@ import { navigateTo } from "nuxt/app"; // Importing the navigation function from
 import { useToast } from "@/components/ui/toast/use-toast";
 import { Toaster, ToastAction } from "@/components/ui/toast";
 
-const { $supabase } = useNuxtApp();
+const supabase = useSupabaseClient();
 const { toast } = useToast();
 
 const joinCode = ref("");
@@ -93,7 +93,7 @@ const handleJoin = async () => {
 
   try {
     // Query the 'events' table in Supabase to check if the code exists
-    const { data, error } = await $supabase
+    const { data, error } = await supabase
       .from("events")
       .select("code")
       .eq("code", code)

@@ -1,18 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
-    pageTransition: { name: 'fade', mode: 'out-in' },
+    pageTransition: { name: "fade", mode: "out-in" },
     head: {
-        viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
-      },
+      viewport:
+        "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
     },
+  },
   imports: {
     autoImport: true,
   },
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt"],
-  plugins: ["~/plugins/supabase.ts"],
+  modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@nuxtjs/supabase"],
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -26,15 +26,19 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      SUPABASE_URL: process.env.SUPABASE_URL,
-      SUPABASE_KEY: process.env.SUPABASE_KEY,
       GAPI_CLIENT_ID: process.env.GAPI_CLIENT_ID,
       GAPI_CLIENT_SECRET: process.env.GAPI_CLIENT_SECRET,
       GAPI_KEY: process.env.GAPI_KEY,
-      GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI
+      GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
     },
   },
-  serverMiddleware: [
-    { path: '/api', handler: '~/api/index.js' },
-  ],
+  supabase: {
+    redirectOptions: {
+      login: "/auth",
+      callback: "/",
+      include: undefined,
+      exclude: ["/", "/event/*", "/join"],
+      cookieRedirect: false,
+    },
+  },
 });

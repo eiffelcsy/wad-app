@@ -153,7 +153,7 @@ import {
 import { navigateTo } from "nuxt/app"; // Function for page navigation
 
 // Using Supabase authentication for user management
-const { $supabase } = useNuxtApp();
+const supabase = useSupabaseClient();
 
 const showDialog = ref(false); // Controls the dialog visibility
 const newDisplayName = ref(""); // Holds the user input for the display name
@@ -164,24 +164,22 @@ const email = ref("");
  * Fetch the currently authenticated user from Supabase.
  * If a user is logged in, their details are stored in the respective variables.
  */
-const {
-  data: { user },
-} = await $supabase.auth.getUser();
+const user = useSupabaseUser();
 
-if (user) {
-  if (user.user_metadata.name) {
-    displayName.value = user.user_metadata.name;
+if (user.value) {
+  if (user.value.user_metadata.name) {
+    displayName.value = user.value.user_metadata.name;
   } else {
     showDialog.value = true;
   }
-  email.value = user.email;
+  email.value = user.value.email;
 }
 
 // Function to save the display name
 const saveDisplayName = async () => {
   if (newDisplayName.value) {
     // Update the user profile in Supabase
-    const { error } = await $supabase.auth.updateUser({
+    const { error } = await supabase.auth.updateUser({
       data: { name: newDisplayName.value },
     });
 
@@ -199,7 +197,7 @@ const saveDisplayName = async () => {
  * If successful, redirects to the homepage. If an error occurs, it logs the error.
  */
 const logout = async () => {
-  const { error } = await $supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut();
   if (error) {
     console.error("Error logging out:", error.message); // Logs the error if something goes wrong
   } else {
@@ -220,7 +218,7 @@ const toLogin = () => {
  * Otherwise, it navigates to the login page.
  */
 const toCreate = () => {
-  if (user) {
+  if (user.value) {
     navigateTo("/create");
   } else {
     navigateTo("/auth");

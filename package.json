@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/supabase": "^1.4.0",
     "@radix-icons/vue": "^1.0.0",
     "@supabase/supabase-js": "^2.45.3",
     "@vueuse/core": "^11.1.0",
@@ -36,6 +37,7 @@
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@types/cookie-parser": "^1.4.7",
     "@types/express-session": "^1.18.0",
+    "supabase": "^1.200.3",
     "typescript": "^5.5.4"
   }
 }

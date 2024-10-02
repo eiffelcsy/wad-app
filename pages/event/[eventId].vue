@@ -79,10 +79,10 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useToast } from '@/components/ui/toast/use-toast';
 import { Toaster } from '@/components/ui/toast';
-import { navigateTo, useNuxtApp } from 'nuxt/app';
+import { navigateTo } from 'nuxt/app';
 import debounce from 'lodash.debounce';
 
-const { $supabase } = useNuxtApp();
+const supabase = useSupabaseClient();
 const route = useRoute();
 const { toast } = useToast();
 
@@ -109,7 +109,7 @@ const event_code = route.params.eventId;
 
 onMounted(async () => {
   // Fetch event details from Supabase
-  const { data: findEvent, error: findEventError } = await $supabase
+  const { data: findEvent, error: findEventError } = await supabase
     .from('events')
     .select('*')
     .eq('code', event_code)
@@ -144,7 +144,7 @@ onMounted(async () => {
 });
 
 async function fetchParticipants() {
-  const { data: findParticipants, error } = await $supabase
+  const { data: findParticipants, error } = await supabase
     .from('participants')
     .select('*')
     .eq('event_id', event_id.value);
@@ -171,8 +171,7 @@ async function fetchParticipantData() {
 }
 
 async function getOrCreateParticipant() {
-  const { data: userData } = await $supabase.auth.getUser();
-  const user = userData.user;
+  const user = useSupabaseUser().value;
   let name = '';
 
   if (user) {
@@ -196,7 +195,7 @@ async function ensureParticipant(name, user_id = null, email = null) {
 
   // Try to fetch participant by user_id if provided
   if (user_id) {
-    const { data, error } = await $supabase
+    const { data, error } = await supabase
       .from('participants')
       .select('*')
       .eq('event_id', event_id.value)
@@ -213,7 +212,7 @@ async function ensureParticipant(name, user_id = null, email = null) {
 
   // If not found by user_id, or user_id not provided, try fetching by name
   if (!participant) {
-    const { data, error } = await $supabase
+    const { data, error } = await supabase
       .from('participants')
       .select('*')
       .eq('event_id', event_id.value)
@@ -230,7 +229,7 @@ async function ensureParticipant(name, user_id = null, email = null) {
 
   // If participant does not exist, create one
   if (!participant) {
-    const { data: newParticipant, error: insertError } = await $supabase
+    const { data: newParticipant, error: insertError } = await supabase
       .from('participants')
       .insert({
         event_id: event_id.value,
@@ -352,7 +351,7 @@ const saveAvailability = async () => {
     return;
   }
 
-  const { error } = await $supabase
+  const { error } = await supabase
     .from('participants')
     .update({ availability: bitString.value })
     .eq('event_id', event_id.value)

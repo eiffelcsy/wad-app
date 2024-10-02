@@ -240,7 +240,7 @@ import type { DateRange } from "radix-vue";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { RangeCalendar } from "@/components/ui/range-calendar";
 
-const { $supabase } = useNuxtApp();
+const supabase = useSupabaseClient();
 
 // Define types
 interface Errors {
@@ -269,9 +269,7 @@ const dateRange = ref<DateRange>({
 }) as Ref<DateRange>; // dateRange uses DateRange type
 
 // Get the current user from Supabase
-const {
-  data: { user },
-} = await $supabase.auth.getUser();
+const user = useSupabaseUser().value;
 
 // Validation function for each view
 const validateCurrentView = (): boolean => {
@@ -330,7 +328,7 @@ const generateEventCode = async (): Promise<string | null> => {
     }
 
     // Check if code exists in the events table
-    const { data, error } = await $supabase
+    const { data, error } = await supabase
       .from("events")
       .select("code")
       .eq("code", code);
@@ -371,7 +369,7 @@ const submitEvent = async () => {
   };
 
   // Insert into Supabase
-  const { data, error } = await $supabase.from("events").insert([eventData]);
+  const { data, error } = await supabase.from("events").insert([eventData]);
 
   if (error) {
     console.error("Error inserting event:", error);

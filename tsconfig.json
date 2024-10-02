@@ -8,5 +8,5 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["types/**/*.d.ts", "plugins/**/*.ts", "nuxt.config.ts"]
+  "include": ["types/**/*.d.ts", "plugins/**/*.ts", "nuxt.config.ts", "types/database.types.ts"]
 }

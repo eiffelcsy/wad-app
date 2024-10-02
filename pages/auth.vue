@@ -144,7 +144,7 @@ import { Toaster, ToastAction } from "@/components/ui/toast";
 import { navigateTo } from "nuxt/app";
 
 // Accessing Supabase for authentication
-const { $supabase } = useNuxtApp();
+const supabase = useSupabaseClient();
 // Initializing the toast notification system
 const { toast } = useToast();
 
@@ -172,7 +172,7 @@ const toggleAuthType = () => {
 const handleLogin = async () => {
   if (authType.value === "login") {
     // Attempt to sign in the user
-    const { error } = await $supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value,
     });
@@ -227,7 +227,7 @@ const handleLogin = async () => {
     }
 
     // Attempt to register the user
-    const { error } = await $supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: email.value,
       password: password.value,
     });
@@ -285,7 +285,7 @@ const toggleDarkMode = () => {
  * @param {Object} response - The response object from Google Sign-In.
  */
 async function handleLoginWithGoogle(response) {
-  const { data, error } = await $supabase.auth.signInWithIdToken({
+  const { data, error } = await supabase.auth.signInWithIdToken({
     provider: "google",
     token: response.credential,
   });

@@ -26,12 +26,10 @@ export default defineEventHandler(async (event) => {
     const { tokens } = await oauth2Client.getToken(code);
     const { access_token, refresh_token, expiry_date } = tokens;
 
-    // Retrieve the user ID from Supabase authentication (adjust this based on your setup)
     const { data: user, error: userError } = await supabase.auth.getUser();
 
-    const userId = user.id; // Make sure this is the correct user identifier
+    const userId = user.id;
 
-    // Store the tokens in Supabase
     const { error } = await supabase.from("gTokens").upsert(
       {
         user_id: userId,
