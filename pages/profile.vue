@@ -1,7 +1,7 @@
 <!-- TODO: Styling, API connections, Edit Profile -->
 <template>
   <div>
-    <Header/>
+    <PageHeader/>
     <div class="container h-screen">
       <div
         class="w-full pt-24 md:pt-28 md:px-8 lg:pt-32 lg:px-12 flex flex-col items-center"
@@ -53,8 +53,8 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import Header from "../components/ui/header/header.vue";
 import GCalButton from "../components/ui/gcal-button/gCalButton.vue";
+import PageHeader from "../components/ui/page-header/PageHeader.vue";
 
 const user = useSupabaseUser();
 

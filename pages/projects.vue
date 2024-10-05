@@ -2,7 +2,7 @@
 <template>
   <div>
     <div>
-      <Header/>
+      <PageHeader/>
     </div>
     Projects Page for {{ user }}
   </div>
@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import { useNuxtApp } from 'nuxt/app';
 import { ref } from 'vue';
-import Header from '../components/ui/header/header.vue';
+import PageHeader from '../components/ui/page-header/PageHeader.vue';
 
 const user = useSupabaseUser();
 

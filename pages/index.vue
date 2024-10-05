@@ -6,7 +6,7 @@
       class="absolute top-8 left-8 md:left-12 lg:left-16 text-lg font-bold tracking-widest"
       >RENDEZ</NuxtLink
     >
-    <Header v-if="user" />
+    <PageHeader v-if="user" />
     <Button
         @click="toLogin"
         variant="outline"
@@ -114,15 +114,8 @@
  * the navigateTo method from Nuxt's app navigation system.
  */
 import { CalendarIcon, EnterIcon, PlusCircledIcon } from "@radix-icons/vue";
-import {
-  UserRoundIcon,
-  UsersRoundIcon,
-  CalendarDaysIcon,
-  BoxesIcon,
-  LogOutIcon,
-  HouseIcon
-} from "lucide-vue-next";
 import { navigateTo } from "nuxt/app"; // Function for page navigation
+import PageHeader from "../components/ui/page-header/PageHeader.vue";
 
 // Using Supabase authentication for user management
 const supabase = useSupabaseClient();

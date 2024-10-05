@@ -1,7 +1,7 @@
 <!-- TODO: Events homepage, include create, edit and delete buttons for each event , maybe in a table -->
 <template>
   <div>
-    <Header/>
+    <PageHeader/>
     <div class="container h-screen">
       Events page for {{ user }}
     </div>
@@ -9,7 +9,8 @@
 </template>
 
 <script setup>
-import Header from '../components/ui/header/header.vue';
+import Header from '../components/ui/page-header/header.vue';
+import PageHeader from '../components/ui/page-header/PageHeader.vue';
 
 const user = useSupabaseUser();
 
