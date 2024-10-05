@@ -9,7 +9,6 @@
 </template>
 
 <script setup>
-import Header from '../components/ui/page-header/header.vue';
 import PageHeader from '../components/ui/page-header/PageHeader.vue';
 
 const user = useSupabaseUser();
