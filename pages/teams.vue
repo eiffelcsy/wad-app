@@ -1,7 +1,7 @@
 <!-- TODO: Teams homepage, include create, edit and delete buttons for each team, maybe in a table -->
 <template>
   <div>
-    <Header/>
+    <PageHeader/>
     <div class="container h-screen">
       Teams page for {{ user }}
     </div>
@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import Header from "../components/ui/header/header.vue";
+import PageHeader from "../components/ui/page-header/PageHeader.vue";
 
 const user = useSupabaseUser();
 
