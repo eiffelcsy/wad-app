@@ -1,6 +1,10 @@
 <template>
   <div>
-    <NuxtLink to="/" class="absolute top-8 left-8 md:left-12 lg:left-16 text-lg font-bold tracking-widest">RENDEZ</NuxtLink>
+    <NuxtLink
+      to="/"
+      class="absolute top-8 left-8 md:left-12 lg:left-16 text-lg font-bold tracking-widest"
+      >RENDEZ</NuxtLink
+    >
     <Sheet>
       <SheetTrigger as-child>
         <Button
@@ -29,6 +33,12 @@
           </div>
         </SheetHeader>
         <div class="flex flex-col gap-2 py-4">
+          <NuxtLink
+            to="/"
+            class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+            ><HouseIcon size="16px" strokeWidth="{1}" class="mr-2" /> Home
+          </NuxtLink>
+          <Separator class="my-2" />
           <NuxtLink
             to="/profile"
             class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
@@ -83,10 +93,26 @@ import {
   CalendarDaysIcon,
   BoxesIcon,
   LogOutIcon,
+  HouseIcon,
 } from "lucide-vue-next";
 
+const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 
 const displayName = ref(user.value.user_metadata.name);
 const email = ref(user.value.email);
+
+/**
+ * Logs the user out using Supabase's authentication.
+ * If successful, redirects to the homepage. If an error occurs, it logs the error.
+ */
+ const logout = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error("Error logging out:", error.message); // Logs the error if something goes wrong
+  } else {
+    console.log("Logged out successfully!");
+    location.reload();
+  }
+};
 </script>

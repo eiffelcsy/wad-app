@@ -170,7 +170,10 @@ onMounted(async () => {
     );
     const timeMax = combineDateAndTime(findEvent.end_date, findEvent.end_time);
     let gCalEvents = await fetchGoogleCalEvents(timeMin, timeMax);
-    await updateAvailabilityFromGoogleCal(gCalEvents);
+    
+    if (gCalEvents) {
+      await updateAvailabilityFromGoogleCal(gCalEvents);
+    }
   }
 });
 
@@ -283,13 +286,19 @@ async function ensureParticipant(name, user_id = null, email = null) {
 }
 
 async function fetchGoogleCalEvents(timeMin, timeMax) {
-  try {
-    const response = await fetch(
-      `/api/calendar/events?timeMin=${timeMin}&timeMax=${timeMax}`
-    );
-    return response.json()
-  } catch (err) {
-    console.error("Error fetching events:", err.message);
+  const user = useSupabaseUser();
+
+  if (user) {
+    try {
+      const response = await fetch(
+        `/api/calendar/events?timeMin=${timeMin}&timeMax=${timeMax}`
+      );
+      return response.json();
+    } catch (err) {
+      console.error("Error fetching events:", err.message);
+    }
+  } else {
+    return null;
   }
 }
 
@@ -299,10 +308,11 @@ async function updateAvailabilityFromGoogleCal(events) {
     const eventEnd = new Date(event.end.dateTime);
 
     intervals.value.forEach((interval, index) => {
-      const intervalStart = new Date(interval.date + 'T' + interval.time);
+      const intervalStart = new Date(interval.date + "T" + interval.time);
       const intervalEnd = new Date(intervalStart.getTime() + 30 * 60000);
 
-      const isOverlapping = eventStart < intervalEnd && eventEnd > intervalStart;
+      const isOverlapping =
+        eventStart < intervalEnd && eventEnd > intervalStart;
 
       if (isOverlapping) {
         intervals.value[index].selected = true;
@@ -310,10 +320,8 @@ async function updateAvailabilityFromGoogleCal(events) {
     });
   });
 
-  // Save the updated availability
   await saveAvailability();
 }
-
 
 function combineDateAndTime(startDate, startTime) {
   const datePart = new Date(startDate);
@@ -329,7 +337,6 @@ function setParticipantData(participant) {
   participant_name.value = participant.name;
   showDialog.value = false;
 
-  // Load availability
   loadAvailability(participant.availability);
 }
 
@@ -339,7 +346,7 @@ const saveDisplayName = async () => {
 
     if (participant) {
       setParticipantData(participant);
-      await fetchParticipants(); // Refresh participants list
+      await fetchParticipants();
     }
   }
 };
@@ -410,7 +417,7 @@ function isSelected(dateIndex, timeIndex) {
 
 const bitString = computed(() => {
   return intervals.value
-    .map((interval) => (interval.selected ? "1" : "0"))
+    .map((interval) => (interval.selected ? "0" : "1"))
     .join("");
 });
 
@@ -454,11 +461,11 @@ function loadAvailability(availabilityString) {
     availabilityString.length !== intervals.value.length
   ) {
     // Initialize to zeros if availabilityString is null or length mismatch
-    availabilityString = "0".repeat(intervals.value.length);
+    availabilityString = "1".repeat(intervals.value.length);
   }
 
   availabilityString.split("").forEach((char, index) => {
-    intervals.value[index].selected = char === "1";
+    intervals.value[index].selected = char === "0";
   });
 }
 
@@ -503,12 +510,13 @@ function getAvailabilityCount(dateIndex, timeIndex) {
 .interval-cell {
   width: 50px;
   height: 30px;
-  border: 1px solid #ccc;
+  border: 1px solid #8a8a8a;
+  background-color: #caffca;
   cursor: pointer;
 }
 
 .interval-cell.selected {
-  background-color: #66cc66;
+  background-color: #ffb7b7;
 }
 
 .heatmap-cell {

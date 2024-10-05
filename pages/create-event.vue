@@ -1,9 +1,9 @@
 <template>
-  <div class="w-full p-16 h-screen flex flex-col justify-center">
+  <div class="w-full px-16 h-screen flex flex-col justify-center">
     <transition name="fade" mode="out-in">
       <div v-if="currentView === 1" key="view1" class="">
         <!-- View 1: Title and Description -->
-        <div class="mb-8">
+        <div class="mb-4">
           <h1
             class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
           >
@@ -14,13 +14,13 @@
             type="text"
             placeholder="Enter Title"
             v-model="title"
-            class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-4"
+            class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600"
           />
           <div v-if="errors.title" class="error absolute text-xs mt-1">
             {{ errors.title }}
           </div>
         </div>
-        <div class="mt-8 mb-4">
+        <div class="mt-4 mb-4">
           <h1
             class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
           >
@@ -37,43 +37,34 @@
             {{ errors.description }}
           </div>
         </div>
-        <Button
-          @click="nextView"
-          class="w-full mt-4 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-          >Next</Button
-        >
-      </div>
-
-      <div v-else-if="currentView === 2" key="view2">
-        <!-- View 2: Date Range Picker for start_date and end_date -->
-        <div class="mb-8">
+        <div>
           <h1
             class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
           >
             Select Date Range
           </h1>
-          <div class="mt-4 flex justify-center items-center">
+          <div class="mt-2 flex justify-center items-center">
             <RangeCalendar v-model="dateRange" class="rounded-md border" />
           </div>
           <div v-if="errors.dateRange" class="error absolute text-xs mt-1">
             {{ errors.dateRange }}
           </div>
         </div>
-        <div class="flex justify-between mt-8">
-          <Button
-            @click="prevView"
-            class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
-            >Back</Button
-          >
-          <Button
-            @click="nextView"
-            class="w-full ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-            >Next</Button
-          >
-        </div>
+        <Button
+          @click="nextView"
+          class="w-full mt-4 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+          >Next</Button
+        >
+        <Button
+          @click="backHome"
+          variant="link"
+          class="w-full mt-2 text-zinc-500 dark:text-zinc-400"
+        >
+          <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
+        </Button>
       </div>
 
-      <div v-else-if="currentView === 3" key="view3">
+      <div v-else-if="currentView === 2" key="view2">
         <!-- View 3: Time Selection for start_time and end_time -->
         <div class="mb-8">
           <h1
@@ -114,23 +105,7 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-between mt-8">
-          <Button
-            @click="prevView"
-            class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
-            >Back</Button
-          >
-          <Button
-            @click="nextView"
-            class="w-full ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-            >Next</Button
-          >
-        </div>
-      </div>
-
-      <div v-else-if="currentView === 4" key="view4">
-        <!-- View 4: Number of Participants -->
-        <div class="mb-8">
+        <div>
           <h1
             class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
           >
@@ -152,7 +127,7 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-between mt-8">
+        <div class="flex justify-between mt-4">
           <Button
             @click="prevView"
             class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
@@ -164,9 +139,16 @@
             >Next</Button
           >
         </div>
+        <Button
+          @click="backHome"
+          variant="link"
+          class="w-full mt-2 text-zinc-500 dark:text-zinc-400"
+        >
+          <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
+        </Button>
       </div>
 
-      <div v-else-if="currentView === 5" key="view5">
+      <div v-else-if="currentView === 3" key="view3">
         <!-- View 5: Review and Submit -->
         <div class="mb-8">
           <h1
@@ -224,9 +206,16 @@
           <Button
             @click="submitEvent"
             class="w-full ml-2 bg-green-600 dark:bg-green-400 text-white dark:text-black"
-            >Submit</Button
+            >Create Event</Button
           >
         </div>
+        <Button
+          @click="backHome"
+          variant="link"
+          class="w-full mt-2 text-zinc-500 dark:text-zinc-400"
+        >
+          <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
+        </Button>
       </div>
     </transition>
   </div>
@@ -239,6 +228,7 @@ import { navigateTo } from "nuxt/app";
 import type { DateRange } from "radix-vue";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { RangeCalendar } from "@/components/ui/range-calendar";
+import { ArrowLeftIcon } from "lucide-vue-next";
 
 const supabase = useSupabaseClient();
 
@@ -379,6 +369,10 @@ const submitEvent = async () => {
 
   // Redirect to event/[event-code]
   navigateTo(`/event/${eventCode}`); // TODO: fix redirect, somehow its not working
+};
+
+const backHome = () => {
+  navigateTo("/");
 };
 
 // Utility function to format date
