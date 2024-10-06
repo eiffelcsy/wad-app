@@ -1,21 +1,22 @@
 <!-- TODO: Homepage content, idk what to put tbh -->
 <template>
   <div>
-    <NuxtLink
-      to="/"
-      class="absolute top-8 left-8 md:left-12 lg:left-16 text-lg font-bold tracking-widest"
-      >RENDEZ</NuxtLink
-    >
     <PageHeader v-if="user" />
+    <div v-else>
+      <NuxtLink
+      to="/"
+      class="absolute top-8 left-8 md:left-12 lg:left-16 text-xl font-bold tracking-wider"
+      >MeetLah</NuxtLink
+    >
     <Button
-        @click="toLogin"
-        variant="outline"
-        class="absolute top-8 right-8 lg:right-12 border-zinc-300 dark:border-zinc-600"
-        v-else
-      >
-        <EnterIcon class="w-4 h-4 mr-2" />Login
-      </Button>
+      @click="toLogin"
+      variant="outline"
+      class="absolute top-8 right-8 lg:right-12 border-zinc-300 dark:border-zinc-600"
+    >
+      <EnterIcon class="w-4 h-4 mr-2" />Login
+    </Button>
 
+    </div>
     <div class="container h-screen">
       <!-- Main content section with title, description, and action buttons for anonymous users -->
       <div
@@ -30,7 +31,7 @@
         <p
           class="text-base md:text-lg lg:text-xl text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
         >
-          Rendez makes it easy to coordinate meetings and events. Share your
+          MeetLah makes it easy to coordinate meetings and events. Share your
           availability, let others pick a time, and get notified instantly.
         </p>
         <!-- Button to create an event -->

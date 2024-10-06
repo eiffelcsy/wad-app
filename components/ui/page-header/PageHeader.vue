@@ -2,8 +2,8 @@
   <div>
     <NuxtLink
       to="/"
-      class="absolute top-8 left-8 md:left-12 lg:left-16 text-lg font-bold tracking-widest"
-      >RENDEZ</NuxtLink
+      class="absolute top-8 left-8 md:left-12 lg:left-16 text-xl font-bold tracking-wider"
+      >MeetLah</NuxtLink
     >
     <Sheet>
       <SheetTrigger as-child>
@@ -37,6 +37,17 @@
             to="/"
             class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
             ><HouseIcon size="16px" strokeWidth="{1}" class="mr-2" /> Home
+          </NuxtLink>
+          <Separator class="my-2" />
+          <NuxtLink
+            to="/create-event"
+            class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+            ><CalendarPlusIcon size="16px" strokeWidth="{1}" class="mr-2" /> Create event
+          </NuxtLink>
+          <NuxtLink
+            to="/create-project"
+            class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+            ><PackagePlusIcon size="16px" strokeWidth="{1}" class="mr-2" /> Create project
           </NuxtLink>
           <Separator class="my-2" />
           <NuxtLink
@@ -94,6 +105,8 @@ import {
   BoxesIcon,
   LogOutIcon,
   HouseIcon,
+  CalendarPlusIcon,
+  PackagePlusIcon,
 } from "lucide-vue-next";
 
 const supabase = useSupabaseClient();

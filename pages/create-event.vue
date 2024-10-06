@@ -1,151 +1,174 @@
 <template>
   <div class="w-full px-16 h-screen flex flex-col justify-center">
     <transition name="fade" mode="out-in">
-      <div v-if="currentView === 1" key="view1" class="">
+      <div
+        v-if="currentView === 1"
+        key="view1"
+        class="md:flex md:flex-col md:items-center"
+      >
         <!-- View 1: Title and Description -->
-        <div class="mb-4">
-          <h1
-            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
-          >
-            Title
-          </h1>
-          <Input
-            id="title"
-            type="text"
-            placeholder="Enter Title"
-            v-model="title"
-            class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600"
-          />
-          <div v-if="errors.title" class="error absolute text-xs mt-1">
-            {{ errors.title }}
+        <div
+          class="w-full md:flex md:flex-row md:justify-center md:gap-16 lg:gap-36"
+        >
+          <div class="md:w-72 lg:w-96">
+            <div class="mb-4">
+              <h1
+                class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+              >
+                Title
+              </h1>
+              <Input
+                id="title"
+                type="text"
+                placeholder="Enter Title"
+                v-model="title"
+                class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600"
+              />
+              <div v-if="errors.title" class="error absolute text-xs mt-1">
+                {{ errors.title }}
+              </div>
+            </div>
+            <div class="mt-4 mb-4 lg:mt-8">
+              <h1
+                class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+              >
+                Description
+              </h1>
+              <Textarea
+                id="description"
+                type="text"
+                placeholder="Enter Description"
+                v-model="description"
+                class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-2"
+              />
+              <div
+                v-if="errors.description"
+                class="error absolute text-xs mt-1"
+              >
+                {{ errors.description }}
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="mt-4 mb-4">
-          <h1
-            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
-          >
-            Description
-          </h1>
-          <Textarea
-            id="description"
-            type="text"
-            placeholder="Enter Description"
-            v-model="description"
-            class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-2"
-          />
-          <div v-if="errors.description" class="error absolute text-xs mt-1">
-            {{ errors.description }}
-          </div>
-        </div>
-        <div>
-          <h1
-            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
-          >
-            Select Date Range
-          </h1>
-          <div class="mt-2 flex justify-center items-center">
-            <RangeCalendar v-model="dateRange" class="rounded-md border" />
-          </div>
-          <div v-if="errors.dateRange" class="error absolute text-xs mt-1">
-            {{ errors.dateRange }}
+          <div>
+            <h1
+              class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:mb-4"
+            >
+              Select Date Range
+            </h1>
+            <div class="mt-2 flex justify-center items-center">
+              <RangeCalendar v-model="dateRange" class="rounded-md border" />
+            </div>
+            <div v-if="errors.dateRange" class="error absolute text-xs mt-1">
+              {{ errors.dateRange }}
+            </div>
           </div>
         </div>
         <Button
           @click="nextView"
-          class="w-full mt-4 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+          class="w-full mt-6 md:w-72 md:mt-8 lg:mt-14 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
           >Next</Button
         >
         <Button
           @click="backHome"
           variant="link"
-          class="w-full mt-2 text-zinc-500 dark:text-zinc-400"
+          class="w-full mt-2 md:w-72 text-zinc-500 dark:text-zinc-400"
         >
           <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
         </Button>
       </div>
 
-      <div v-else-if="currentView === 2" key="view2">
+      <div
+        v-else-if="currentView === 2"
+        key="view2"
+        class="md:flex md:flex-col md:items-center"
+      >
         <!-- View 3: Time Selection for start_time and end_time -->
-        <div class="mb-8">
-          <h1
-            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
-          >
-            Select Time Range
-          </h1>
-          <div class="mt-4 flex flex-row justify-center gap-8">
-            <div>
-              <label
-                class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                >Start Time</label
-              >
-              <input
-                type="time"
-                v-model="startTime"
-                step="1800"
-                class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200 self-center"
-              />
-              <div v-if="errors.startTime" class="error absolute text-xs mt-1">
-                {{ errors.startTime }}
+        <div class="md:flex md:flex-row md:justify-center md:gap-28 lg:gap-40">
+          <div class="mb-8">
+            <h1
+              class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+            >
+              Select Time Range
+            </h1>
+            <div class="mt-4 lg:mt-8 flex flex-row justify-center gap-8">
+              <div>
+                <label
+                  class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >Start Time</label
+                >
+                <input
+                  type="time"
+                  v-model="startTime"
+                  step="1800"
+                  class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200 self-center"
+                />
+                <div
+                  v-if="errors.startTime"
+                  class="error absolute text-xs mt-1"
+                >
+                  {{ errors.startTime }}
+                </div>
+              </div>
+              <div>
+                <label
+                  class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >End Time</label
+                >
+                <input
+                  type="time"
+                  v-model="endTime"
+                  step="1800"
+                  class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
+                />
+                <div v-if="errors.endTime" class="error absolute text-xs mt-1">
+                  {{ errors.endTime }}
+                </div>
               </div>
             </div>
-            <div>
-              <label
-                class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                >End Time</label
-              >
-              <input
-                type="time"
-                v-model="endTime"
-                step="1800"
-                class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
+          </div>
+          <div>
+            <h1
+              class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+            >
+              Number of Participants
+            </h1>
+            <div class="mt-4 lg:mt-6">
+              <Input
+                type="number"
+                v-model="numberOfParticipants"
+                min="1"
+                class="w-full lg:w-2/3 mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
               />
-              <div v-if="errors.endTime" class="error absolute text-xs mt-1">
-                {{ errors.endTime }}
+              <div
+                v-if="errors.numberOfParticipants"
+                class="error text-xs mt-1"
+              >
+                {{ errors.numberOfParticipants }}
               </div>
             </div>
           </div>
         </div>
         <div>
-          <h1
-            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
-          >
-            Number of Participants
-          </h1>
-          <div class="mt-4">
-            <label
-              class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-              >Participants</label
+          <div class="flex justify-between mt-6 md:mt-8 lg:mt-10">
+            <Button
+              @click="prevView"
+              class="w-full md:w-72 mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
+              >Back</Button
             >
-            <Input
-              type="number"
-              v-model="numberOfParticipants"
-              min="1"
-              class="w-full mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
-            />
-            <div v-if="errors.numberOfParticipants" class="error text-xs mt-1">
-              {{ errors.numberOfParticipants }}
-            </div>
+            <Button
+              @click="nextView"
+              class="w-full md:w-72 ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+              >Next</Button
+            >
           </div>
-        </div>
-        <div class="flex justify-between mt-4">
           <Button
-            @click="prevView"
-            class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
-            >Back</Button
+            @click="backHome"
+            variant="link"
+            class="w-full mt-2 text-zinc-500 dark:text-zinc-400"
           >
-          <Button
-            @click="nextView"
-            class="w-full ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-            >Next</Button
-          >
+            <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
+          </Button>
         </div>
-        <Button
-          @click="backHome"
-          variant="link"
-          class="w-full mt-2 text-zinc-500 dark:text-zinc-400"
-        >
-          <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
-        </Button>
       </div>
 
       <div v-else-if="currentView === 3" key="view3">
@@ -272,18 +295,16 @@ const validateCurrentView = (): boolean => {
     if (!description.value.trim()) {
       errors.value.description = "Description is required.";
     }
-  } else if (currentView.value === 2) {
     if (!dateRange.value.start || !dateRange.value.end) {
       errors.value.dateRange = "Start date and end date are required.";
     }
-  } else if (currentView.value === 3) {
+  } else if (currentView.value === 2) {
     if (!startTime.value) {
       errors.value.startTime = "Start time is required.";
     }
     if (!endTime.value) {
       errors.value.endTime = "End time is required.";
     }
-  } else if (currentView.value === 4) {
     if (!numberOfParticipants.value || numberOfParticipants.value <= 0) {
       errors.value.numberOfParticipants =
         "Number of participants must be greater than 0.";

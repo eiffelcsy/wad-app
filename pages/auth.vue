@@ -8,12 +8,12 @@
           class="text-4xl md:text-5xl font-bold text-zinc-800 dark:text-zinc-100"
         >
           {{
-            authType === "login" ? "Log in to Rendez." : "Register an account."
+            authType === "login" ? "Log in to MeetLah" : "Register an account"
           }}
         </h1>
 
         <!-- Google Sign-In button container -->
-        <div class="mt-12 items-center">
+        <div class="mt-10 items-center">
           <div
             id="g_id_onload"
             :data-context="authType === 'login' ? 'signin' : 'signup'"
