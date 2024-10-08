@@ -1,5 +1,12 @@
 <template>
   <div class="w-full px-16 h-screen flex flex-col justify-center">
+    <Button
+      @click="backHome"
+      variant="link"
+      class="mt-2 text-zinc-500 dark:text-zinc-400 absolute left-2 top-2"
+    >
+      <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
+    </Button>
     <transition name="fade" mode="out-in">
       <div
         v-if="currentView === 1"
@@ -65,16 +72,9 @@
         </div>
         <Button
           @click="nextView"
-          class="w-full mt-6 md:w-72 md:mt-8 lg:mt-14 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+          class="w-full mt-6 md:w-96 md:mt-8 lg:mt-14 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
           >Next</Button
         >
-        <Button
-          @click="backHome"
-          variant="link"
-          class="w-full mt-2 md:w-72 text-zinc-500 dark:text-zinc-400"
-        >
-          <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
-        </Button>
       </div>
 
       <div
@@ -152,22 +152,15 @@
           <div class="flex justify-between mt-6 md:mt-8 lg:mt-10">
             <Button
               @click="prevView"
-              class="w-full md:w-72 mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
+              class="w-full md:w-96 mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
               >Back</Button
             >
             <Button
               @click="nextView"
-              class="w-full md:w-72 ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+              class="w-full md:w-96 ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
               >Next</Button
             >
           </div>
-          <Button
-            @click="backHome"
-            variant="link"
-            class="w-full mt-2 text-zinc-500 dark:text-zinc-400"
-          >
-            <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
-          </Button>
         </div>
       </div>
 
@@ -228,17 +221,10 @@
           >
           <Button
             @click="submitEvent"
-            class="w-full ml-2 bg-green-600 dark:bg-green-400 text-white dark:text-black"
+            class="w-full ml-2 bg-green-600 text-white"
             >Create Event</Button
           >
         </div>
-        <Button
-          @click="backHome"
-          variant="link"
-          class="w-full mt-2 text-zinc-500 dark:text-zinc-400"
-        >
-          <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
-        </Button>
       </div>
     </transition>
   </div>
