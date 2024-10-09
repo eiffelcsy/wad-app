@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="flex flex-row justify-between mt-8 md:mt-10 lg:mt-12 px-8 md:px-12 lg:px-16">
     <NuxtLink
       to="/"
-      class="absolute top-8 left-8 md:left-12 lg:left-16 text-xl font-bold tracking-wider"
+      class="text-xl font-bold tracking-wider"
       >MeetLah</NuxtLink
     >
     <Sheet>
@@ -11,7 +11,7 @@
           @click=""
           variant="outline"
           size="icon"
-          class="absolute px-2 top-7 right-8 md:right-12 lg:right-16 font-semibold border-zinc-200 dark:border-zinc-700"
+          class="font-semibold border-zinc-200 dark:border-zinc-700"
         >
           <Avatar class="w-8 h-8 bg-zinc-100 dark:bg-zinc-600">
             <UserRoundIcon size="20px" strokeWidth="{1}" class="opacity-60" />

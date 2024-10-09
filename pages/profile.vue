@@ -2,9 +2,9 @@
 <template>
   <div>
     <PageHeader/>
-    <div class="container h-screen">
+    <div class="container">
       <div
-        class="w-full pt-24 md:pt-28 md:px-8 lg:pt-32 lg:px-12 flex flex-col items-center"
+        class="w-full mt-8 md:mt-10 lg:mt-12 flex flex-col items-center"
       >
         <div class="flex flex-col items-center">
           <Avatar class="mt-2" size="lg"></Avatar>
@@ -28,17 +28,17 @@
           </div>
         </div>
         <div
-          class="w-5/6 flex flex-col lg:flex-row mt-16 h-40 justify-between lg:justify-center"
+          class="w-5/6 flex flex-col lg:flex-row gap-8 mt-16 justify-between items-center lg:justify-center"
         >
-          <GCalButton></GCalButton>
-          <Button
+          <gCalButton class="w-full max-w-96"></gCalButton>
+          <Button class="w-full max-w-96"
             ><img
               src="/icons/microsoft.svg"
               alt="gIcon"
               class="mr-4 h-4 w-4 invert dark:invert-0"
             />Connect to Microsoft Outlook</Button
           >
-          <Button
+          <Button class="w-full max-w-96"
             ><img
               src="/icons/apple.svg"
               alt="gIcon"
@@ -53,8 +53,8 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import GCalButton from "../components/ui/gcal-button/gCalButton.vue";
-import PageHeader from "../components/ui/page-header/PageHeader.vue";
+import { gCalButton } from "@/components/ui/gcal-button";
+import { PageHeader } from "@/components/ui/page-header";
 
 const user = useSupabaseUser();
 

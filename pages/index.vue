@@ -56,7 +56,7 @@
 
       <!-- Main content section for logged-in users -->
       <div
-        class="w-full pt-24 md:pt-28 md:w-2/3 md:px-8 lg:w-1/2 lg:pt-32 lg:px-12"
+        class="w-full pt-10 md:pt-16 md:w-2/3 md:px-8 lg:w-1/2 lg:pt-20 lg:px-12"
         v-else
       >
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold">

@@ -1,0 +1,1 @@
+export { default as SharedTodoList } from './SharedTodoList.vue'
