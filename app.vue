@@ -5,7 +5,7 @@
   <NuxtPage />
   <Button
     @click="toggleDarkMode"
-    class="absolute bottom-4 right-4 p-2 size-9 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white rounded-full"
+    class="fixed bottom-4 right-4 p-2 size-9 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white rounded-full"
   >
     <SunIcon v-if="isDark" />
     <MoonIcon v-else />

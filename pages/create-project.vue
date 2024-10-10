@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full px-16 h-screen flex flex-col justify-center">
+  <div class="w-full px-16 h-screen flex flex-col pt-16">
     <Button
       @click="backHome"
       variant="link"
@@ -18,7 +18,7 @@
           class="text-base text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
         >
           Create a new project and associate it with a team. Start by giving
-          your project a name, then choose a team.
+          your project a name and description, then choose a team.
         </p>
         <Input
           id="title"
@@ -29,6 +29,16 @@
         />
         <div v-if="errors.title" class="error absolute text-xs mt-1">
           {{ errors.title }}
+        </div>
+        <Textarea
+          id="description"
+          type="text"
+          placeholder="Enter Description"
+          v-model="description"
+          class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-2"
+        />
+        <div v-if="errors.description" class="error absolute text-xs mt-1">
+          {{ errors.description }}
         </div>
         <div class="flex flex-col">
           <Select id="team" v-model="selectedTeam">
@@ -70,9 +80,11 @@ import { navigateTo } from "nuxt/app";
 
 interface Errors {
   title?: string;
+  description?: string;
 }
 
 const title = ref<string>(""); // Title is a string
+const description = ref<string>(""); // Description is a string
 const errors = ref<Errors>({}); // errors is an object with optional fields
 
 const teams = ref<any[]>([]); // Store user's teams here

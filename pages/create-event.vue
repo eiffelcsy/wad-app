@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full px-16 h-screen flex flex-col justify-center">
+  <div class="w-full px-16 h-screen flex flex-col pt-16">
     <Button
       @click="backHome"
       variant="link"
@@ -7,11 +7,23 @@
     >
       <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
     </Button>
+    <div>
+      <h1
+        class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+      >
+        New Event
+      </h1>
+      <p
+        class="text-base text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
+      >
+        Create and customize a new event by filling in the details below.
+      </p>
+    </div>
     <transition name="fade" mode="out-in">
       <div
         v-if="currentView === 1"
         key="view1"
-        class="md:flex md:flex-col md:items-center"
+        class="relative h-full flex flex-col md:items-center"
       >
         <!-- View 1: Title and Description -->
         <div
@@ -20,7 +32,7 @@
           <div class="md:w-72 lg:w-96">
             <div class="mb-4">
               <h1
-                class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
               >
                 Title
               </h1>
@@ -37,7 +49,7 @@
             </div>
             <div class="mt-4 mb-4 lg:mt-8">
               <h1
-                class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
               >
                 Description
               </h1>
@@ -58,7 +70,7 @@
           </div>
           <div>
             <h1
-              class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:mb-4"
+              class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:mb-4"
             >
               Select Date Range
             </h1>
@@ -72,7 +84,7 @@
         </div>
         <Button
           @click="nextView"
-          class="w-full mt-6 md:w-96 md:mt-8 lg:mt-14 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+          class="absolute bottom-8 w-full max-w-96 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
           >Next</Button
         >
       </div>
@@ -80,13 +92,12 @@
       <div
         v-else-if="currentView === 2"
         key="view2"
-        class="md:flex md:flex-col md:items-center"
+        class="relative h-full flex flex-col md:items-center"
       >
-        <!-- View 3: Time Selection for start_time and end_time -->
         <div class="md:flex md:flex-row md:justify-center md:gap-28 lg:gap-40">
           <div class="mb-8">
             <h1
-              class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+              class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
             >
               Select Time Range
             </h1>
@@ -128,7 +139,7 @@
           </div>
           <div>
             <h1
-              class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+              class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
             >
               Number of Participants
             </h1>
@@ -149,15 +160,15 @@
           </div>
         </div>
         <div>
-          <div class="flex justify-between mt-6 md:mt-8 lg:mt-10">
+          <div class="absolute bottom-8 w-full flex justify-between mt-6 md:mt-8 lg:mt-10">
             <Button
               @click="prevView"
-              class="w-full md:w-96 mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
+              class="w-full max-w-96 mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
               >Back</Button
             >
             <Button
               @click="nextView"
-              class="w-full md:w-96 ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+              class="w-full max-w-96 ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
               >Next</Button
             >
           </div>
@@ -168,7 +179,7 @@
         <!-- View 5: Review and Submit -->
         <div class="mb-8">
           <h1
-            class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+            class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
           >
             Review and Submit
           </h1>
