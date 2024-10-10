@@ -11,7 +11,6 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { SharedTodoList } from "@/components/ui/shared-todo-list";
-import { ArrowLeftIcon } from "lucide-vue-next";
 
 const supabase = useSupabaseClient();
 

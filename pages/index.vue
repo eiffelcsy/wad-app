@@ -116,7 +116,7 @@
  */
 import { CalendarIcon, EnterIcon, PlusCircledIcon } from "@radix-icons/vue";
 import { navigateTo } from "nuxt/app"; // Function for page navigation
-import PageHeader from "../components/ui/page-header/PageHeader.vue";
+import { PageHeader } from "@/components/ui/page-header";
 
 // Using Supabase authentication for user management
 const supabase = useSupabaseClient();

@@ -1,27 +1,12 @@
-<template>
-  <div>
-    <h2>Todo List</h2>
-    <ul>
-      <li v-for="todo in todos" :key="todo.id">
-        <Checkbox v-model="todo.status" @update:checked="toggleStatus(todo)" />
-        <span :class="{ completed: todo.status === 'completed' }">{{
-          todo.title
-        }}</span>
-      </li>
-    </ul>
-    <form @submit.prevent="addTodo">
-      <div class="flex flex-row">
-        <Input v-model="newTodo" placeholder="New todo" class="w-5/6" />
-        <Button type="submit" class="ml-2">Add</Button>
-      </div>
-    </form>
-  </div>
-</template>
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+import { columns } from '@/components/ui/todos/columns.ts'
+import type { Todo } from '../todos/columns.ts' 
+import { DataTable } from '@/components/ui/todos/'
 
-<script setup>
-import { ref, onMounted } from "vue";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+const supabase = useSupabaseClient();
+
+const data = ref<Todo[]>([])
 
 const props = defineProps({
   projectId: {
@@ -30,72 +15,28 @@ const props = defineProps({
   },
 });
 
-const supabase = useSupabaseClient();
-const todos = ref([]);
-const newTodo = ref("");
-
-const fetchTodos = async () => {
-  let { data, error } = await supabase
-    .from("todos")
-    .select("*")
-    .eq("project_id", props.projectId);
-
-  if (!error) {
-    todos.value = data;
-  }
-};
-
-const addTodo = async () => {
-  if (newTodo.value.trim() === "") return;
-
+// Define a function to fetch todos from the Supabase database
+async function getTodos(): Promise<Todo[]> {
   const { data, error } = await supabase
-    .from("todos")
-    .insert([
-      { title: newTodo.value, project_id: props.projectId, status: "pending" },
-    ])
-    .select();
+    .from('todos')
+    .select('*')
+    .eq('project_id', props.projectId) // Replace with the actual project_id dynamically
 
-  if (!error) {
-    todos.value.push(data[0]);
-    newTodo.value = "";
+  if (error) {
+    console.error('Error fetching todos:', error)
+    return []
   }
-};
 
-const toggleStatus = async (todo) => {
-  const newStatus = todo.status === "completed" ? "pending" : "completed";
+  return data || [] // Return the todos data or an empty array if none
+}
 
-  await supabase.from("todos").update({ status: newStatus }).eq("id", todo.id);
-
-  todo.status = newStatus;
-};
-
-onMounted(() => {
-  fetchTodos();
-
-  const subscription = supabase
-    .channel("todos")
-    .on(
-      "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "todos",
-        filter: `project_id=eq.${props.projectId}`,
-      },
-      (payload) => {
-        fetchTodos();
-      }
-    )
-    .subscribe();
-
-  return () => {
-    supabase.removeSubscription(subscription);
-  };
-});
+onMounted(async () => {
+  data.value = await getTodos() // Fetch todos on mount and update the data
+})
 </script>
 
-<style scoped>
-.completed {
-  text-decoration: line-through;
-}
-</style>
+<template>
+  <div class="w-full mx-auto">
+    <DataTable :columns="columns" :data="data" /> <!-- Pass columns and data to the DataTable -->
+  </div>
+</template>
