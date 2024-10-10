@@ -1,32 +1,15 @@
 import { ColumnDef } from '@tanstack/vue-table';
 import { h } from 'vue'
+import DataTableDropdown from './DataTableDropdown.vue'
 
 export const columns: ColumnDef<Todo>[] = [
-  {
-    accessorKey: 'id',
-    id: 'id', // Add an explicit id
-    header: () => h('div', { class: 'text-left' }, 'ID'),
-    cell: ({ row }) => {
-      const id = row.getValue('id');
-      return h('div', { class: 'text-left' }, id);
-    },
-  },
-  {
-    accessorKey: 'project_id',
-    id: 'project_id', // Add an explicit id
-    header: () => h('div', { class: 'text-left' }, 'Project ID'),
-    cell: ({ row }) => {
-      const projectId = row.getValue('project_id');
-      return h('div', { class: 'text-left' }, projectId);
-    },
-  },
   {
     accessorKey: 'title',
     id: 'title', // Add an explicit id
     header: () => h('div', { class: 'text-left' }, 'Title'),
     cell: ({ row }) => {
       const title = row.getValue('title');
-      return h('div', { class: 'text-left' }, title);
+      return h('div', { class: 'text-left w-20' }, title);
     },
   },
   {
@@ -53,42 +36,24 @@ export const columns: ColumnDef<Todo>[] = [
     },
   },
   {
-    accessorKey: 'created_at',
-    id: 'created_at', // Add an explicit id
-    header: () => h('div', { class: 'text-left' }, 'Created At'),
-    cell: ({ row }) => {
-      const createdAt = new Date(row.getValue('created_at')).toLocaleString();
-      return h('div', { class: 'text-left' }, createdAt);
-    },
-  },
-  {
     accessorKey: 'updated_at',
     id: 'updated_at', // Add an explicit id
-    header: () => h('div', { class: 'text-left' }, 'Updated At'),
+    header: () => h('div', { class: 'text-left' }, 'Last Updated'),
     cell: ({ row }) => {
       const updatedAt = new Date(row.getValue('updated_at')).toLocaleString();
       return h('div', { class: 'text-left' }, updatedAt);
     },
   },
   {
-    id: 'actions', // Add an explicit id
+    id: 'actions',
     header: () => h('div', { class: 'text-center' }, 'Actions'),
     cell: ({ row }) => {
-      const todoId = row.getValue('id');
-      return h('div', { class: 'flex justify-center space-x-2' }, [
-        h('button', {
-          class: 'text-blue-500 hover:underline',
-          onClick: () => markCompleted(todoId),
-        }, 'Complete'),
-        h('button', {
-          class: 'text-red-500 hover:underline',
-          onClick: () => deleteTask(todoId),
-        }, 'Delete'),
-        h('button', {
-          class: 'text-yellow-500 hover:underline',
-          onClick: () => updateTask(todoId),
-        }, 'Edit'),
-      ]);
+      const todo = row.original;
+      return h(
+        'div', 
+        { class: 'flex justify-center' }, // Flexbox to center the content
+        h(DataTableDropdown, { todo })
+      );
     },
-  },
+  }  
 ]

@@ -27,22 +27,6 @@ const table = useVueTable({
   get columns() { return props.columns },
   getCoreRowModel: getCoreRowModel(),
 })
-
-// Define your custom actions
-const markCompleted = (todoId: number) => {
-  console.log(`Marking task ${todoId} as completed`)
-  // Add logic to mark task as completed (Supabase update query)
-}
-
-const deleteTask = (todoId: number) => {
-  console.log(`Deleting task ${todoId}`)
-  // Add logic to delete task (Supabase delete query)
-}
-
-const updateTask = (todoId: number) => {
-  console.log(`Updating task ${todoId}`)
-  // Add logic to update task (Supabase update query)
-}
 </script>
 
 <template>
@@ -51,7 +35,7 @@ const updateTask = (todoId: number) => {
       <!-- Table Header -->
       <TableHeader>
         <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-          <TableHead v-for="header in headerGroup.headers" :key="header.id">
+          <TableHead v-for="header in headerGroup.headers" :key="header.id" class="text-xs h-10 text-nowrap">
             <FlexRender
               v-if="!header.isPlaceholder"
               :render="header.column.columnDef.header"
@@ -68,7 +52,7 @@ const updateTask = (todoId: number) => {
             v-for="row in table.getRowModel().rows" :key="row.id"
             :data-state="row.getIsSelected() ? 'selected' : undefined"
           >
-            <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
+            <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id" class="p-2 px-4">
               <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
             </TableCell>
           </TableRow>
