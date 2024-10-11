@@ -5,6 +5,9 @@
     <div class="container h-screen">
       Events page for {{ user }}
     </div>
+    <div>
+      <button>Hi</button>
+    </div>
   </div>
 </template>
 
