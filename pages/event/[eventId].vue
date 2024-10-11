@@ -315,9 +315,10 @@ async function updateAvailabilityFromGoogleCal(events) {
         eventStart < intervalEnd && eventEnd > intervalStart;
 
       if (isOverlapping) {
-        intervals.value[index].selected = true;
+        intervals.value[index].selected = false;
       }
     });
+
   });
 
   await saveAvailability();
@@ -417,7 +418,7 @@ function isSelected(dateIndex, timeIndex) {
 
 const bitString = computed(() => {
   return intervals.value
-    .map((interval) => (interval.selected ? "0" : "1"))
+    .map((interval) => (interval.selected ? "1" : "0"))
     .join("");
 });
 

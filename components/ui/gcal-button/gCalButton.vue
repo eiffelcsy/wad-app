@@ -26,10 +26,11 @@ const gCalConnected = ref(false);
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 
-let { data: gtokens, error } = await supabase
+const { data: gtokens, error } = await supabase
   .from("gtokens")
   .select("*")
-  .eq("user_id", user.value.id);
+  .eq("user_id", user.value.id)
+  .single();
 
 if (gtokens) {
   gCalConnected.value = true;
