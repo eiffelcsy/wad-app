@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row justify-between mt-8 md:mt-10 lg:mt-12 px-8 md:px-12 lg:px-16">
+  <div class="flex flex-row justify-between mt-8 px-8 md:px-12 lg:px-16">
     <NuxtLink
       to="/"
       class="text-xl font-bold tracking-wider"

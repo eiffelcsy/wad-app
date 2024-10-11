@@ -5,7 +5,7 @@
       <PageHeader />
     </div>
     <div
-      class="w-full px-8 flex flex-row justify-between mt-8 md:mt-10 lg:mt-12"
+      class="container w-full flex flex-row justify-between mt-8"
     >
       <div class="relative w-full max-h-10 pr-2 items-center">
         <Input
@@ -83,7 +83,7 @@
       </Button>
     </div>
     <div
-      class="w-full px-8 grid grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 justify-center"
+      class="container w-full grid grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 justify-center"
     >
       <Card v-for="(project, index) in projects" :key="index" class="mt-6">
         <CardHeader class="gap-2">

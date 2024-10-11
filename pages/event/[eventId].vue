@@ -315,7 +315,7 @@ async function updateAvailabilityFromGoogleCal(events) {
         eventStart < intervalEnd && eventEnd > intervalStart;
 
       if (isOverlapping) {
-        intervals.value[index].selected = false;
+        intervals.value[index].selected = true;
       }
     });
 
@@ -396,7 +396,7 @@ function generateIntervals() {
       intervals.value.push({
         date,
         time,
-        selected: false,
+        selected: true,
       });
     }
   }
@@ -418,7 +418,7 @@ function isSelected(dateIndex, timeIndex) {
 
 const bitString = computed(() => {
   return intervals.value
-    .map((interval) => (interval.selected ? "1" : "0"))
+    .map((interval) => (interval.selected ? "0" : "1"))
     .join("");
 });
 
@@ -461,12 +461,12 @@ function loadAvailability(availabilityString) {
     !availabilityString ||
     availabilityString.length !== intervals.value.length
   ) {
-    // Initialize to zeros if availabilityString is null or length mismatch
+    // Initialize to ones if availabilityString is null or length mismatch
     availabilityString = "1".repeat(intervals.value.length);
   }
 
   availabilityString.split("").forEach((char, index) => {
-    intervals.value[index].selected = char === "0";
+    intervals.value[index].selected = char === "1";
   });
 }
 

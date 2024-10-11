@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full px-16 h-screen flex flex-col pt-16">
+  <div class="w-full px-16 h-screen flex flex-col pt-16 items-center">
     <Button
       @click="backHome"
       variant="link"
@@ -7,7 +7,7 @@
     >
       <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
     </Button>
-    <div>
+    <div class="lg:w-2/3">
       <h1
         class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
       >

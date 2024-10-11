@@ -1,27 +1,25 @@
-<!-- TODO: Homepage content, idk what to put tbh -->
 <template>
   <div>
     <PageHeader v-if="user" />
     <div v-else>
       <NuxtLink
-      to="/"
-      class="absolute top-8 left-8 md:left-12 lg:left-16 text-xl font-bold tracking-wider"
-      >MeetLah</NuxtLink
-    >
-    <Button
-      @click="toLogin"
-      variant="outline"
-      class="absolute top-8 right-8 lg:right-12 border-zinc-300 dark:border-zinc-600"
-    >
-      <EnterIcon class="w-4 h-4 mr-2" />Login
-    </Button>
-
+        to="/"
+        class="absolute top-8 left-8 md:left-12 lg:left-16 text-xl font-bold tracking-wider"
+      >
+        MeetLah
+      </NuxtLink>
+      <Button
+        @click="toLogin"
+        variant="outline"
+        class="absolute top-8 right-8 lg:right-12 border-zinc-300 dark:border-zinc-600"
+      >
+        <EnterIcon class="w-4 h-4 mr-2" />Login
+      </Button>
     </div>
-    <div class="container h-screen">
-      <!-- Main content section with title, description, and action buttons for anonymous users -->
+    <div class="container">
       <div
-        class="w-full h-[95%] content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
         v-if="!user"
+        class="w-full h-[95%] content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
       >
         <h1
           class="text-3xl md:text-4xl lg:text-5xl text-zinc-800 dark:text-zinc-100 font-bold my-2"
@@ -34,7 +32,6 @@
           MeetLah makes it easy to coordinate meetings and events. Share your
           availability, let others pick a time, and get notified instantly.
         </p>
-        <!-- Button to create an event -->
         <Button
           class="mt-2 mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
           @click="toCreate"
@@ -42,8 +39,6 @@
           Create Event
           <CalendarIcon class="ml-2" />
         </Button>
-
-        <!-- Button to join an event -->
         <Button
           variant="outline"
           class="mt-2 ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
@@ -54,33 +49,97 @@
         </Button>
       </div>
 
-      <!-- Main content section for logged-in users -->
-      <div
-        class="w-full pt-10 md:pt-16 md:w-2/3 md:px-8 lg:w-1/2 lg:pt-20 lg:px-12"
-        v-else
-      >
+      <div v-else class="w-full pt-10 md:pt-12 lg:pt-16">
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold">
           Hi, {{ displayName }}!
         </h1>
-        <!-- TODO: Add homepage content for logged-in users -->
-        Insert homepage content for logged-in users here
-        <Button
-          variant="outline"
-          class="mt-2 ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-          @click="toJoin"
+        <div
+          class="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 my-8 md:my-10 lg:my-12"
         >
-          Join Event
-          <PlusCircledIcon class="ml-2" />
-        </Button>
-        <Button
-          class="mt-2 mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-          @click="toCreate"
-        >
-          Create Event
-          <CalendarIcon class="ml-2" />
-        </Button>
+          <div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Upcoming Events</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div v-if="upcomingEvents.length === 0">
+                  No upcoming events.
+                </div>
+                <div v-else>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead class="w-1/2">Title</TableHead>
+                        <TableHead>Date Range</TableHead>
+                        <TableHead></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow v-for="event in upcomingEvents" :key="event.id">
+                        <TableCell class="align-left">{{
+                          event.title
+                        }}</TableCell>
+                        <TableCell>
+                          {{
+                            new Date(event.start_date).toLocaleDateString()
+                          }}
+                          to {{ new Date(event.end_date).toLocaleDateString() }}
+                        </TableCell>
+                        <TableCell>
+                          <NuxtLink
+                            :to="{
+                              name: 'event-eventId',
+                              params: { eventId: event.code },
+                            }"
+                            ><Pencil class="size-4"
+                          /></NuxtLink>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+              <CardFooter
+                class="flex justify-between md:justify-start px-6 pb-6"
+              >
+                <Button
+                  variant="outline"
+                  class="mt-2 lg:mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                  @click="toJoin"
+                >
+                  Join Event
+                  <PlusCircledIcon class="ml-2" />
+                </Button>
+                <Button
+                  class="mt-2 lg:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+                  @click="toCreate"
+                >
+                  Create Event
+                  <CalendarIcon class="ml-2" />
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+
+          <div>
+            <Card class="h-96">
+              <CardHeader>
+                <CardTitle>TODOs</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div v-if="todos.length === 0">No TODOs found.</div>
+                <ul v-else>
+                  <li v-for="todo in todos" :key="todo.id">
+                    {{ todo.title }} - {{ todo.status }}
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
 
+      <!-- Dialog for updating display name -->
       <Dialog :open="showDialog">
         <DialogOverlay />
         <DialogContent class="w-5/6 rounded-md">
@@ -88,20 +147,17 @@
           <DialogDescription>
             Please enter your display name to continue.
           </DialogDescription>
-
           <Input
             v-model="newDisplayName"
             placeholder="Enter your display name"
             class="my-4"
           />
-
           <div class="flex justify-end">
             <Button
               @click="saveDisplayName"
               class="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+              >Save</Button
             >
-              Save
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -110,28 +166,42 @@
 </template>
 
 <script setup>
-/**
- * Importing necessary icons from @radix-icons/vue and
- * the navigateTo method from Nuxt's app navigation system.
- */
 import { CalendarIcon, EnterIcon, PlusCircledIcon } from "@radix-icons/vue";
-import { navigateTo } from "nuxt/app"; // Function for page navigation
+import { navigateTo } from "nuxt/app";
 import { PageHeader } from "@/components/ui/page-header";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { ref, onMounted } from "vue";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Pencil } from "lucide-vue-next";
 
-// Using Supabase authentication for user management
+// Supabase setup
 const supabase = useSupabaseClient();
 
-const showDialog = ref(false); // Controls the dialog visibility
-const newDisplayName = ref(""); // Holds the user input for the display name
-const displayName = ref(""); // Stores the user's display name, initialized as an empty string
+const showDialog = ref(false);
+const newDisplayName = ref("");
+const displayName = ref("");
 const email = ref("");
-
-/**
- * Fetch the currently authenticated user from Supabase.
- * If a user is logged in, their details are stored in the respective variables.
- */
 const user = useSupabaseUser();
 
+// State variables for Upcoming Events and TODOs
+const upcomingEvents = ref([]);
+const todos = ref([]);
+
+// Fetch user info and open dialog if display name is missing
 if (user.value) {
   if (user.value.user_metadata.name) {
     displayName.value = user.value.user_metadata.name;
@@ -141,10 +211,69 @@ if (user.value) {
   email.value = user.value.email;
 }
 
+// Fetch upcoming events for the logged-in user
+const fetchUpcomingEvents = async () => {
+  // Fetch event IDs from the participants table where the user is a participant
+  const { data: participantData, error: participantError } = await supabase
+    .from("participants")
+    .select("event_id")
+    .eq("user_id", user.value.id);
+
+  if (participantError) {
+    console.error("Error fetching event IDs:", participantError.message);
+    return;
+  }
+
+  // If no events are found in the participants table
+  if (!participantData || participantData.length === 0) {
+    console.log("No upcoming events found for this user.");
+    upcomingEvents.value = [];
+    return;
+  }
+
+  // Extract event IDs
+  const eventIds = participantData.map((participant) => participant.event_id);
+
+  // Fetch the event details for these event IDs
+  const { data: eventData, error: eventError } = await supabase
+    .from("events")
+    .select("*")
+    .in("id", eventIds) // Fetch events where the event ID is in the list of participant event IDs
+    .gte("start_date", new Date().toISOString().split("T")[0]) // Only fetch upcoming events (date greater than or equal to today)
+    .order("start_date", { ascending: true });
+
+  if (eventError) {
+    console.error("Error fetching events:", eventError.message);
+  } else {
+    upcomingEvents.value = eventData;
+  }
+};
+
+// Fetch TODOs for the logged-in user
+const fetchTodos = async () => {
+  const { data, error } = await supabase
+    .from("todos")
+    .select("*")
+    .eq("assigned_to", user.value.id);
+
+  if (error) {
+    console.error("Error fetching todos:", error.message);
+  } else {
+    todos.value = data;
+  }
+};
+
+// Fetch data on component mount
+onMounted(() => {
+  if (user.value) {
+    fetchUpcomingEvents();
+    fetchTodos();
+  }
+});
+
 // Function to save the display name
 const saveDisplayName = async () => {
   if (newDisplayName.value) {
-    // Update the user profile in Supabase
     const { error } = await supabase.auth.updateUser({
       data: { name: newDisplayName.value },
     });
@@ -152,23 +281,16 @@ const saveDisplayName = async () => {
     if (error) {
       console.error("Error updating profile:", error.message);
     } else {
-      displayName.value = newDisplayName.value; // Update local displayName variable
-      showDialog.value = false; // Close the dialog
+      displayName.value = newDisplayName.value;
+      showDialog.value = false;
     }
   }
 };
 
-/**
- * Redirects the user to the login page.
- */
+// Navigation functions
 const toLogin = () => {
-  navigateTo("/auth"); // Navigate to authentication page (login/register)
+  navigateTo("/auth");
 };
-
-/**
- * Redirects the user to the 'Create Event' page if logged in.
- * Otherwise, it navigates to the login page.
- */
 const toCreate = () => {
   if (user.value) {
     navigateTo("/create-event");
@@ -176,10 +298,6 @@ const toCreate = () => {
     navigateTo("/auth");
   }
 };
-
-/**
- * Redirects the user to the 'Join Event' page.
- */
 const toJoin = () => {
   navigateTo("/join");
 };
