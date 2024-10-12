@@ -7,14 +7,14 @@
     >
       <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
     </Button>
-    <div class="lg:w-2/3">
+    <div class="mx-auto lg:w-[45%]">
       <h1
         class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
       >
         New Event
       </h1>
       <p
-        class="text-base text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
+        class="text-base text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4 hidden sm:block"
       >
         Create and customize a new event by filling in the details below.
       </p>
@@ -32,7 +32,7 @@
           <div class="md:w-72 lg:w-96">
             <div class="mb-4">
               <h1
-                class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
               >
                 Title
               </h1>
@@ -49,7 +49,7 @@
             </div>
             <div class="mt-4 mb-4 lg:mt-8">
               <h1
-                class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
               >
                 Description
               </h1>
@@ -70,7 +70,7 @@
           </div>
           <div>
             <h1
-              class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:mb-4"
+              class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:mb-4"
             >
               Select Date Range
             </h1>
@@ -84,7 +84,7 @@
         </div>
         <Button
           @click="nextView"
-          class="absolute bottom-8 w-full max-w-96 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+          class="absolute bottom-10 w-full max-w-96 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
           >Next</Button
         >
       </div>
@@ -176,7 +176,7 @@
       </div>
 
       <div v-else-if="currentView === 3" key="view3">
-        <!-- View 5: Review and Submit -->
+        <!-- View 3: Review and Submit -->
         <div class="mb-8">
           <h1
             class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"

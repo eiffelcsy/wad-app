@@ -2,7 +2,7 @@
 <template>
   <div>
     <PageHeader/>
-    <div class="container">
+    <div class="container h-screen">
       <div
         class="w-full mt-8 md:mt-10 lg:mt-12 flex flex-col items-center"
       >
@@ -28,7 +28,7 @@
           </div>
         </div>
         <div
-          class="w-5/6 flex flex-col lg:flex-row gap-8 mt-16 justify-between items-center lg:justify-center"
+          class="w-full flex flex-col lg:flex-row gap-8 mt-16 justify-between items-center lg:justify-center"
         >
           <gCalButton class="w-full max-w-96"></gCalButton>
           <Button class="w-full max-w-96"
@@ -48,6 +48,7 @@
         </div>
       </div>
     </div>
+    <PageFooter/>
   </div>
 </template>
 
@@ -55,6 +56,7 @@
 import { ref } from "vue";
 import { gCalButton } from "@/components/ui/gcal-button";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageFooter } from "@/components/ui/page-footer";
 
 const user = useSupabaseUser();
 

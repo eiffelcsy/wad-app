@@ -4,9 +4,7 @@
     <div>
       <PageHeader />
     </div>
-    <div
-      class="container w-full flex flex-row justify-between mt-8"
-    >
+    <div class="container w-full flex flex-row justify-between mt-8">
       <div class="relative w-full max-h-10 pr-2 items-center">
         <Input
           id="search"
@@ -82,36 +80,39 @@
         New Project <Plus class="size-4 ml-2" />
       </Button>
     </div>
-    <div
-      class="container w-full grid grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 justify-center"
-    >
-      <Card v-for="(project, index) in projects" :key="index" class="mt-6">
-        <CardHeader class="gap-2">
-          <CardTitle>
-            <div>
-              <h1 class="text-xl">{{ project.title }}</h1>
-              <Button variant="link" class="px-0 py-1">
-                <NuxtLink
-                  class="text-base font-light text-zinc-500"
-                  :to="{
-                    name: 'project-projectId',
-                    params: { projectId: project.id },
-                  }"
-                  >{{ project.id }}</NuxtLink
-                >
-              </Button>
-            </div>
-          </CardTitle>
-          <CardDescription
-            ><Badge>{{ project.team_name }}</Badge
-            ><br
-          /></CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>{{ project.description }}</p>
-        </CardContent>
-      </Card>
+    <div class="min-h-screen">
+      <div
+        class="container w-full grid grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 justify-center"
+      >
+        <Card v-for="(project, index) in projects" :key="index" class="mt-6">
+          <CardHeader class="gap-2">
+            <CardTitle>
+              <div>
+                <h1 class="text-xl">{{ project.title }}</h1>
+                <Button variant="link" class="px-0 py-1">
+                  <NuxtLink
+                    class="text-base font-light text-zinc-500"
+                    :to="{
+                      name: 'project-projectId',
+                      params: { projectId: project.id },
+                    }"
+                    >{{ project.id }}</NuxtLink
+                  >
+                </Button>
+              </div>
+            </CardTitle>
+            <CardDescription
+              ><Badge>{{ project.team_name }}</Badge
+              ><br
+            /></CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p>{{ project.description }}</p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
+    <PageFooter />
   </div>
 </template>
 
@@ -150,6 +151,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMediaQuery } from "@vueuse/core";
+import { PageFooter } from "@/components/ui/page-footer";
 
 const user = useSupabaseUser();
 const supabase = useSupabaseClient();

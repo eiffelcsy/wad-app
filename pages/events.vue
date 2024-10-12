@@ -9,10 +9,12 @@
       <button>Hi</button>
     </div>
   </div>
+  <PageFooter/>
 </template>
 
 <script setup>
-import PageHeader from '../components/ui/page-header/PageHeader.vue';
+import { PageFooter } from '@/components/ui/page-footer';
+import { PageHeader } from '@/components/ui/page-header';
 
 const user = useSupabaseUser();
 

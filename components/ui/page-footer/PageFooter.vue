@@ -1,6 +1,6 @@
 <template>
   <footer class="p-8 border-t border-zinc-200">
-    <div class="flex flex-col mx-auto md:max-w-[85%]">
+    <div class="flex flex-col mx-auto md:max-w-[65%]">
       <div class="flex justify-between items-center">
         <!-- Left section with logo and system status -->
         <div class="flex items-center space-x-2">

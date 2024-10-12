@@ -111,7 +111,7 @@
                   <PlusCircledIcon class="ml-2" />
                 </Button>
                 <Button
-                  class="mt-2 lg:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+                  class="mt-2 lg:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
                   @click="toCreate"
                 >
                   Create Event

@@ -5,12 +5,14 @@
     <div class="container h-screen">
       Teams page for {{ user }}
     </div>
+    <PageFooter/>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import PageHeader from "../components/ui/page-header/PageHeader.vue";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageFooter } from "@/components/ui/page-footer";
 
 const user = useSupabaseUser();
 

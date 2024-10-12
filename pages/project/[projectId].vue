@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="w-full p-16 flex flex-col">
+    <div class="w-full p-8 flex flex-col">
       <h1 class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold">{{ projectInfo.title }}</h1>
       <p class="text-base text-zinc-400 dark:text-zinc-500 mt-4">Project Management</p>
       <Separator class="mt-4"/>
