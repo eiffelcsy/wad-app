@@ -11,16 +11,36 @@
         <!-- Bottom-right section with command menu and theme toggle -->
         <div class="flex flex-row">
           <div class="flex items-center space-x-4">
-            <Button variant="ghost" class="text-sm font-light hover:text-gray-400">Command Menu</Button>
+            <Button
+              variant="ghost"
+              class="text-sm font-light hover:text-gray-400 mr-2"
+              >Command Menu</Button
+            >
           </div>
-          <Button
-            variant="icon"
-            @click="toggleDarkMode"
-            class="ml-4 w-10 p-2 bg-zinc-100 dark:bg-zinc-900 text-black dark:text-white rounded-full"
-          >
-            <SunIcon v-if="isDark" />
-            <MoonIcon v-else />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button variant="outline" size="icon">
+                <MoonIcon
+                  class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+                />
+                <SunIcon
+                  class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+                />
+                <span class="sr-only">Toggle theme</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem @click="colorMode.preference = 'light'">
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem @click="colorMode.preference = 'dark'">
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem @click="colorMode.preference = 'system'">
+                System
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       <!-- Right section with navigation links -->
@@ -53,17 +73,14 @@
 <script setup>
 import { GithubLogoIcon } from "@radix-icons/vue";
 import { SunIcon, MoonIcon } from "@radix-icons/vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-const isDark = ref(false);
-
-const toggleDarkMode = () => {
-  isDark.value = !isDark.value;
-  if (isDark.value) {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
-};
+const colorMode = useColorMode();
 </script>
 
 <style scoped></style>
