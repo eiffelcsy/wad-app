@@ -16,7 +16,7 @@
         <EnterIcon class="w-4 h-4 mr-2" />Login
       </Button>
     </div>
-    <div class="container">
+    <div class="container h-screen">
       <div
         v-if="!user"
         class="w-full h-[95%] content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
@@ -49,7 +49,7 @@
         </Button>
       </div>
 
-      <div v-else class="w-full pt-10 md:pt-12 lg:pt-16">
+      <div v-else class="w-full pt-8 md:pt-10 lg:pt-14">
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold">
           Hi, {{ displayName }}!
         </h1>
@@ -76,10 +76,10 @@
                     </TableHeader>
                     <TableBody>
                       <TableRow v-for="event in upcomingEvents" :key="event.id">
-                        <TableCell class="align-left">{{
+                        <TableCell class="text-left">{{
                           event.title
                         }}</TableCell>
-                        <TableCell>
+                        <TableCell class="text-left text-nowrap">
                           {{
                             new Date(event.start_date).toLocaleDateString()
                           }}
@@ -124,7 +124,7 @@
           <div>
             <Card class="h-96">
               <CardHeader>
-                <CardTitle>TODOs</CardTitle>
+                <CardTitle>Project TODOs</CardTitle>
               </CardHeader>
               <CardContent>
                 <div v-if="todos.length === 0">No TODOs found.</div>
@@ -162,6 +162,7 @@
         </DialogContent>
       </Dialog>
     </div>
+    <PageFooter/>
   </div>
 </template>
 
@@ -187,6 +188,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil } from "lucide-vue-next";
+import { PageFooter } from "../components/ui/page-footer";
 
 // Supabase setup
 const supabase = useSupabaseClient();
