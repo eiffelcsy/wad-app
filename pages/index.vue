@@ -122,7 +122,7 @@
           </div>
 
           <div>
-            <Card class="h-96">
+            <Card>
               <CardHeader>
                 <CardTitle>Project TODOs</CardTitle>
               </CardHeader>
@@ -134,6 +134,16 @@
                   </li>
                 </ul>
               </CardContent>
+              <CardFooter class="flex justify-between md:justify-end">
+                <Button
+                  variant="link"
+                  class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8"
+                  @click="navigateTo('/projects')"
+                >
+                  View all Projects
+                  <ArrowRight class="size-4 ml-2" />
+                </Button>
+              </CardFooter>
             </Card>
           </div>
         </div>
@@ -187,7 +197,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil } from "lucide-vue-next";
+import { ArrowRight, Pencil } from "lucide-vue-next";
 import { PageFooter } from "../components/ui/page-footer";
 
 // Supabase setup
