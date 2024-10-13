@@ -1,8 +1,14 @@
 <template>
-  <div class="flex flex-row justify-between mt-8 px-8 md:px-12 lg:px-16">
-    <NuxtLink to="/" class="text-xl font-bold tracking-wider"
-      ><p class="inline align-middle">MeetLah</p></NuxtLink
+  <div
+    class="flex flex-row justify-between py-4 px-8 md:px-12 lg:px-16 border-b"
+  >
+    <div class="flex items-center">
+      <NuxtLink to="/" class=""
+      ><p class="text-xl font-bold tracking-wider">
+        MeetLah
+      </p></NuxtLink
     >
+    </div>
     <div>
       <div class="relative inline-block">
         <Button variant="ghost" size="icon" class="hover:bg-transparent">

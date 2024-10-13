@@ -1,122 +1,122 @@
 <!-- TODO: Projects homepage, include create, edit and delete buttons for each project, maybe in a table -->
 <template>
   <div>
-    <div>
-      <PageHeader />
-    </div>
-    <div class="container w-full flex flex-row justify-between mt-8">
-      <div class="relative w-full max-h-10 pr-2 items-center">
-        <Input
-          id="searchProjects"
-          type="text"
-          placeholder="Search Projects..."
-          class="pl-10 text-base md:text-sm"
-        />
-        <span
-          class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
-        >
-          <Search class="size-6 text-muted-foreground" />
-        </span>
-        <Drawer v-if="isMobile" v-model:open="isOpen">
-          <DrawerTrigger as-child>
-            <Button
-              as-child
-              size="icon"
-              variant="ghost"
-              class="absolute end-3 inset-y-0 max-w-[32px] hover:bg-transparent transform active:translate-y-px transition-transform"
-            >
-              <span class="flex items-center justify-center">
-                <Ellipsis class="size-4 text-muted-foreground" />
-              </span> </Button
-          ></DrawerTrigger>
-          <DrawerContent>
-            <div class="mx-auto mt-4 mb-8 w-full max-w-sm">
-              <RadioGroup
-                v-model="selectedSortOption"
-                class="flex flex-col gap-4"
+    <PageHeader />
+    <div class="bg-zinc-50 dark:bg-black">
+      <div class="container w-full flex flex-row justify-between pt-8">
+        <div class="relative w-full max-h-10 pr-2 items-center">
+          <Input
+            id="searchProjects"
+            type="text"
+            placeholder="Search Projects..."
+            class="pl-10 text-base md:text-sm"
+          />
+          <span
+            class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
+          >
+            <Search class="size-6 text-muted-foreground" />
+          </span>
+          <Drawer v-if="isMobile" v-model:open="isOpen">
+            <DrawerTrigger as-child>
+              <Button
+                as-child
+                size="icon"
+                variant="ghost"
+                class="absolute end-3 inset-y-0 max-w-[32px] hover:bg-transparent transform active:translate-y-px transition-transform"
               >
-                <div class="flex items-center space-x-4">
-                  <RadioGroupItem
-                    id="SortByActivity"
-                    value="SortByActivity"
-                    @click="closeDrawer"
-                  />
-                  <Label for="SortByActivity" class="text-base font-normal"
-                    >Sort by Activity</Label
-                  >
-                </div>
-                <div class="flex items-center space-x-4">
-                  <RadioGroupItem
-                    id="SortByName"
-                    value="SortByName"
-                    @click="closeDrawer"
-                  />
-                  <Label for="SortByName" class="text-base font-normal"
-                    >Sort by Name</Label
-                  >
-                </div>
-              </RadioGroup>
-            </div>
-          </DrawerContent>
-        </Drawer>
-      </div>
-      <Select v-if="!isMobile">
-        <SelectTrigger class="max-w-36 mr-2">
-          <SelectValue placeholder="Sort By..." />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectItem value="SortByActivity">Sort By Activity</SelectItem>
-            <SelectItem value="SortByName">Sort By Name</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <Button
-        @click="navigateTo('/create-project')"
-        v-if="isMobile"
-        size="icon"
-        class="min-w-[40px] text-zinc-100 dark:text-zinc-900"
-      >
-        <Plus class="size-4" />
-      </Button>
-      <Button
-        @click="navigateTo('/create-project')"
-        v-else
-        class="text-zinc-100 dark:text-zinc-900"
-      >
-        New Project<Plus class="size-4 ml-2" />
-      </Button>
-    </div>
-    <div class="min-h-screen">
-      <div
-        class="container w-full grid grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 justify-center"
-      >
-        <Card v-for="(project, index) in projects" :key="index" class="mt-6">
-          <CardHeader class="gap-2">
-            <CardTitle>
-              <div>
-                <h1 class="text-xl">{{ project.title }}</h1>
-                <Button variant="link" class="px-0 py-1">
-                  <NuxtLink
-                    class="text-base font-light text-zinc-500"
-                    :to="{
-                      name: 'project-projectId',
-                      params: { projectId: project.id },
-                    }"
-                    >{{ project.id }}</NuxtLink
-                  >
-                </Button>
+                <span class="flex items-center justify-center">
+                  <Ellipsis class="size-4 text-muted-foreground" />
+                </span> </Button
+            ></DrawerTrigger>
+            <DrawerContent>
+              <div class="mx-auto mt-4 mb-8 w-full max-w-sm">
+                <RadioGroup
+                  v-model="selectedSortOption"
+                  class="flex flex-col gap-4"
+                >
+                  <div class="flex items-center space-x-4">
+                    <RadioGroupItem
+                      id="SortByActivity"
+                      value="SortByActivity"
+                      @click="closeDrawer"
+                    />
+                    <Label for="SortByActivity" class="text-base font-normal"
+                      >Sort by Activity</Label
+                    >
+                  </div>
+                  <div class="flex items-center space-x-4">
+                    <RadioGroupItem
+                      id="SortByName"
+                      value="SortByName"
+                      @click="closeDrawer"
+                    />
+                    <Label for="SortByName" class="text-base font-normal"
+                      >Sort by Name</Label
+                    >
+                  </div>
+                </RadioGroup>
               </div>
-            </CardTitle>
-            <CardDescription
-              ><Badge>{{ project.team_name }}</Badge
-              ><br
-            /></CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>{{ project.description }}</p>
-          </CardContent>
-        </Card>
+            </DrawerContent>
+          </Drawer>
+        </div>
+        <Select v-if="!isMobile">
+          <SelectTrigger class="max-w-36 mr-2">
+            <SelectValue placeholder="Sort By..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="SortByActivity">Sort By Activity</SelectItem>
+              <SelectItem value="SortByName">Sort By Name</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button
+          @click="navigateTo('/create-project')"
+          v-if="isMobile"
+          size="icon"
+          class="min-w-[40px] text-zinc-100 dark:text-zinc-900"
+        >
+          <Plus class="size-4" />
+        </Button>
+        <Button
+          @click="navigateTo('/create-project')"
+          v-else
+          class="text-zinc-100 dark:text-zinc-900"
+        >
+          New Project<Plus class="size-4 ml-2" />
+        </Button>
+      </div>
+      <div class="min-h-screen">
+        <div
+          class="container w-full grid grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 justify-center"
+        >
+          <Card v-for="(project, index) in projects" :key="index" class="mt-6">
+            <CardHeader class="gap-2">
+              <CardTitle>
+                <div>
+                  <h1 class="text-xl">{{ project.title }}</h1>
+                  <Button variant="link" class="px-0 py-1">
+                    <NuxtLink
+                      class="text-base font-light text-zinc-500"
+                      :to="{
+                        name: 'project-projectId',
+                        params: { projectId: project.id },
+                      }"
+                      >{{ project.id }}</NuxtLink
+                    >
+                  </Button>
+                </div>
+              </CardTitle>
+              <CardDescription
+                ><Badge>{{ project.team_name }}</Badge
+                ><br
+              /></CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>{{ project.description }}</p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
     <PageFooter />

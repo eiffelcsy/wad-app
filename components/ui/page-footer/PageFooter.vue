@@ -1,5 +1,5 @@
 <template>
-  <footer class="p-8 border-t border-zinc-200">
+  <footer class="p-8 border-t border-zinc-200 dark:border-zinc-800">
     <div class="flex flex-col mx-auto md:max-w-[65%]">
       <div class="flex justify-between items-center">
         <!-- Left section with logo and system status -->
@@ -66,7 +66,7 @@
           <NuxtLink href="#" class="hover:text-gray-400">Guides</NuxtLink>
           <NuxtLink href="#" class="hover:text-gray-400">Help</NuxtLink>
           <NuxtLink href="#" class="hover:text-gray-400"
-            >Contact Sales</NuxtLink
+            >Contact</NuxtLink
           >
           <NuxtLink href="#" class="hover:text-gray-400">Blog</NuxtLink>
           <NuxtLink href="#" class="hover:text-gray-400">Changelog</NuxtLink>

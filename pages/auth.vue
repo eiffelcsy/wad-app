@@ -1,6 +1,6 @@
 <template>
   <span>
-    <div class="min-h-screen flex flex-col justify-center items-center">
+    <div class="min-h-screen flex flex-col justify-center items-center bg-zinc-50 dark:bg-black">
       <!-- Container for the authentication form -->
       <div class="w-full max-w-[32rem] p-8 flex flex-col justify-center">
         <!-- Dynamic heading based on authentication type (login or register) -->

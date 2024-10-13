@@ -1,178 +1,187 @@
 <template>
   <div>
-    <PageHeader v-if="user" />
-    <div v-else>
-      <NuxtLink
-        to="/"
-        class="absolute top-8 left-8 md:left-12 lg:left-16 text-xl font-bold tracking-wider"
-      >
-        MeetLah
-      </NuxtLink>
+    <PageHeader v-if="user" class="dark:bg-zinc-950" />
+    <div
+      v-else
+      class="flex flex-row justify-between py-4 px-8 md:px-12 lg:px-16 bg-zinc-50 dark:bg-black"
+    >
+      <div class="flex items-center">
+        <NuxtLink to="/" class=""
+          ><p class="text-xl font-bold tracking-wider">MeetLah</p></NuxtLink
+        >
+      </div>
       <Button
         @click="toLogin"
         variant="outline"
-        class="absolute top-8 right-8 lg:right-12 border-zinc-300 dark:border-zinc-600"
+        class="lg:right-12 border-zinc-300 dark:border-zinc-600"
       >
         <EnterIcon class="w-4 h-4 mr-2" />Login
       </Button>
     </div>
-    <div class="container h-screen">
-      <div
-        v-if="!user"
-        class="w-full h-[95%] content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
-      >
-        <h1
-          class="text-3xl md:text-4xl lg:text-5xl text-zinc-800 dark:text-zinc-100 font-bold my-2"
-        >
-          Simplify Scheduling. Amplify Collaboration.
-        </h1>
-        <p
-          class="text-base md:text-lg lg:text-xl text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
-        >
-          MeetLah makes it easy to coordinate meetings and events. Share your
-          availability, let others pick a time, and get notified instantly.
-        </p>
-        <Button
-          class="mt-2 mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-          @click="toCreate"
-        >
-          Create Event
-          <CalendarIcon class="ml-2" />
-        </Button>
-        <Button
-          variant="outline"
-          class="mt-2 ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-          @click="toJoin"
-        >
-          Join Event
-          <PlusCircledIcon class="ml-2" />
-        </Button>
-      </div>
-
-      <div v-else class="w-full pt-8 md:pt-10 lg:pt-14">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold">
-          Hi, {{ displayName }}!
-        </h1>
+    <div class="bg-zinc-50 dark:bg-black">
+      <div class="container h-screen">
         <div
-          class="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 my-8 md:my-10 lg:my-12"
+          v-if="!user"
+          class="w-full h-[95%] content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
         >
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle>Upcoming Events</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div v-if="upcomingEvents.length === 0">
-                  No upcoming events.
-                </div>
-                <div v-else>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead class="w-1/2">Title</TableHead>
-                        <TableHead>Date Range</TableHead>
-                        <TableHead></TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow v-for="event in upcomingEvents" :key="event.id">
-                        <TableCell class="text-left">{{
-                          event.title
-                        }}</TableCell>
-                        <TableCell class="text-left text-nowrap">
-                          {{
-                            new Date(event.start_date).toLocaleDateString()
-                          }}
-                          to {{ new Date(event.end_date).toLocaleDateString() }}
-                        </TableCell>
-                        <TableCell>
-                          <NuxtLink
-                            :to="{
-                              name: 'event-eventId',
-                              params: { eventId: event.code },
-                            }"
-                            ><Pencil class="size-4"
-                          /></NuxtLink>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-              <CardFooter
-                class="flex justify-between md:justify-start px-6 pb-6"
-              >
-                <Button
-                  variant="outline"
-                  class="mt-2 md:mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-                  @click="toJoin"
-                >
-                  Join Event
-                  <PlusCircledIcon class="ml-2" />
-                </Button>
-                <Button
-                  class="mt-2 md:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
-                  @click="toCreate"
-                >
-                  Create Event
-                  <CalendarIcon class="ml-2" />
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
+          <h1
+            class="text-3xl md:text-4xl lg:text-5xl text-zinc-800 dark:text-zinc-100 font-bold my-2"
+          >
+            Simplify Scheduling. Amplify Collaboration.
+          </h1>
+          <p
+            class="text-base md:text-lg lg:text-xl text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
+          >
+            MeetLah makes it easy to coordinate meetings and events. Share your
+            availability, let others pick a time, and get notified instantly.
+          </p>
+          <Button
+            class="mt-2 mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+            @click="toCreate"
+          >
+            Create Event
+            <CalendarIcon class="ml-2" />
+          </Button>
+          <Button
+            variant="outline"
+            class="mt-2 ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+            @click="toJoin"
+          >
+            Join Event
+            <PlusCircledIcon class="ml-2" />
+          </Button>
+        </div>
 
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle>Project TODOs</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div v-if="todos.length === 0">No TODOs found.</div>
-                <ul v-else>
-                  <li v-for="todo in todos" :key="todo.id">
-                    {{ todo.title }} - {{ todo.status }}
-                  </li>
-                </ul>
-              </CardContent>
-              <CardFooter class="flex justify-end">
-                <Button
-                  variant="link"
-                  class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8"
-                  @click="navigateTo('/projects')"
+        <div v-else class="w-full pt-8 md:pt-10 lg:pt-14">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold">
+            Hi, {{ displayName }}!
+          </h1>
+          <div
+            class="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 my-8 md:my-10 lg:my-12"
+          >
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Upcoming Events</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div v-if="upcomingEvents.length === 0">
+                    No upcoming events.
+                  </div>
+                  <div v-else>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead class="w-1/2">Title</TableHead>
+                          <TableHead>Date Range</TableHead>
+                          <TableHead></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow
+                          v-for="event in upcomingEvents"
+                          :key="event.id"
+                        >
+                          <TableCell class="text-left">{{
+                            event.title
+                          }}</TableCell>
+                          <TableCell class="text-left text-nowrap">
+                            {{
+                              new Date(event.start_date).toLocaleDateString()
+                            }}
+                            to
+                            {{ new Date(event.end_date).toLocaleDateString() }}
+                          </TableCell>
+                          <TableCell>
+                            <NuxtLink
+                              :to="{
+                                name: 'event-eventId',
+                                params: { eventId: event.code },
+                              }"
+                              ><Pencil class="size-4"
+                            /></NuxtLink>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+                <CardFooter
+                  class="flex justify-between md:justify-start px-6 pb-6"
                 >
-                  View all Projects
-                  <ArrowRight class="size-4 ml-2" />
-                </Button>
-              </CardFooter>
-            </Card>
+                  <Button
+                    variant="outline"
+                    class="mt-2 md:mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                    @click="toJoin"
+                  >
+                    Join Event
+                    <PlusCircledIcon class="ml-2" />
+                  </Button>
+                  <Button
+                    class="mt-2 md:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
+                    @click="toCreate"
+                  >
+                    Create Event
+                    <CalendarIcon class="ml-2" />
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Project TODOs</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div v-if="todos.length === 0">No TODOs found.</div>
+                  <ul v-else>
+                    <li v-for="todo in todos" :key="todo.id">
+                      {{ todo.title }} - {{ todo.status }}
+                    </li>
+                  </ul>
+                </CardContent>
+                <CardFooter class="flex justify-end">
+                  <Button
+                    variant="link"
+                    class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8"
+                    @click="navigateTo('/projects')"
+                  >
+                    View all Projects
+                    <ArrowRight class="size-4 ml-2" />
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Dialog for updating display name -->
-      <Dialog :open="showDialog">
-        <DialogOverlay />
-        <DialogContent class="w-5/6 rounded-md">
-          <DialogTitle>Update Display Name</DialogTitle>
-          <DialogDescription>
-            Please enter your display name to continue.
-          </DialogDescription>
-          <Input
-            v-model="newDisplayName"
-            placeholder="Enter your display name"
-            class="my-4"
-          />
-          <div class="flex justify-end">
-            <Button
-              @click="saveDisplayName"
-              class="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-              >Save</Button
-            >
-          </div>
-        </DialogContent>
-      </Dialog>
+        <!-- Dialog for updating display name -->
+        <Dialog :open="showDialog">
+          <DialogOverlay />
+          <DialogContent class="w-5/6 rounded-md">
+            <DialogTitle>Update Display Name</DialogTitle>
+            <DialogDescription>
+              Please enter your display name to continue.
+            </DialogDescription>
+            <Input
+              v-model="newDisplayName"
+              placeholder="Enter your display name"
+              class="my-4"
+            />
+            <div class="flex justify-end">
+              <Button
+                @click="saveDisplayName"
+                class="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+                >Save</Button
+              >
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
-    <PageFooter/>
+
+    <PageFooter />
   </div>
 </template>
 

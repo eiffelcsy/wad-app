@@ -1,11 +1,21 @@
 <template>
   <div>
-    <div class="w-full p-8 flex flex-col">
-      <h1 class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold">{{ projectInfo.title }}</h1>
-      <p class="text-base text-zinc-400 dark:text-zinc-500 mt-4">Project Management</p>
-      <Separator class="mt-4"/>
-    <SharedTodoList :projectId="projectId" class="mt-8"/>
+    <PageHeader />
+    <div class="min-h-screen bg-black">
+      <div class="py-6 md:py-8 mx-auto px-8 lg:w-[1200px]">
+        <h1
+          class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
+        >
+          {{ projectInfo.title }}
+        </h1>
+      </div>
+      <Separator class="w-full" />
+      <div class="my-8 mx-auto px-8 lg:w-[1200px]">
+        <SharedTodoList :projectId="projectId" />
+      </div>
+      <Separator class="w-full" />
     </div>
+    <PageFooter />
   </div>
 </template>
 
@@ -13,6 +23,8 @@
 import { useRoute } from "vue-router";
 import { SharedTodoList } from "@/components/ui/shared-todo-list";
 import { Separator } from "~/components/ui/separator";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageFooter } from "@/components/ui/page-footer";
 
 const supabase = useSupabaseClient();
 
@@ -33,7 +45,7 @@ const fetchProjectDetails = async () => {
   }
 
   projectInfo.value = projectDetails;
-}
+};
 
 onMounted(() => {
   fetchProjectDetails();

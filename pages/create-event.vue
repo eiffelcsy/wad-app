@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageHeader />
-    <div class="w-full px-8 min-h-screen flex flex-col mt-8 mb-10 items-center">
+    <div class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-zinc-50 dark:bg-black">
       <div class="mx-auto w-full lg:w-1/2">
         <h1
           class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
@@ -94,7 +94,7 @@
               </CardContent>
             </Card>
           </div>
-          <Button @click="nextView" class="mt-8 w-full">Next</Button>
+          <Button @click="nextView" class="mt-6 md:mt-8 lg:mt-10 w-full">Next</Button>
         </div>
 
         <div
@@ -123,7 +123,7 @@
                         type="time"
                         v-model="startTime"
                         step="1800"
-                        class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-950 border rounded-md dark:border-zinc-800 text-zinc-900 dark:text-zinc-200 self-center"
+                        class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-950 border rounded-md text-zinc-900 dark:text-zinc-200 self-center"
                       />
                       <div
                         v-if="errors.startTime"
@@ -141,7 +141,7 @@
                         type="time"
                         v-model="endTime"
                         step="1800"
-                        class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
+                        class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-950 border rounded-md text-zinc-900 dark:text-zinc-200"
                       />
                       <div
                         v-if="errors.endTime"

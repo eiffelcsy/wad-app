@@ -1,3 +1,102 @@
+<template>
+  <div class="w-full mx-auto">
+    <div class="flex flex-row justify-between p-2 mb-2">
+      <div>
+        <h1 class="text-xl font-semibold">Project TODOs</h1>
+        <p
+          class="text-base text-zinc-400 dark:text-zinc-500"
+        >
+          Tasks to be completed
+        </p>
+      </div>
+      <Button @click="isOpen = true"
+        >New Task<PlusIcon class="size-4 ml-2"
+      /></Button>
+    </div>
+    <DataTable :columns="columns" :data="data" />
+
+    <!-- Dialog for creating new task (for desktop) -->
+    <Dialog v-if="isDesktop" v-model:open="isOpen">
+      <DialogTrigger as-child>
+        <!-- Empty Trigger -->
+      </DialogTrigger>
+      <DialogContent class="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Create New Task</DialogTitle>
+        </DialogHeader>
+        <div class="grid gap-4 p-4">
+          <div class="grid gap-2">
+            <Label html-for="new-task-title">Task Title</Label>
+            <Input
+              id="new-task-title"
+              v-model="newTaskTitle"
+              placeholder="Enter task title"
+            />
+          </div>
+          <div class="grid gap-2">
+            <Label html-for="assignee">Assign to</Label>
+            <select
+              v-model="selectedMember"
+              id="assignee"
+              class="w-full p-2 border rounded"
+            >
+              <option value="" disabled>Select a member</option>
+              <option
+                v-for="member in members"
+                :key="member.user_metadata.name"
+                :value="member.id"
+              >
+                {{ member.user_metadata.name }}
+              </option>
+            </select>
+          </div>
+          <Button @click="createNewTask"> Save Task </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+
+    <!-- Drawer for creating new task (for mobile) -->
+    <Drawer v-else v-model:open="isOpen">
+      <DrawerTrigger as-child>
+        <!-- Empty Trigger -->
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Create New Task</DrawerTitle>
+        </DrawerHeader>
+        <div class="grid gap-4 p-4">
+          <div class="grid gap-2">
+            <Label html-for="new-task-title">Task Title</Label>
+            <Input
+              id="new-task-title"
+              v-model="newTaskTitle"
+              placeholder="Enter task title"
+            />
+          </div>
+          <div class="grid gap-2">
+            <Label html-for="assignee">Assign to</Label>
+            <select
+              v-model="selectedMember"
+              id="assignee"
+              class="w-full p-2 border rounded"
+            >
+              <option value="" disabled>Select a member</option>
+              <option
+                v-for="member in members"
+                :key="member.id"
+                :value="member.member_id"
+              >
+                {{ member.name }}
+              </option>
+            </select>
+          </div>
+          <Button @click="createNewTask"> Save Task </Button>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { columns } from "@/components/ui/todos/columns.ts";
@@ -160,95 +259,3 @@ onMounted(async () => {
   });
 });
 </script>
-
-<template>
-  <div class="w-full mx-auto">
-    <div class="flex flex-row justify-between p-2 mb-2">
-      <h1 class="text-2xl font-semibold">Project TODOs</h1>
-      <Button @click="isOpen = true"
-        >New Task<PlusIcon class="size-4 ml-2"
-      /></Button>
-    </div>
-    <DataTable :columns="columns" :data="data" />
-
-    <!-- Dialog for creating new task (for desktop) -->
-    <Dialog v-if="isDesktop" v-model:open="isOpen">
-      <DialogTrigger as-child>
-        <!-- Empty Trigger -->
-      </DialogTrigger>
-      <DialogContent class="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Create New Task</DialogTitle>
-        </DialogHeader>
-        <div class="grid gap-4 p-4">
-          <div class="grid gap-2">
-            <Label html-for="new-task-title">Task Title</Label>
-            <Input
-              id="new-task-title"
-              v-model="newTaskTitle"
-              placeholder="Enter task title"
-            />
-          </div>
-          <div class="grid gap-2">
-            <Label html-for="assignee">Assign to</Label>
-            <select
-              v-model="selectedMember"
-              id="assignee"
-              class="w-full p-2 border rounded"
-            >
-              <option value="" disabled>Select a member</option>
-              <option
-                v-for="member in members"
-                :key="member.user_metadata.name"
-                :value="member.id"
-              >
-                {{ member.user_metadata.name }}
-              </option>
-            </select>
-          </div>
-          <Button @click="createNewTask"> Save Task </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-
-    <!-- Drawer for creating new task (for mobile) -->
-    <Drawer v-else v-model:open="isOpen">
-      <DrawerTrigger as-child>
-        <!-- Empty Trigger -->
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Create New Task</DrawerTitle>
-        </DrawerHeader>
-        <div class="grid gap-4 p-4">
-          <div class="grid gap-2">
-            <Label html-for="new-task-title">Task Title</Label>
-            <Input
-              id="new-task-title"
-              v-model="newTaskTitle"
-              placeholder="Enter task title"
-            />
-          </div>
-          <div class="grid gap-2">
-            <Label html-for="assignee">Assign to</Label>
-            <select
-              v-model="selectedMember"
-              id="assignee"
-              class="w-full p-2 border rounded"
-            >
-              <option value="" disabled>Select a member</option>
-              <option
-                v-for="member in members"
-                :key="member.id"
-                :value="member.member_id"
-              >
-                {{ member.name }}
-              </option>
-            </select>
-          </div>
-          <Button @click="createNewTask"> Save Task </Button>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  </div>
-</template>
