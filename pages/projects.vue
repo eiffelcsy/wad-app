@@ -7,7 +7,7 @@
     <div class="container w-full flex flex-row justify-between mt-8">
       <div class="relative w-full max-h-10 pr-2 items-center">
         <Input
-          id="search"
+          id="searchProjects"
           type="text"
           placeholder="Search Projects..."
           class="pl-10 text-base md:text-sm"
@@ -30,7 +30,7 @@
               </span> </Button
           ></DrawerTrigger>
           <DrawerContent>
-            <div class="mx-auto mb-8 w-full max-w-sm">
+            <div class="mx-auto mt-4 mb-8 w-full max-w-sm">
               <RadioGroup
                 v-model="selectedSortOption"
                 class="flex flex-col gap-4"
@@ -41,7 +41,7 @@
                     value="SortByActivity"
                     @click="closeDrawer"
                   />
-                  <Label for="SortByActivity" class="text-base"
+                  <Label for="SortByActivity" class="text-base font-normal"
                     >Sort by Activity</Label
                   >
                 </div>
@@ -51,7 +51,9 @@
                     value="SortByName"
                     @click="closeDrawer"
                   />
-                  <Label for="SortByName" class="text-base">Sort by Name</Label>
+                  <Label for="SortByName" class="text-base font-normal"
+                    >Sort by Name</Label
+                  >
                 </div>
               </RadioGroup>
             </div>
@@ -70,14 +72,19 @@
         </SelectContent>
       </Select>
       <Button
+        @click="navigateTo('/create-project')"
         v-if="isMobile"
         size="icon"
         class="min-w-[40px] text-zinc-100 dark:text-zinc-900"
       >
         <Plus class="size-4" />
       </Button>
-      <Button v-else class="text-zinc-100 dark:text-zinc-900">
-        New Project <Plus class="size-4 ml-2" />
+      <Button
+        @click="navigateTo('/create-project')"
+        v-else
+        class="text-zinc-100 dark:text-zinc-900"
+      >
+        New Project<Plus class="size-4 ml-2" />
       </Button>
     </div>
     <div class="min-h-screen">
@@ -125,7 +132,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -134,24 +140,15 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMediaQuery } from "@vueuse/core";
 import { PageFooter } from "@/components/ui/page-footer";
+import { navigateTo } from "nuxt/app";
 
 const user = useSupabaseUser();
 const supabase = useSupabaseClient();

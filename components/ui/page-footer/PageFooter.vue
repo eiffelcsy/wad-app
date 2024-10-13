@@ -59,7 +59,7 @@
         <div
           class="w-full md:pl-4 lg:pl-0 lg:w-2/3 grid grid-cols-2 gap-4 md:gap-0 md:flex md:justify-between items-center md:space-x-4 text-sm"
         >
-          <NuxtLink href="#" class="hover:text-gray-400">Home</NuxtLink>
+          <NuxtLink href="/" class="hover:text-gray-400">Home</NuxtLink>
           <NuxtLink href="#" class="hover:text-gray-400"
             >Documentation</NuxtLink
           >

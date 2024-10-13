@@ -4,15 +4,25 @@
       ><p class="inline align-middle">MeetLah</p></NuxtLink
     >
     <div>
-      <Button
-        variant="ghost"
-        size="icon"
-        class="hover:bg-transparent"
-      >
-        <Avatar class="w-8 h-8 border dark:bg-zinc-950">
-          <BellIcon size="20px" strokeWidth="{1}" class="opacity-60 hover:opacity-100" />
-        </Avatar>
-      </Button>
+      <div class="relative inline-block">
+        <Button variant="ghost" size="icon" class="hover:bg-transparent">
+          <Avatar class="w-8 h-8 border bg-zinc-50 dark:bg-zinc-900">
+            <BellIcon
+              size="20px"
+              strokeWidth="{1}"
+              class="opacity-70 hover:opacity-100"
+            />
+          </Avatar>
+        </Button>
+        <span class="absolute right-0.5 top-0.5 flex h-2.5 w-2.5">
+          <span
+            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
+          ></span>
+          <span
+            class="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-500"
+          ></span>
+        </span>
+      </div>
       <Sheet>
         <SheetTrigger as-child>
           <Button
@@ -20,14 +30,18 @@
             size="icon"
             class="font-semibold border-zinc-200 dark:border-zinc-700 hover:bg-transparent"
           >
-            <Avatar class="w-8 h-8 bg-zinc-100 dark:bg-zinc-950 border">
-              <UserRoundIcon size="20px" strokeWidth="{1}" class="opacity-60 hover:opacity-100" />
+            <Avatar class="w-8 h-8 border bg-zinc-50 dark:bg-zinc-900">
+              <UserRoundIcon
+                size="20px"
+                strokeWidth="{1}"
+                class="opacity-70 hover:opacity-100"
+              />
             </Avatar>
           </Button>
         </SheetTrigger>
         <SheetContent class="flex flex-col">
           <SheetHeader class="flex flex-row items-center">
-            <Avatar class="w-10 h-10 mr-2 bg-zinc-100 dark:bg-zinc-600">
+            <Avatar class="w-10 h-10 mr-2">
               <UserRoundIcon size="24px" strokeWidth="{1}" class="opacity-60" />
             </Avatar>
             <div>

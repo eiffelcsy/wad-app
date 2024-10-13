@@ -1,243 +1,268 @@
 <template>
-  <div class="w-full px-16 h-screen flex flex-col pt-16 items-center">
-    <Button
-      @click="backHome"
-      variant="link"
-      class="mt-2 text-zinc-500 dark:text-zinc-400 absolute left-2 top-2"
-    >
-      <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
-    </Button>
-    <div class="mx-auto lg:w-[45%]">
-      <h1
-        class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
-      >
-        New Event
-      </h1>
-      <p
-        class="text-base text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4 hidden sm:block"
-      >
-        Create and customize a new event by filling in the details below.
-      </p>
-    </div>
-    <transition name="fade" mode="out-in">
-      <div
-        v-if="currentView === 1"
-        key="view1"
-        class="relative h-full flex flex-col md:items-center"
-      >
-        <!-- View 1: Title and Description -->
-        <div
-          class="w-full md:flex md:flex-row md:justify-center md:gap-16 lg:gap-36"
+  <div>
+    <PageHeader />
+    <div class="w-full px-8 min-h-screen flex flex-col mt-8 mb-10 items-center">
+      <div class="mx-auto w-full lg:w-1/2">
+        <h1
+          class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
         >
-          <div class="md:w-72 lg:w-96">
-            <div class="mb-4">
-              <h1
-                class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
-              >
-                Title
-              </h1>
-              <Input
-                id="title"
-                type="text"
-                placeholder="Enter Title"
-                v-model="title"
-                class="w-full h-12 text-sm sm:text-base p-2 sm:p-3"
-              />
-              <div v-if="errors.title" class="error absolute text-xs mt-1">
-                {{ errors.title }}
-              </div>
-            </div>
-            <div class="mt-4 mb-4 lg:mt-8">
-              <h1
-                class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
-              >
-                Description
-              </h1>
-              <Textarea
-                id="description"
-                type="text"
-                placeholder="Enter Description"
-                v-model="description"
-                class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 mt-2"
-              />
-              <div
-                v-if="errors.description"
-                class="error absolute text-xs mt-1"
-              >
-                {{ errors.description }}
-              </div>
-            </div>
+          New Event
+        </h1>
+        <p
+          class="text-base text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
+        >
+          Create and customize a new event by filling in the details below.
+        </p>
+      </div>
+      <transition name="fade" mode="out-in">
+        <div
+          v-if="currentView === 1"
+          key="view1"
+          class="relative w-full lg:w-1/2 h-full flex flex-col md:items-center md:mt-4 lg:mt-8"
+        >
+          <!-- View 1: Title and Description -->
+          <div
+            class="w-full flex flex-col mt-4 md:flex-row md:justify-center gap-4 md:gap-6 lg:gap-8"
+          >
+            <Card class="w-full">
+              <CardContent class="pt-4">
+                <div class="w-full">
+                  <div>
+                    <h1
+                      class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                    >
+                      Title
+                    </h1>
+                    <Input
+                      id="title"
+                      type="text"
+                      placeholder="Enter Title"
+                      v-model="title"
+                      class="w-full h-12 text-sm sm:text-base p-2 sm:p-3"
+                    />
+                    <div
+                      v-if="errors.title"
+                      class="error absolute text-xs mt-1"
+                    >
+                      {{ errors.title }}
+                    </div>
+                  </div>
+                  <div class="pt-4">
+                    <h1
+                      class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                    >
+                      Description
+                    </h1>
+                    <Textarea
+                      id="description"
+                      type="text"
+                      placeholder="Enter Description"
+                      v-model="description"
+                      class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 mt-2"
+                    />
+                    <div
+                      v-if="errors.description"
+                      class="error absolute text-xs mt-1"
+                    >
+                      {{ errors.description }}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent class="pt-4">
+                <div>
+                  <h1
+                    class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:mb-4"
+                  >
+                    Select Date Range
+                  </h1>
+                  <div class="mt-2 flex justify-center items-center">
+                    <RangeCalendar
+                      v-model="dateRange"
+                      class="rounded-md border"
+                    />
+                  </div>
+                  <div
+                    v-if="errors.dateRange"
+                    class="error absolute text-xs mt-1"
+                  >
+                    {{ errors.dateRange }}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-          <div>
-            <h1
-              class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:mb-4"
+          <Button @click="nextView" class="mt-8 w-full">Next</Button>
+        </div>
+
+        <div
+          v-else-if="currentView === 2"
+          key="view2"
+          class="relative w-full lg:w-1/2 h-full flex flex-col md:items-center md:mt-4 lg:mt-8"
+        >
+          <div
+            class="w-full flex flex-col mt-4 md:flex-row md:justify-center gap-4 md:gap-6 lg:gap-8"
+          >
+            <Card class="w-2/3">
+              <CardContent>
+                <div class="mb-8">
+                  <h1
+                    class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+                  >
+                    Select Time Range
+                  </h1>
+                  <div class="mt-4 lg:mt-8 flex flex-row justify-center gap-8">
+                    <div>
+                      <label
+                        class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                        >Start Time</label
+                      >
+                      <input
+                        type="time"
+                        v-model="startTime"
+                        step="1800"
+                        class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-950 border rounded-md dark:border-zinc-800 text-zinc-900 dark:text-zinc-200 self-center"
+                      />
+                      <div
+                        v-if="errors.startTime"
+                        class="error absolute text-xs mt-1"
+                      >
+                        {{ errors.startTime }}
+                      </div>
+                    </div>
+                    <div>
+                      <label
+                        class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                        >End Time</label
+                      >
+                      <input
+                        type="time"
+                        v-model="endTime"
+                        step="1800"
+                        class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
+                      />
+                      <div
+                        v-if="errors.endTime"
+                        class="error absolute text-xs mt-1"
+                      >
+                        {{ errors.endTime }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent
+                ><div>
+                  <h1
+                    class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
+                  >
+                    Number of Participants
+                  </h1>
+                  <div class="mt-4 lg:mt-6">
+                    <NumberField
+                      id="numParticipants"
+                      :default-value="1"
+                      :min="1"
+                      v-model="numberOfParticipants"
+                    >
+                      <NumberFieldContent>
+                        <NumberFieldDecrement />
+                        <NumberFieldInput />
+                        <NumberFieldIncrement />
+                      </NumberFieldContent>
+                    </NumberField>
+                    <div
+                      v-if="errors.numberOfParticipants"
+                      class="error text-xs mt-1"
+                    >
+                      {{ errors.numberOfParticipants }}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div
+            class="w-full grid grid-cols-1 lg:grid-cols-2 mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-8"
+          >
+            <Button @click="prevView" variant="outline" class="w-full"
+              >Back</Button
             >
-              Select Date Range
-            </h1>
-            <div class="mt-2 flex justify-center items-center">
-              <RangeCalendar v-model="dateRange" class="rounded-md border" />
-            </div>
-            <div v-if="errors.dateRange" class="error absolute text-xs mt-1">
-              {{ errors.dateRange }}
-            </div>
+            <Button @click="nextView" class="w-full">Next</Button>
           </div>
         </div>
-        <Button
-          @click="nextView"
-          class="absolute bottom-10 w-full max-w-96 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-          >Next</Button
-        >
-      </div>
 
-      <div
-        v-else-if="currentView === 2"
-        key="view2"
-        class="relative h-full flex flex-col md:items-center"
-      >
-        <div class="md:flex md:flex-row md:justify-center md:gap-28 lg:gap-40">
+        <div v-else-if="currentView === 3" key="view3">
+          <!-- View 3: Review and Submit -->
           <div class="mb-8">
             <h1
               class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
             >
-              Select Time Range
+              Review and Submit
             </h1>
-            <div class="mt-4 lg:mt-8 flex flex-row justify-center gap-8">
+            <p class="text-zinc-700 dark:text-zinc-300 mt-4">
+              Please review your information before submitting.
+            </p>
+            <div class="mt-6 space-y-2">
               <div>
-                <label
-                  class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                  >Start Time</label
-                >
-                <input
-                  type="time"
-                  v-model="startTime"
-                  step="1800"
-                  class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200 self-center"
-                />
-                <div
-                  v-if="errors.startTime"
-                  class="error absolute text-xs mt-1"
-                >
-                  {{ errors.startTime }}
-                </div>
+                <strong class="text-zinc-800 dark:text-zinc-100">Title:</strong>
+                <span class="text-zinc-700 dark:text-zinc-300">{{
+                  title
+                }}</span>
               </div>
               <div>
-                <label
-                  class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                  >End Time</label
+                <strong class="text-zinc-800 dark:text-zinc-100"
+                  >Description:</strong
                 >
-                <input
-                  type="time"
-                  v-model="endTime"
-                  step="1800"
-                  class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
-                />
-                <div v-if="errors.endTime" class="error absolute text-xs mt-1">
-                  {{ errors.endTime }}
-                </div>
+                <span class="text-zinc-700 dark:text-zinc-300">{{
+                  description
+                }}</span>
+              </div>
+              <div>
+                <strong class="text-zinc-800 dark:text-zinc-100"
+                  >Date Range:</strong
+                >
+                <span class="text-zinc-700 dark:text-zinc-300"
+                  >{{ formatDate(dateRange.start) }} to
+                  {{ formatDate(dateRange.end) }}</span
+                >
+              </div>
+              <div>
+                <strong class="text-zinc-800 dark:text-zinc-100">Time:</strong>
+                <span class="text-zinc-700 dark:text-zinc-300"
+                  >{{ startTime }} to {{ endTime }}</span
+                >
+              </div>
+              <div>
+                <strong class="text-zinc-800 dark:text-zinc-100"
+                  >Number of Participants:</strong
+                >
+                <span class="text-zinc-700 dark:text-zinc-300">{{
+                  numberOfParticipants
+                }}</span>
               </div>
             </div>
           </div>
-          <div>
-            <h1
-              class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
-            >
-              Number of Participants
-            </h1>
-            <div class="mt-4 lg:mt-6">
-              <Input
-                type="number"
-                v-model="numberOfParticipants"
-                min="1"
-                class="w-full lg:w-2/3 mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 border dark:border-zinc-600 text-zinc-900 dark:text-zinc-200"
-              />
-              <div
-                v-if="errors.numberOfParticipants"
-                class="error text-xs mt-1"
-              >
-                {{ errors.numberOfParticipants }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="absolute bottom-8 w-full flex justify-between mt-6 md:mt-8 lg:mt-10">
+          <div class="flex justify-between mt-8">
             <Button
               @click="prevView"
-              class="w-full max-w-96 mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
+              class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
               >Back</Button
             >
             <Button
-              @click="nextView"
-              class="w-full max-w-96 ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-              >Next</Button
+              @click="submitEvent"
+              class="w-full ml-2 bg-green-600 text-white"
+              >Create Event</Button
             >
           </div>
         </div>
-      </div>
-
-      <div v-else-if="currentView === 3" key="view3">
-        <!-- View 3: Review and Submit -->
-        <div class="mb-8">
-          <h1
-            class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
-          >
-            Review and Submit
-          </h1>
-          <p class="text-zinc-700 dark:text-zinc-300 mt-4">
-            Please review your information before submitting.
-          </p>
-          <div class="mt-6 space-y-2">
-            <div>
-              <strong class="text-zinc-800 dark:text-zinc-100">Title:</strong>
-              <span class="text-zinc-700 dark:text-zinc-300">{{ title }}</span>
-            </div>
-            <div>
-              <strong class="text-zinc-800 dark:text-zinc-100"
-                >Description:</strong
-              >
-              <span class="text-zinc-700 dark:text-zinc-300">{{
-                description
-              }}</span>
-            </div>
-            <div>
-              <strong class="text-zinc-800 dark:text-zinc-100"
-                >Date Range:</strong
-              >
-              <span class="text-zinc-700 dark:text-zinc-300"
-                >{{ formatDate(dateRange.start) }} to
-                {{ formatDate(dateRange.end) }}</span
-              >
-            </div>
-            <div>
-              <strong class="text-zinc-800 dark:text-zinc-100">Time:</strong>
-              <span class="text-zinc-700 dark:text-zinc-300"
-                >{{ startTime }} to {{ endTime }}</span
-              >
-            </div>
-            <div>
-              <strong class="text-zinc-800 dark:text-zinc-100"
-                >Number of Participants:</strong
-              >
-              <span class="text-zinc-700 dark:text-zinc-300">{{
-                numberOfParticipants
-              }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="flex justify-between mt-8">
-          <Button
-            @click="prevView"
-            class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
-            >Back</Button
-          >
-          <Button
-            @click="submitEvent"
-            class="w-full ml-2 bg-green-600 text-white"
-            >Create Event</Button
-          >
-        </div>
-      </div>
-    </transition>
+      </transition>
+    </div>
+    <PageFooter />
   </div>
 </template>
 
@@ -249,6 +274,15 @@ import type { DateRange } from "radix-vue";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { RangeCalendar } from "@/components/ui/range-calendar";
 import { ArrowLeftIcon } from "lucide-vue-next";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageFooter } from "@/components/ui/page-footer";
+import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "@/components/ui/number-field";
 
 const supabase = useSupabaseClient();
 

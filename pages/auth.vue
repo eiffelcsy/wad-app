@@ -2,7 +2,7 @@
   <span>
     <div class="min-h-screen flex flex-col justify-center items-center">
       <!-- Container for the authentication form -->
-      <div class="w-full max-w-[32rem] p-16 flex flex-col justify-center">
+      <div class="w-full max-w-[32rem] p-8 flex flex-col justify-center">
         <!-- Dynamic heading based on authentication type (login or register) -->
         <h1
           class="text-4xl md:text-5xl font-bold text-zinc-800 dark:text-zinc-100"
@@ -44,7 +44,7 @@
               type="email"
               placeholder="name@domain.com"
               required
-              class="w-full text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-2"
+              class="w-full text-sm sm:text-base text-zinc-900 dark:text-zinc-200 mt-2"
               autocomplete="email"
             />
           </div>
@@ -62,7 +62,7 @@
               type="password"
               placeholder="Password"
               required
-              class="w-full text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-2"
+              class="w-full text-sm sm:text-base text-zinc-900 dark:text-zinc-200 mt-2"
               autocomplete="new-password"
             />
           </div>
@@ -106,15 +106,6 @@
               : "Already have an account? Sign In"
           }}
         </Button>
-
-        <!-- Dark mode toggle button -->
-        <Button
-          @click="toggleDarkMode"
-          class="absolute bottom-4 right-4 p-2 size-9 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white rounded-full"
-        >
-          <SunIcon v-if="isDark" />
-          <MoonIcon v-else />
-        </Button>
       </div>
 
       <!-- Button to navigate back to the home page -->
@@ -129,6 +120,7 @@
       <!-- Toaster component for displaying notifications -->
       <Toaster />
     </div>
+    <PageFooter/>
   </span>
 </template>
 
@@ -142,6 +134,7 @@ import { SunIcon, MoonIcon, ArrowLeftIcon } from "@radix-icons/vue";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { Toaster, ToastAction } from "@/components/ui/toast";
 import { navigateTo } from "nuxt/app";
+import { PageFooter } from "@/components/ui/page-footer";
 
 // Accessing Supabase for authentication
 const supabase = useSupabaseClient();

@@ -104,14 +104,14 @@
               >
                 <Button
                   variant="outline"
-                  class="mt-2 lg:mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                  class="mt-2 md:mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
                   @click="toJoin"
                 >
                   Join Event
                   <PlusCircledIcon class="ml-2" />
                 </Button>
                 <Button
-                  class="mt-2 lg:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
+                  class="mt-2 md:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
                   @click="toCreate"
                 >
                   Create Event
@@ -134,7 +134,7 @@
                   </li>
                 </ul>
               </CardContent>
-              <CardFooter class="flex justify-between md:justify-end">
+              <CardFooter class="flex justify-end">
                 <Button
                   variant="link"
                   class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8"
