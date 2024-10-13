@@ -41,7 +41,7 @@
                 type="text"
                 placeholder="Enter Title"
                 v-model="title"
-                class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600"
+                class="w-full h-12 text-sm sm:text-base p-2 sm:p-3"
               />
               <div v-if="errors.title" class="error absolute text-xs mt-1">
                 {{ errors.title }}
@@ -58,7 +58,7 @@
                 type="text"
                 placeholder="Enter Description"
                 v-model="description"
-                class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-2"
+                class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 mt-2"
               />
               <div
                 v-if="errors.description"

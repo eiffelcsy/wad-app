@@ -4,17 +4,23 @@
       <div class="flex justify-between items-center">
         <!-- Left section with logo and system status -->
         <div class="flex items-center space-x-2">
-          <p class="text-sm font-semibold tracking-wider">MeetLah</p>
-          <p class="text-sm">© 2024</p>
+          <p class="text-base font-semibold tracking-wider">MeetLah</p>
+          <p class="text-base">© 2024</p>
         </div>
 
         <!-- Bottom-right section with command menu and theme toggle -->
         <div class="flex flex-row">
           <div class="flex items-center space-x-4">
             <Button
+              v-if="isDesktop"
+              @click="handleOpenChange()"
               variant="ghost"
-              class="text-sm font-light hover:text-gray-400 mr-2"
-              >Command Menu</Button
+              class="text-sm font-light hover:text-gray-400 mr-2 p-2"
+              >Command Menu<kbd
+                class="ml-2 pointer-events-none inline-flex select-none items-center gap-1 rounded border px-1.5 py-0.5 font-mono font-medium text-muted-foreground opacity-100"
+              >
+                <span class="text-xs">⌘</span>J
+              </kbd></Button
             >
           </div>
           <DropdownMenu>
@@ -67,6 +73,23 @@
         </div>
       </div>
     </div>
+    <CommandDialog :open="open" @update:open="handleOpenChange">
+      <CommandInput placeholder="Type a command or search..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Suggestions">
+          <CommandItem value="calendar"> Calendar </CommandItem>
+          <CommandItem value="search-emoji"> Search Emoji </CommandItem>
+          <CommandItem value="calculator"> Calculator </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Settings">
+          <CommandItem value="profile"> Profile </CommandItem>
+          <CommandItem value="billing"> Billing </CommandItem>
+          <CommandItem value="settings"> Settings </CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </CommandDialog>
   </footer>
 </template>
 
@@ -79,8 +102,37 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useMagicKeys, useMediaQuery } from "@vueuse/core";
+import { ref, watch } from "vue";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
+
+const open = ref(false);
+const isDesktop = useMediaQuery("(min-width: 768px)");
 
 const colorMode = useColorMode();
+const { Meta_J, Ctrl_J } = useMagicKeys({
+  passive: false,
+  onEventFired(e) {
+    if (e.key === 'j' && (e.metaKey || e.ctrlKey))
+      e.preventDefault()
+  },
+})
+function handleOpenChange() {
+  open.value = !open.value;
+}
+
+watch([Meta_J, Ctrl_J], (v) => {
+  if (v[0] || v[1])
+    handleOpenChange()
+})
 </script>
 
 <style scoped></style>
