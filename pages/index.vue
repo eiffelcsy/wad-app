@@ -57,7 +57,7 @@
             Hi, {{ displayName }}!
           </h1>
           <div
-            class="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 my-8 md:my-10 lg:my-12"
+            class="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-8 md:py-10 lg:py-12"
           >
             <div>
               <div>
