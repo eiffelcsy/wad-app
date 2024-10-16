@@ -22,7 +22,7 @@
       <div class="container min-h-screen">
         <div
           v-if="!user"
-          class="w-full h-[95%] content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
+          class="w-full h-lvh content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
         >
           <h1
             class="text-3xl md:text-4xl lg:text-5xl text-zinc-800 dark:text-zinc-100 font-bold my-2"
@@ -162,7 +162,7 @@
                 <CardHeader>
                   <CardTitle>Your Profile</CardTitle>
                 </CardHeader>
-                <CardContent class="pb-0">
+                <CardContent>
                   <div class="flex flex-row">
                     <Avatar class="w-16 h-16 mr-6">
                       <UserRoundIcon
@@ -172,7 +172,7 @@
                       />
                     </Avatar>
                     <div>
-                      <h1 class="text-2xl font-semibold mb-2">
+                      <h1 class="text-2xl font-semibold">
                         {{ displayName }}
                       </h1>
                       <p class="text-base text-zinc-400 dark:text-zinc-500">
@@ -186,7 +186,6 @@
                     <Button>Placeholder for Apple Calendar</Button>
                   </div>
                 </CardContent>
-                <CardFooter></CardFooter>
               </Card>
             </div>
           </div>
