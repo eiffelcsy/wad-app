@@ -1,11 +1,9 @@
 <template>
-  <div>
-    <GCalButton/>
-  </div>
+  <Progress :model-value="33" />
 </template>
 
 <script lang="ts" setup>
-import GCalButton from '../components/ui/gcal-button/gCalButton.vue';
+import { Progress } from '@/components/ui/progress';
 
 
 </script>
