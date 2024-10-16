@@ -80,13 +80,6 @@
             </NuxtLink>
             <Separator class="my-2" />
             <NuxtLink
-              to="/profile"
-              class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
-            >
-              <UserRoundIcon size="16px" strokeWidth="{1}" class="mr-2" /> Your
-              profile
-            </NuxtLink>
-            <NuxtLink
               to="/events"
               class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
             >
