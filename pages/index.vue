@@ -60,97 +60,133 @@
             class="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8 my-8 md:my-10 lg:my-12"
           >
             <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Upcoming Events</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div v-if="upcomingEvents.length === 0">
-                    No upcoming events.
-                  </div>
-                  <div v-else>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead class="w-1/2">Title</TableHead>
-                          <TableHead>Date Range</TableHead>
-                          <TableHead></TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        <TableRow
-                          v-for="event in upcomingEvents"
-                          :key="event.id"
-                        >
-                          <TableCell class="text-left">{{
-                            event.title
-                          }}</TableCell>
-                          <TableCell class="text-left text-nowrap">
-                            {{
-                              new Date(event.start_date).toLocaleDateString()
-                            }}
-                            to
-                            {{ new Date(event.end_date).toLocaleDateString() }}
-                          </TableCell>
-                          <TableCell>
-                            <NuxtLink
-                              :to="{
-                                name: 'event-eventId',
-                                params: { eventId: event.code },
-                              }"
-                              ><Pencil class="size-4"
-                            /></NuxtLink>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-                <CardFooter
-                  class="flex justify-between md:justify-start px-6 pb-6"
-                >
-                  <Button
-                    variant="outline"
-                    class="mt-2 md:mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-                    @click="toJoin"
+              <div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Upcoming Events</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div v-if="upcomingEvents.length === 0">
+                      No upcoming events.
+                    </div>
+                    <div v-else>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead class="w-1/2">Title</TableHead>
+                            <TableHead>Date Range</TableHead>
+                            <TableHead></TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          <TableRow
+                            v-for="event in upcomingEvents"
+                            :key="event.id"
+                          >
+                            <TableCell class="text-left">{{
+                              event.title
+                            }}</TableCell>
+                            <TableCell class="text-left text-nowrap">
+                              {{
+                                new Date(event.start_date).toLocaleDateString()
+                              }}
+                              to
+                              {{
+                                new Date(event.end_date).toLocaleDateString()
+                              }}
+                            </TableCell>
+                            <TableCell>
+                              <NuxtLink
+                                :to="{
+                                  name: 'event-eventId',
+                                  params: { eventId: event.code },
+                                }"
+                                ><Pencil class="size-4"
+                              /></NuxtLink>
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                  <CardFooter
+                    class="flex justify-between md:justify-start px-6 pb-6"
                   >
-                    Join Event
-                    <PlusCircledIcon class="ml-2" />
-                  </Button>
-                  <Button
-                    class="mt-2 md:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
-                    @click="toCreate"
-                  >
-                    Create Event
-                    <CalendarIcon class="ml-2" />
-                  </Button>
-                </CardFooter>
-              </Card>
+                    <Button
+                      variant="outline"
+                      class="mt-2 md:mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                      @click="toJoin"
+                    >
+                      Join Event
+                      <PlusCircledIcon class="ml-2" />
+                    </Button>
+                    <Button
+                      class="mt-2 md:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
+                      @click="toCreate"
+                    >
+                      Create Event
+                      <CalendarIcon class="ml-2" />
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </div>
+              <div class="mt-4 md:mt-6 lg:mt-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Project TODOs</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div v-if="todos.length === 0">No TODOs found.</div>
+                    <ul v-else>
+                      <li v-for="todo in todos" :key="todo.id">
+                        {{ todo.title }} - {{ todo.status }}
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter class="flex justify-end">
+                    <Button
+                      variant="link"
+                      class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8"
+                      @click="navigateTo('/projects')"
+                    >
+                      View all Projects
+                      <ArrowRight class="size-4 ml-2" />
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </div>
             </div>
 
-            <div>
+            <div class="order-last lg:order-1">
               <Card>
                 <CardHeader>
-                  <CardTitle>Project TODOs</CardTitle>
+                  <CardTitle>Your Profile</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div v-if="todos.length === 0">No TODOs found.</div>
-                  <ul v-else>
-                    <li v-for="todo in todos" :key="todo.id">
-                      {{ todo.title }} - {{ todo.status }}
-                    </li>
-                  </ul>
+                <CardContent class="pb-0">
+                  <div class="flex flex-row">
+                    <Avatar class="w-16 h-16 mr-6">
+                      <UserRoundIcon
+                        size="24px"
+                        strokeWidth="{1}"
+                        class="opacity-60"
+                      />
+                    </Avatar>
+                    <div>
+                      <h1 class="text-2xl font-semibold mb-2">
+                        {{ displayName }}
+                      </h1>
+                      <p class="text-base text-zinc-400 dark:text-zinc-500">
+                        {{ email }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="mt-8 flex flex-col gap-6">
+                    <gCalButton />
+                    <Button>Placeholder for Microsoft Outlook</Button>
+                    <Button>Placeholder for Apple Calendar</Button>
+                  </div>
                 </CardContent>
-                <CardFooter class="flex justify-end">
-                  <Button
-                    variant="link"
-                    class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8"
-                    @click="navigateTo('/projects')"
-                  >
-                    View all Projects
-                    <ArrowRight class="size-4 ml-2" />
-                  </Button>
-                </CardFooter>
+                <CardFooter></CardFooter>
               </Card>
             </div>
           </div>
@@ -207,7 +243,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ArrowRight, Pencil } from "lucide-vue-next";
-import { PageFooter } from "../components/ui/page-footer";
+import { PageFooter } from "@/components/ui/page-footer";
+import { gCalButton } from "@/components/ui/gcal-button";
 
 // Supabase setup
 const supabase = useSupabaseClient();
