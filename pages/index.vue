@@ -19,7 +19,7 @@
       </Button>
     </div>
     <div class="bg-zinc-50 dark:bg-black">
-      <div class="container h-screen">
+      <div class="container min-h-screen">
         <div
           v-if="!user"
           class="w-full h-[95%] content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
