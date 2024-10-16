@@ -90,31 +90,35 @@
         <div
           class="container w-full grid grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 justify-center"
         >
-          <Card v-for="(project, index) in projects" :key="index" class="mt-6">
-            <CardHeader class="gap-2">
-              <CardTitle>
-                <div>
-                  <h1 class="text-xl">{{ project.title }}</h1>
-                  <Button variant="link" class="px-0 py-1">
-                    <NuxtLink
-                      class="text-base font-light text-zinc-500"
-                      :to="{
-                        name: 'project-projectId',
-                        params: { projectId: project.id },
-                      }"
-                      >{{ project.id }}</NuxtLink
-                    >
-                  </Button>
-                </div>
-              </CardTitle>
-              <CardDescription
-                ><Badge>{{ project.team_name }}</Badge
-                ><br
-              /></CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>{{ project.description }}</p>
-            </CardContent>
+          <Card
+            v-for="(project, index) in projects"
+            :key="index"
+            class="mt-6 hover:border-zinc-700"
+          >
+            <NuxtLink
+              :to="{
+                name: 'project-projectId',
+                params: { projectId: project.id },
+              }"
+            >
+              <CardHeader class="gap-2">
+                <CardTitle>
+                  <div>
+                    <h1 class="text-xl hover:underline">{{ project.title }}</h1>
+                    <p class="text-base font-light text-zinc-500 mt-1">
+                      {{ project.id }}
+                    </p>
+                  </div>
+                </CardTitle>
+                <CardDescription
+                  ><Badge class="mt-2">{{ project.team_name }}</Badge
+                  ><br
+                /></CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>{{ project.description }}</p>
+              </CardContent>
+            </NuxtLink>
           </Card>
         </div>
       </div>
