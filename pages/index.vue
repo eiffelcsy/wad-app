@@ -236,7 +236,6 @@ import { ref, onMounted } from "vue";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,

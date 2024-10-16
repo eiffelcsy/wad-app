@@ -1,7 +1,9 @@
 <template>
   <div>
     <PageHeader />
-    <div class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-zinc-50 dark:bg-black">
+    <div
+      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-zinc-50 dark:bg-black"
+    >
       <div class="mx-auto w-full lg:w-1/2">
         <h1
           class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
@@ -9,7 +11,7 @@
           New Event
         </h1>
         <p
-          class="text-base text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
+          class="text-base text-zinc-400 dark:text-zinc-500"
         >
           Create and customize a new event by filling in the details below.
         </p>
@@ -26,46 +28,41 @@
           >
             <Card class="w-full">
               <CardContent class="pt-4">
-                <div class="w-full">
-                  <div>
-                    <h1
-                      class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
-                    >
-                      Title
-                    </h1>
-                    <Input
-                      id="title"
-                      type="text"
-                      placeholder="Enter Title"
-                      v-model="title"
-                      class="w-full h-12 text-sm sm:text-base p-2 sm:p-3"
-                    />
-                    <div
-                      v-if="errors.title"
-                      class="error absolute text-xs mt-1"
-                    >
-                      {{ errors.title }}
-                    </div>
+                <div>
+                  <h1
+                    class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                  >
+                    Title
+                  </h1>
+                  <Input
+                    id="title"
+                    type="text"
+                    placeholder="Enter Title"
+                    v-model="title"
+                    class="w-full h-12 text-sm sm:text-base p-2 sm:p-3"
+                  />
+                  <div v-if="errors.title" class="error absolute text-xs mt-1">
+                    {{ errors.title }}
                   </div>
-                  <div class="pt-4">
-                    <h1
-                      class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
-                    >
-                      Description
-                    </h1>
-                    <Textarea
-                      id="description"
-                      type="text"
-                      placeholder="Enter Description"
-                      v-model="description"
-                      class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 mt-2"
-                    />
-                    <div
-                      v-if="errors.description"
-                      class="error absolute text-xs mt-1"
-                    >
-                      {{ errors.description }}
-                    </div>
+                </div>
+                <div class="pt-4">
+                  <h1
+                    class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                  >
+                    Description
+                  </h1>
+                  <Textarea
+                    id="description"
+                    type="text"
+                    placeholder="Enter Description"
+                    v-model="description"
+                    class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 mt-2"
+                  />
+                  <div
+                    v-if="errors.description"
+                    class="error absolute text-xs mt-1"
+                  >
+                    {{ errors.description }}
                   </div>
                 </div>
               </CardContent>
@@ -94,7 +91,9 @@
               </CardContent>
             </Card>
           </div>
-          <Button @click="nextView" class="mt-6 md:mt-8 lg:mt-10 w-full">Next</Button>
+          <Button @click="nextView" class="mt-6 md:mt-8 lg:mt-10 w-full"
+            >Next</Button
+          >
         </div>
 
         <div
@@ -273,7 +272,6 @@ import { navigateTo } from "nuxt/app";
 import type { DateRange } from "radix-vue";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { RangeCalendar } from "@/components/ui/range-calendar";
-import { ArrowLeftIcon } from "lucide-vue-next";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageFooter } from "@/components/ui/page-footer";
 import {
@@ -283,6 +281,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
+import { Card, CardContent } from "@/components/ui/card";
 
 const supabase = useSupabaseClient();
 

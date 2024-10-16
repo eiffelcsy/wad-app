@@ -1,75 +1,87 @@
 <template>
-  <div class="w-full px-16 h-screen flex flex-col pt-16">
-    <Button
-      @click="backHome"
-      variant="link"
-      class="mt-2 text-zinc-500 dark:text-zinc-400 absolute left-2 top-2"
+  <div>
+    <PageHeader />
+    <div
+      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-zinc-50 dark:bg-black"
     >
-      <ArrowLeftIcon class="w-4 h-4 mr-2" />Back to Home
-    </Button>
-    <div class="md:flex md:flex-col md:items-center">
-      <div class="mb-4 lg:w-1/2">
+      <div class="mx-auto w-full lg:w-1/2">
         <h1
           class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
         >
           New Project
         </h1>
-        <p
-          class="text-base text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
-        >
+        <p class="text-base text-zinc-400 dark:text-zinc-500">
           Create a new project and associate it with a team. Start by giving
           your project a name and description, then choose a team.
         </p>
-        <Input
-          id="title"
-          type="text"
-          placeholder="Enter Title"
-          v-model="title"
-          class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-8"
-        />
-        <div v-if="errors.title" class="error absolute text-xs mt-1">
-          {{ errors.title }}
-        </div>
-        <Textarea
-          id="description"
-          type="text"
-          placeholder="Enter Description"
-          v-model="description"
-          class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600 mt-2"
-        />
-        <div v-if="errors.description" class="error absolute text-xs mt-1">
-          {{ errors.description }}
-        </div>
-        <div class="flex flex-col">
-          <Select id="team" v-model="selectedTeam">
-            <SelectTrigger
-              class="w-full mt-4 text-sm sm:text-base bg-zinc-50 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 border dark:border-zinc-600"
-            >
-              <SelectValue
-                placeholder="Choose a team to associate this project with"
+        <Card class="mt-4 md:mt-8 lg:mt-12">
+          <CardContent class="pt-4">
+            <div>
+              <h1
+                class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+              >
+                Title
+              </h1>
+              <Input
+                id="title"
+                type="text"
+                placeholder="Enter Title"
+                v-model="title"
               />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Teams</SelectLabel>
-                <SelectItem
-                  v-for="team in teams"
-                  :key="team.team_id"
-                  :value="team.team_id"
-                >
-                  {{ team.teams.name }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
+              <div v-if="errors.title" class="error absolute text-xs mt-1">
+                {{ errors.title }}
+              </div>
+            </div>
+            <div class="pt-4">
+              <h1
+                class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+              >
+                Description
+              </h1>
+              <Textarea
+                id="description"
+                type="text"
+                placeholder="Enter Description"
+                v-model="description"
+              />
+              <div
+                v-if="errors.description"
+                class="error absolute text-xs mt-1"
+              >
+                {{ errors.description }}
+              </div>
+            </div>
+            <div class="pt-6 lg:pt-8">
+              <Select id="team" v-model="selectedTeam">
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder="Choose a team to associate this project with"
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Teams</SelectLabel>
+                    <SelectItem
+                      v-for="team in teams"
+                      :key="team.team_id"
+                      :value="team.team_id"
+                    >
+                      {{ team.teams.name }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+        <Button
+          @click="handleCreateProject"
+          class="mt-6 md:mt-8 lg:mt-10 w-full bg-green-600 text-white"
+          >Create Project</Button
+        >
       </div>
-      <Button
-        @click="handleCreateProject"
-        class="w-full mt-6 md:w-96 md:mt-8 lg:mt-14 bg-green-600 text-white"
-        >Create Project</Button
-      >
     </div>
+    <PageFooter />
   </div>
 </template>
 
@@ -77,6 +89,8 @@
 import { onMounted, type Ref, ref } from "vue";
 import { ArrowLeftIcon } from "lucide-vue-next";
 import { navigateTo } from "nuxt/app";
+import { PageHeader } from "@/components/ui/page-header";
+import { PageFooter } from "@/components/ui/page-footer";
 
 interface Errors {
   title?: string;
