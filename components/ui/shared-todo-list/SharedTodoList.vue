@@ -188,7 +188,7 @@ async function getProjectMembers() {
   members.value = projectMembers || [];
 }
 
-function handleRealTimeChange(payload) {
+const handleRealTimeChange = (payload) => {
   const newTodo = payload.new;
   const oldTodo = payload.old;
 
@@ -206,12 +206,19 @@ function handleRealTimeChange(payload) {
     if (index !== -1) {
       data.value = [
         ...data.value.slice(0, index),
-        newTodo, // Update the todo
+        newTodo,
         ...data.value.slice(index + 1),
       ];
     }
   } else if (payload.eventType === "DELETE") {
-    data.value = data.value.filter((todo) => todo.id !== oldTodo.id);
+    const index = data.value.findIndex((todo) => todo.id === oldTodo.id);
+    if (index !== -1) {
+      data.value = [
+        ...data.value.slice(0, index),
+        ...data.value.slice(index + 1),
+      ];
+    }
+    console.log('Deleted Todo:', oldTodo);
   }
 }
 

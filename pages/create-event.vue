@@ -264,7 +264,7 @@
         <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 w-1/3">
             <h2 class="text-xl font-semibold mb-4 text-zinc-800 dark:text-zinc-100">Event Created!</h2>
-            <p class="text-lg mb-2 text-zinc-700 dark:text-zinc-300">Event Code: <strong>{{ eventCode.value }}</strong></p>
+            <p class="text-lg mb-2 text-zinc-700 dark:text-zinc-300">Event Code: <strong>{{ eventCode }}</strong></p>
             <p class="text-lg mb-4 text-zinc-700 dark:text-zinc-300">Shareable Link: 
               <a :href="shareableLink" class="text-blue-600" target="_blank">{{ shareableLink }}</a>
             </p>
