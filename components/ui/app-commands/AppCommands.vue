@@ -2,45 +2,61 @@
   <div>
     <CommandDialog :open="open" @update:open="$emit('update:open', false)">
       <CommandInput placeholder="Type a command or search..." />
-      <CommandList class="min-h-96 p-2">
+      <CommandList class="min-h-[32rem] p-2">
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Events">
-          <CommandItem value="calendar"> Calendar </CommandItem>
-          <CommandItem value="schedule-meeting"> Schedule Meeting </CommandItem>
-          <CommandItem value="view-events"> View Upcoming Events </CommandItem>
+          <CommandItem value="search-events"> Search Events... </CommandItem>
+          <CommandItem value="create-event"> Create New Event... </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Teams">
-          <CommandItem value="team-profile"> View Team Profile </CommandItem>
-          <CommandItem value="team-billing"> Team Billing </CommandItem>
-          <CommandItem value="team-settings"> Team Settings </CommandItem>
-          <CommandItem value="manage-members">
-            Manage Team Members
-          </CommandItem>
+          <CommandItem value="search-teams"> Search Teams... </CommandItem>
+          <CommandItem value="create-team"> Create New Team... </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Projects">
-          <CommandItem value="project-overview"> Project Overview </CommandItem>
+          <CommandItem value="search-projects">
+            Search Projects...
+          </CommandItem>
           <CommandItem value="create-new-project">
             Create New Project
-          </CommandItem>
-          <CommandItem value="view-all-projects">
-            View All Projects
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="General">
-          <CommandItem value="app-settings"> Application Settings </CommandItem>
-          <CommandItem value="user-profile"> User Profile </CommandItem>
+          <CommandItem value="change-theme"> Change Theme.... </CommandItem>
+          <CommandItem value="copy-url"> Copy Current URL </CommandItem>
           <CommandItem value="notifications">
             Notification Preferences
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Navigation">
-          <CommandItem value="dashboard"> Go to Dashboard </CommandItem>
-          <CommandItem value="home"> Go to Home </CommandItem>
-          <CommandItem value="reports"> View Reports </CommandItem>
+          <CommandItem value="home"
+            ><ArrowRight class="size-4 mr-2" /> Go to<span class="font-bold"
+              >&nbsp;Home</span
+            >
+          </CommandItem>
+          <CommandItem value="go-your-events"
+            ><ArrowRight class="size-4 mr-2" /> Go to<span class="font-bold"
+              >&nbsp;Your events</span
+            >
+          </CommandItem>
+          <CommandItem value="go-your-teams"
+            ><ArrowRight class="size-4 mr-2" /> Go to<span class="font-bold"
+              >&nbsp;Your teams</span
+            >
+          </CommandItem>
+          <CommandItem value="go-your-projects"
+            ><ArrowRight class="size-4 mr-2" /> Go to<span class="font-bold"
+              >&nbsp;Your projects</span
+            >
+          </CommandItem>
+          <CommandItem value="go-notification-inbox"
+            ><ArrowRight class="size-4 mr-2" /> Go to<span class="font-bold"
+              >&nbsp;Notification Inbox</span
+            >
+          </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Help">
@@ -63,6 +79,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { ArrowRight } from "lucide-vue-next";
 
 const props = defineProps({
   open: {
