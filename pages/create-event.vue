@@ -260,6 +260,20 @@
           </div>
         </div>
       </transition>
+      <transition name="fade">
+        <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 w-1/3">
+            <h2 class="text-xl font-semibold mb-4 text-zinc-800 dark:text-zinc-100">Event Created!</h2>
+            <p class="text-lg mb-2 text-zinc-700 dark:text-zinc-300">Event Code: <strong>{{ eventCode.value }}</strong></p>
+            <p class="text-lg mb-4 text-zinc-700 dark:text-zinc-300">Shareable Link: 
+              <a :href="shareableLink" class="text-blue-600" target="_blank">{{ shareableLink }}</a>
+            </p>
+            <button @click="copyLink" class="bg-blue-600 text-white py-2 px-4 rounded-md">Copy Link</button>
+            <button @click="closeModal" class="ml-4 bg-red-600 text-white py-2 px-4 rounded-md">Close</button>
+          </div>
+        </div>
+      </transition>
+
     </div>
     <PageFooter />
   </div>
@@ -354,6 +368,10 @@ const nextView = () => {
 const prevView = () => {
   currentView.value--;
 };
+// Event code and shareable link states
+const eventCode = ref(null);
+const shareableLink = ref("");
+const showModal = ref(false);
 
 // Function to generate a unique event code
 const generateEventCode = async (): Promise<string | null> => {
@@ -389,7 +407,7 @@ const generateEventCode = async (): Promise<string | null> => {
 
 // Function to submit the event
 const submitEvent = async () => {
-  const eventCode = await generateEventCode();
+  eventCode.value = await generateEventCode();
 
   if (!eventCode) {
     alert("Failed to generate event code. Please try again.");
@@ -406,7 +424,7 @@ const submitEvent = async () => {
     start_time: startTime.value,
     end_time: endTime.value,
     number_of_participants: numberOfParticipants.value,
-    code: eventCode,
+    code: eventCode.value,
   };
 
   // Insert into Supabase
@@ -416,10 +434,11 @@ const submitEvent = async () => {
     console.error("Error inserting event:", error);
     alert("Failed to create event. Please try again.");
     return;
-  }
-
+  } 
+  shareableLink.value = `${window.location.origin}/event/${eventCode.value}`;
+  showModal.value = true;
   // Redirect to event/[event-code]
-  navigateTo(`/event/${eventCode}`); // TODO: fix redirect, somehow its not working
+  // TODO: fix redirect, somehow its not working
 };
 
 const backHome = () => {
@@ -429,6 +448,19 @@ const backHome = () => {
 // Utility function to format date
 const formatDate = (date: Date) => {
   return dayjs(date).format("YYYY-MM-DD");
+};
+// Close modal
+const closeModal = () => {
+  showModal.value = false;
+
+  // Redirect to event page once modal closes
+  navigateTo(`/event/${eventCode.value}`);
+};
+
+// Copy link to clipboard
+const copyLink = () => {
+  navigator.clipboard.writeText(shareableLink.value);
+  alert('Link copied to clipboard!');
 };
 </script>
 
