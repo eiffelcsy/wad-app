@@ -208,14 +208,14 @@
             </p>
             <div class="mt-6 space-y-2">
               <div>
-                <strong class="text-zinc-800 dark:text-zinc-100">Title:</strong>
+                <strong class="text-zinc-800 dark:text-zinc-100">Title: </strong>
                 <span class="text-zinc-700 dark:text-zinc-300">{{
                   title
                 }}</span>
               </div>
-              <div>
+              <div v-if="description">
                 <strong class="text-zinc-800 dark:text-zinc-100"
-                  >Description:</strong
+                  >Description: </strong
                 >
                 <span class="text-zinc-700 dark:text-zinc-300">{{
                   description
@@ -223,7 +223,7 @@
               </div>
               <div>
                 <strong class="text-zinc-800 dark:text-zinc-100"
-                  >Date Range:</strong
+                  >Date Range: </strong
                 >
                 <span class="text-zinc-700 dark:text-zinc-300"
                   >{{ formatDate(dateRange.start) }} to
@@ -231,14 +231,14 @@
                 >
               </div>
               <div>
-                <strong class="text-zinc-800 dark:text-zinc-100">Time:</strong>
+                <strong class="text-zinc-800 dark:text-zinc-100">Time: </strong>
                 <span class="text-zinc-700 dark:text-zinc-300"
                   >{{ startTime }} to {{ endTime }}</span
                 >
               </div>
               <div>
                 <strong class="text-zinc-800 dark:text-zinc-100"
-                  >Number of Participants:</strong
+                  >Number of Participants: </strong
                 >
                 <span class="text-zinc-700 dark:text-zinc-300">{{
                   numberOfParticipants
@@ -322,9 +322,9 @@ const validateCurrentView = (): boolean => {
     if (!title.value.trim()) {
       errors.value.title = "Title is required.";
     }
-    if (!description.value.trim()) {
-      errors.value.description = "Description is required.";
-    }
+    // if (!description.value.trim()) {
+    //   errors.value.description = "Description is required.";
+    // }
     if (!dateRange.value.start || !dateRange.value.end) {
       errors.value.dateRange = "Start date and end date are required.";
     }
