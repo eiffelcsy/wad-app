@@ -40,7 +40,7 @@ async function deleteTask(todoId: string) {
     console.error('Error deleting task:', error)
   } else {
     console.log(`Task ${todoId} deleted successfully`)
-    // Optionally refetch data or update local state after deletion
+    window.location.reload();
   }
 }
 
