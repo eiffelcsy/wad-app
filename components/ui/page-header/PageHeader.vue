@@ -73,6 +73,12 @@
               Create event
             </NuxtLink>
             <NuxtLink
+              to="/create-team"
+              class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+              ><UserRoundPlusIcon size="16px" strokeWidth="{1}" class="mr-2" />
+              Create team
+            </NuxtLink>
+            <NuxtLink
               to="/create-project"
               class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
               ><PackagePlusIcon size="16px" strokeWidth="{1}" class="mr-2" />
@@ -131,6 +137,7 @@ import {
   CalendarPlusIcon,
   PackagePlusIcon,
   BellIcon,
+  UserRoundPlusIcon,
 } from "lucide-vue-next";
 
 const supabase = useSupabaseClient();

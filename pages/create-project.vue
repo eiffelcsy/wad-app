@@ -152,6 +152,7 @@ async function handleCreateProject() {
       .insert({
         project_id: projectId,
         user_id: user.value.id,
+        name: user.value.user_metadata.name,
         role: "owner",
       });
 
@@ -163,9 +164,7 @@ async function handleCreateProject() {
     }
   }
 }
-const backHome = () => {
-  navigateTo("/");
-};
+
 </script>
 
 <style></style>

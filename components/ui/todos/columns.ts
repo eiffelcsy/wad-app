@@ -27,12 +27,12 @@ export const columns: ColumnDef<Todo>[] = [
     },
   },
   {
-    accessorKey: 'assigned_to',
-    id: 'assigned_to', // Add an explicit id
+    accessorKey: 'name',
+    id: 'name', // Add an explicit id
     header: () => h('div', { class: 'text-left' }, 'Assigned To'),
     cell: ({ row }) => {
-      const assignedTo = row.getValue('assigned_to');
-      return h('div', { class: 'text-left' }, assignedTo);
+      const name = row.getValue('name');
+      return h('div', { class: 'text-left' }, name);
     },
   },
   {

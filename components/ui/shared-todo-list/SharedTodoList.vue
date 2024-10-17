@@ -3,9 +3,7 @@
     <div class="flex flex-row justify-between p-2 mb-2">
       <div>
         <h1 class="text-xl font-semibold">Project TODOs</h1>
-        <p
-          class="text-base text-zinc-400 dark:text-zinc-500"
-        >
+        <p class="text-base text-zinc-400 dark:text-zinc-500">
           Tasks to be completed
         </p>
       </div>
@@ -35,20 +33,28 @@
           </div>
           <div class="grid gap-2">
             <Label html-for="assignee">Assign to</Label>
-            <select
-              v-model="selectedMember"
-              id="assignee"
-              class="w-full p-2 border rounded"
-            >
-              <option value="" disabled>Select a member</option>
-              <option
-                v-for="member in members"
-                :key="member.user_metadata.name"
-                :value="member.id"
-              >
-                {{ member.user_metadata.name }}
-              </option>
-            </select>
+            <Select v-model="selectedMember">
+              <SelectTrigger>
+                <span v-if="selectedMember.name">
+                  {{ selectedMember.name }}
+                </span>
+                <span v-else class="text-zinc-500 dark:text-zinc-400">
+                  Select a member
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Members</SelectLabel>
+                  <SelectItem
+                    v-for="member in members"
+                    :key="member.name"
+                    :value="{ name: member.name, id: member.user_id }"
+                  >
+                    {{ member.name }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <Button @click="createNewTask"> Save Task </Button>
         </div>
@@ -75,20 +81,28 @@
           </div>
           <div class="grid gap-2">
             <Label html-for="assignee">Assign to</Label>
-            <select
-              v-model="selectedMember"
-              id="assignee"
-              class="w-full p-2 border rounded"
-            >
-              <option value="" disabled>Select a member</option>
-              <option
-                v-for="member in members"
-                :key="member.id"
-                :value="member.member_id"
-              >
-                {{ member.name }}
-              </option>
-            </select>
+            <Select v-model="selectedMember">
+              <SelectTrigger>
+                <span v-if="selectedMember.name">
+                  {{ selectedMember.name }}
+                </span>
+                <span v-else class="text-zinc-500 dark:text-zinc-400">
+                  Select a member
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Members</SelectLabel>
+                  <SelectItem
+                    v-for="member in members"
+                    :key="member.name"
+                    :value="{ name: member.name, id: member.user_id }"
+                  >
+                    {{ member.name }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <Button @click="createNewTask"> Save Task </Button>
         </div>
@@ -121,14 +135,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMediaQuery } from "@vueuse/core";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const supabase = useSupabaseClient();
 const data = ref<Todo[]>([]);
 const isOpen = ref(false);
 const isDesktop = useMediaQuery("(min-width: 768px)");
 const newTaskTitle = ref("");
-const selectedMember = ref(""); // Dropdown to select assignee
-const members = ref([]); // To hold project members
+const selectedMember = ref({ name: "", id: "" });
+const members = ref([]);
 
 const props = defineProps({
   projectId: {
@@ -162,24 +185,7 @@ async function getProjectMembers() {
     console.error("Error fetching project members:", projectMembersError);
     return [];
   }
-
-  const userIds = projectMembers.map((member) => member.user_id);
-
-  if (userIds.length > 0) {
-    const { data: users, error: usersError } = await supabase
-      .from("auth.users") // Assuming the user details are in a 'users' table
-      .select("*") // Fetch the user id and name
-      .in("id", userIds); // Filter users by the list of user_ids
-
-    if (usersError) {
-      console.error("Error fetching user details:", usersError);
-      return [];
-    }
-
-    members.value = users || [];
-  } else {
-    members.value = []; // No members found for this project
-  }
+  members.value = projectMembers || [];
 }
 
 function handleRealTimeChange(payload) {
@@ -218,7 +224,8 @@ async function createNewTask() {
   const { error } = await supabase.from("todos").insert({
     title: newTaskTitle.value,
     project_id: props.projectId,
-    assigned_to: selectedMember.value, // Add the selected member as assignee
+    assigned_to: selectedMember.value.id,
+    name: selectedMember.value.name, // Add the selected member as assignee
     status: "pending", // Default status for a new task
   });
 
