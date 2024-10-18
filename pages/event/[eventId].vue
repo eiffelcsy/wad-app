@@ -24,10 +24,13 @@
             <tbody>
               <tr v-for="(time, timeIndex) in times" :key="timeIndex">
                 <td>{{ time }}</td>
+                <!-- @click="toggleInterval(dateIndex, timeIndex)" -->
                 <td
                   v-for="(date, dateIndex) in dates"
                   :key="dateIndex"
-                  @click="toggleInterval(dateIndex, timeIndex)"
+                  @mousedown="startSelection(dateIndex, timeIndex)"
+                  @mouseup="endSelection"
+                  @mouseover="dragSelection(dateIndex, timeIndex)"
                   :class="{ selected: isSelected(dateIndex, timeIndex) }"
                   class="interval-cell"
                 >
@@ -505,6 +508,34 @@ function getAvailabilityCount(dateIndex, timeIndex) {
   const intervalIndex = dateIndex * times.value.length + timeIndex;
   return availabilityCounts.value[intervalIndex] || 0;
 }
+
+// drag and click function
+const isDragging = ref(false); // Track if dragging is active
+const selectionMode = ref(true); // Track if we're selecting or deselecting
+
+// Function to start selecting
+function startSelection(dateIndex, timeIndex) {
+  isDragging.value = true;
+  const isAlreadySelected = isSelected(dateIndex, timeIndex);
+  selectionMode.value = !isAlreadySelected; // Toggle the mode based on the initial cell's state
+  toggleInterval(dateIndex, timeIndex);
+}
+
+// Function to end the selection process
+function endSelection() {
+  isDragging.value = false;
+  // Trigger save logic if needed (e.g., debouncedSaveAvailability())
+}
+
+// Function to handle dragging over cells
+function dragSelection(dateIndex, timeIndex) {
+  if (isDragging.value) {
+    // Only toggle the cell if it hasn't already been toggled in the current drag operation
+    if (isSelected(dateIndex, timeIndex) !== selectionMode.value) {
+      toggleInterval(dateIndex, timeIndex);
+    }
+  }
+}
 </script>
 
 <style>
@@ -514,6 +545,7 @@ function getAvailabilityCount(dateIndex, timeIndex) {
   border: 1px solid #8a8a8a;
   background-color: #caffca;
   cursor: pointer;
+  user-select: none; /* Prevent text selection while dragging */
 }
 
 .interval-cell.selected {
