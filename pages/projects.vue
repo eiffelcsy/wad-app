@@ -164,16 +164,18 @@ const selectedSortOption = ref("SortByActivity");
 
 const projects = ref([]);
 
+//const user = supabase.auth.getUser(); // Fetches the currently logged-in user
+
 const fetchProjects = async () => {
   const { data: associatedProjects, error: associatedError } = await supabase
     .from("project_members")
     .select("project_id")
-    .eq("user_id", user.value.id);
+    // .eq("user_id", user.value.id); 
 
-  if (associatedError) {
-    console.error("Error fetching projects: ", associatedError);
-    return;
-  }
+  // if (associatedError) {
+  //   console.error("Error fetching projects: ", associatedError);
+  //   return;
+  // }
 
   const projectIds = associatedProjects?.map((p) => p.project_id);
   const { data: projectDetails, error: projectDetailsError } = await supabase
