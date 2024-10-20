@@ -129,7 +129,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { PageHeader } from "@/components/ui/page-header";
+import { PageHeader } from "@/components/custom/page-header";
 import { Ellipsis, Plus, Search } from "lucide-vue-next";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -151,7 +151,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMediaQuery } from "@vueuse/core";
-import { PageFooter } from "@/components/ui/page-footer";
+import { PageFooter } from "@/components/custom/page-footer";
 import { navigateTo } from "nuxt/app";
 
 // const user = useSupabaseUser();

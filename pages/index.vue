@@ -223,7 +223,7 @@
 <script setup>
 import { CalendarIcon, EnterIcon, PlusCircledIcon } from "@radix-icons/vue";
 import { navigateTo } from "nuxt/app";
-import { PageHeader } from "@/components/ui/page-header";
+import { PageHeader } from "@/components/custom/page-header";
 import {
   Card,
   CardContent,
@@ -241,8 +241,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ArrowRight, Pencil } from "lucide-vue-next";
-import { PageFooter } from "@/components/ui/page-footer";
-import { gCalButton } from "@/components/ui/gcal-button";
+import { PageFooter } from "@/components/custom/page-footer";
+import { gCalButton } from "@/components/custom/gcal-button";
 
 // Supabase setup
 const supabase = useSupabaseClient();

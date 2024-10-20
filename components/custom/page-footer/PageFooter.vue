@@ -88,7 +88,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useMagicKeys, useMediaQuery } from "@vueuse/core";
 import { ref, watch } from "vue";
-import { AppCommands } from "@/components/ui/app-commands";
+import { AppCommands } from "@/components/custom/app-commands";
 
 const open = ref(false);
 const isDesktop = useMediaQuery("(min-width: 768px)");
