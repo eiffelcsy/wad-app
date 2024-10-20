@@ -113,9 +113,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { columns } from "@/components/ui/todos/columns.ts";
-import type { Todo } from "../todos/columns.ts";
-import { DataTable } from "@/components/ui/todos/";
+import { columns } from "@/components/custom/todos/columns.ts";
+import type { Todo } from "@components/custom/todos/columns.ts";
+import { DataTable } from "@/components/custom/todos/";
 import { PlusIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import {
