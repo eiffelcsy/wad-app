@@ -20,20 +20,28 @@
       </Button>
     </div>
     <div class="min-h-screen bg-black">
-      <div class="py-6 md:py-8 mx-auto container xl:w-[1200px]">
-        <h1
-          class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
-        >
-          {{ event_title }}
-        </h1>
-        <p class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
-          Event Code: {{ event_code }}
-        </p>
+      <div class="py-6 md:py-8 mx-auto container xl:w-[1200px] flex flex-row justify-between">
+        <div>
+          <h1
+            class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
+          >
+            {{ event_title }}
+          </h1>
+          <p class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
+            Event Code: {{ event_code }}
+          </p>
+        </div>
+        <div class="flex flex-row items-center">
+          <Button variant="outline">
+            View Event Details
+          </Button>
+          <Button class="ml-2 border border-red-900 bg-red-800 text-white hover:bg-red-900">
+            Delete Event
+          </Button>
+        </div>
       </div>
       <Separator class="w-full" />
       <div class="py-8 mx-auto container xl:w-[1200px]">
-        <h1>Welcome, {{ displayName }}</h1>
-        <p class="text-xs">{{ event_participants }}</p>
         <client-only>
           <div class="flex flex-row gap-32">
             <div>
@@ -43,22 +51,27 @@
               >
                 <thead>
                   <tr>
-                    <th>Time</th>
-                    <th v-for="(date, dateIndex) in dates" :key="dateIndex">
+                    <th></th>
+                    <th
+                      v-for="(date, dateIndex) in dates"
+                      :key="dateIndex"
+                      class="text-sm font-medium"
+                    >
                       {{ formatDate(date) }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                    <td>{{ time }}</td>
+                    <td v-if="timeIndex%2 == 0">{{ time }}</td>
+                    <td v-else></td>
                     <td
                       v-for="(date, dateIndex) in dates"
                       :key="dateIndex"
                       @mousedown="startSelection(dateIndex, timeIndex)"
                       @mouseup="endSelection"
                       @mouseover="dragSelection(dateIndex, timeIndex)"
-                      class="h-10 w-20 p-0 text-center interval-cell"
+                      class="h-6 w-20 p-0 text-center interval-cell"
                     >
                       <div
                         :class="[
