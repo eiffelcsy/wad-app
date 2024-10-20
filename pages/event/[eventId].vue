@@ -30,7 +30,7 @@
             {{ event_title }}
           </h1>
           <p class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
-            Event Code: {{ event_code }}
+            Event Code: <span class="font-bold">{{ event_code }}</span>
           </p>
         </div>
         <div class="flex flex-row items-center">
@@ -55,7 +55,9 @@
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction class="bg-red-700 text-white hover:bg-red-900" @click="confirmDelete"
+                <AlertDialogAction
+                  class="bg-red-700 text-white hover:bg-red-900"
+                  @click="confirmDelete"
                   >Delete</AlertDialogAction
                 >
               </AlertDialogFooter>
@@ -64,57 +66,68 @@
         </div>
       </div>
       <Separator class="w-full" />
-      <div class="py-8 mx-auto container xl:w-[1200px]">
+      <div class="py-8 mx-auto container">
         <client-only>
-          <div class="flex flex-row gap-32">
-            <div>
-              <!-- Interval Grid -->
-              <table
-                class="max-w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-              >
-                <thead>
-                  <tr>
-                    <th class="pb-0.5"></th>
-                    <th
-                      v-for="(date, dateIndex) in dates"
-                      :key="dateIndex"
-                      class="text-sm font-medium pb-0.5"
-                    >
-                      {{ formatDate(date) }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                    <td
-                      v-if="timeIndex % 2 == 0"
-                      class="border-t pl-2 pr-1 border-zinc-700"
-                    >
-                      {{ time }}
-                    </td>
-                    <td v-else></td>
-                    <td
-                      v-for="(date, dateIndex) in dates"
-                      :key="dateIndex"
-                      @mousedown="startSelection(dateIndex, timeIndex)"
-                      @mouseup="endSelection"
-                      @mouseover="dragSelection(dateIndex, timeIndex)"
-                      class="h-6 w-20 p-0 text-center interval-cell"
-                    >
-                      <div
-                        :class="[
-                          'h-full w-full flex items-center justify-center border border-zinc-700 bg-zinc-950',
-                          isSelected(dateIndex, timeIndex)
-                            ? getMergedClass(dateIndex, timeIndex) +
-                              ' selected merged'
-                            : 'rounded-lg',
-                        ]"
-                      ></div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="flex flex-col lg:flex-row gap-32">
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Availability</CardTitle>
+                <CardDescription>Indicate blocks of time when you are <span class="font-bold">not</span> free.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div class="w-full flex items-center justify-center">
+                  <!-- Interval Grid -->
+                  <table
+                    class="max-w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="pb-0.5"></th>
+                        <th
+                          v-for="(date, dateIndex) in dates"
+                          :key="dateIndex"
+                          class="text-sm font-medium pb-0.5"
+                        >
+                          {{ formatDate(date) }}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                        <td
+                          v-if="timeIndex % 2 == 0"
+                          class="border-t pl-2 pr-1 border-zinc-700"
+                        >
+                          {{ time }}
+                        </td>
+                        <td v-else></td>
+                        <td
+                          v-for="(date, dateIndex) in dates"
+                          :key="dateIndex"
+                          @mousedown="startSelection(dateIndex, timeIndex)"
+                          @mouseover="dragSelection(dateIndex, timeIndex)"
+                          @mouseup="endSelection"
+                          @touchstart="startSelection(dateIndex, timeIndex)"
+                          @touchmove="dragSelection(dateIndex, timeIndex)"
+                          @touchend="endSelection"
+                          class="h-6 w-20 p-0 text-center interval-cell"
+                        >
+                          <div
+                            :class="[
+                              'h-full w-full flex items-center justify-center border border-zinc-700 bg-zinc-950',
+                              isSelected(dateIndex, timeIndex)
+                                ? getMergedClass(dateIndex, timeIndex) +
+                                  ' selected merged'
+                                : 'rounded-lg',
+                            ]"
+                          ></div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
             <div>
               <!-- Heatmap Grid -->
               <table>
@@ -188,6 +201,14 @@ import { PageHeader } from "@/components/custom/page-header";
 import { EnterIcon } from "@radix-icons/vue";
 import { PageFooter } from "@/components/custom/page-footer";
 import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -616,27 +637,34 @@ function getAvailabilityCount(dateIndex, timeIndex) {
 // drag and click function
 const isDragging = ref(false); // Track if dragging is active
 const selectionMode = ref(true); // Track if we're selecting or deselecting
+let lastTouchedCell = null; // Track the last touched cell to avoid toggling the same cell multiple times
 
-// Function to start selecting
+// Function to start selecting (for both mouse and touch)
 function startSelection(dateIndex, timeIndex) {
   isDragging.value = true;
   const isAlreadySelected = isSelected(dateIndex, timeIndex);
   selectionMode.value = !isAlreadySelected; // Toggle the mode based on the initial cell's state
   toggleInterval(dateIndex, timeIndex);
+  lastTouchedCell = { dateIndex, timeIndex }; // Store the initial cell
 }
 
-// Function to end the selection process
+// Function to end the selection process (for both mouse and touch)
 function endSelection() {
   isDragging.value = false;
+  lastTouchedCell = null; // Reset the last touched cell
   // Trigger save logic if needed (e.g., debouncedSaveAvailability())
 }
 
-// Function to handle dragging over cells
+// Function to handle dragging over cells (for both mouse and touch)
 function dragSelection(dateIndex, timeIndex) {
   if (isDragging.value) {
     // Only toggle the cell if it hasn't already been toggled in the current drag operation
-    if (isSelected(dateIndex, timeIndex) !== selectionMode.value) {
+    if (
+      isSelected(dateIndex, timeIndex) !== selectionMode.value &&
+      (lastTouchedCell === null || lastTouchedCell.dateIndex !== dateIndex || lastTouchedCell.timeIndex !== timeIndex)
+    ) {
       toggleInterval(dateIndex, timeIndex);
+      lastTouchedCell = { dateIndex, timeIndex }; // Update last touched cell
     }
   }
 }
@@ -662,17 +690,14 @@ function getMergedClass(dateIndex, timeIndex) {
 async function deleteEventFromDB(eventId) {
   // Placeholder for actual deletion logic
   try {
-    const { error } = await supabase
-      .from('events')
-      .delete()
-      .eq('id', eventId);
+    const { error } = await supabase.from("events").delete().eq("id", eventId);
 
     if (error) {
       throw error;
     }
     return true;
   } catch (err) {
-    console.error('Error deleting event:', err.message);
+    console.error("Error deleting event:", err.message);
     return false;
   }
 }
@@ -681,18 +706,18 @@ async function confirmDelete() {
   const success = await deleteEventFromDB(event_id.value);
   if (success) {
     toast({
-      title: 'Event Deleted',
-      description: 'The event has been successfully deleted.',
-      variant: 'success',
+      title: "Event Deleted",
+      description: "The event has been successfully deleted.",
+      variant: "success",
     });
     setTimeout(() => {
-      navigateTo('/');
+      navigateTo("/");
     }, 1000);
   } else {
     toast({
-      title: 'Deletion Failed',
-      description: 'There was an error deleting the event.',
-      variant: 'destructive',
+      title: "Deletion Failed",
+      description: "There was an error deleting the event.",
+      variant: "destructive",
     });
   }
 }
