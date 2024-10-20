@@ -111,7 +111,7 @@
                           @mouseover="dragSelection(dateIndex, timeIndex)"
                           @mouseup="endSelection"
                           @touchstart="startSelection(dateIndex, timeIndex)"
-                          @touchmove="dragSelection(dateIndex, timeIndex)"
+                          @touchmove.prevent="dragSelection(dateIndex, timeIndex)"
                           @touchend="endSelection"
                           class="h-6 w-20 p-0 text-center interval-cell"
                         >
