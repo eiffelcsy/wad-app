@@ -10,6 +10,9 @@ export default defineNuxtConfig({
   imports: {
     autoImport: true,
   },
+  components: [
+    { path: '~/components/custom', extensions: ['vue'] },
+  ],
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
   modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@nuxtjs/supabase", "@nuxtjs/color-mode"],
