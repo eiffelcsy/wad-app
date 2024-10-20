@@ -2,7 +2,7 @@
   <div>
     <PageHeader />
     <div class="min-h-screen bg-zinc-50 dark:bg-black">
-      <div class="py-6 md:py-8 mx-auto container lg:w-[1200px]">
+      <div class="py-6 md:py-8 mx-auto container xl:w-[1200px]">
         <h1
           class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
         >
@@ -10,7 +10,7 @@
         </h1>
       </div>
       <Separator class="w-full" />
-      <div class="my-8 mx-auto container lg:w-[1200px]">
+      <div class="my-8 mx-auto container xl:w-[1200px]">
         <SharedTodoList :projectId="projectId" />
       </div>
       <Separator class="w-full" />

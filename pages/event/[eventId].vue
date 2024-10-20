@@ -19,116 +19,120 @@
         <EnterIcon class="w-4 h-4 mr-2" />Login
       </Button>
     </div>
-    <div class="min-h-screen bg-black ">
-      <div class="py-6 md:py-8 mx-auto container lg:w-[1200px]">
+    <div class="min-h-screen bg-black">
+      <div class="py-6 md:py-8 mx-auto container xl:w-[1200px]">
         <h1
           class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
         >
           {{ event_title }}
         </h1>
-        <p class="text-base text-zinc-400 dark:text-zinc-500 mt-1">Event Code: {{ event_code }}</p>
+        <p class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
+          Event Code: {{ event_code }}
+        </p>
       </div>
       <Separator class="w-full" />
-      <h1>Welcome, {{ displayName }}</h1>
-      <p class="text-xs">{{ event_participants }}</p>
-      <client-only>
-        <div class="flex flex-row gap-32">
-          <div>
-            <!-- Interval Grid -->
-            <table
-              class="max-w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-            >
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th v-for="(date, dateIndex) in dates" :key="dateIndex">
-                    {{ formatDate(date) }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                  <td>{{ time }}</td>
-                  <td
-                    v-for="(date, dateIndex) in dates"
-                    :key="dateIndex"
-                    @mousedown="startSelection(dateIndex, timeIndex)"
-                    @mouseup="endSelection"
-                    @mouseover="dragSelection(dateIndex, timeIndex)"
-                    class="h-10 w-20 p-0 text-center interval-cell"
-                  >
-                    <div
-                      :class="[
-                        'h-full w-full flex items-center justify-center border border-zinc-700 bg-zinc-950',
-                        isSelected(dateIndex, timeIndex)
-                          ? getMergedClass(dateIndex, timeIndex) +
-                            ' selected merged'
-                          : 'rounded-lg',
-                      ]"
-                    ></div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <!-- Heatmap Grid -->
-            <table>
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th v-for="(date, dateIndex) in dates" :key="dateIndex">
-                    {{ formatDate(date) }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                  <td>{{ time }}</td>
-                  <td
-                    v-for="(date, dateIndex) in dates"
-                    :key="dateIndex"
-                    :style="{
-                      backgroundColor: getHeatmapColor(dateIndex, timeIndex),
-                    }"
-                    class="heatmap-cell"
-                  >
-                    {{ getAvailabilityCount(dateIndex, timeIndex) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <!-- Existing Dialog and Toast Components -->
-        <Dialog :open="showDialog">
-          <DialogOverlay />
-          <DialogContent class="w-5/6 rounded-md">
-            <DialogTitle>Update Display Name</DialogTitle>
-            <DialogDescription>
-              Please enter your display name to continue.
-            </DialogDescription>
-
-            <Input
-              v-model="newDisplayName"
-              placeholder="Enter your display name"
-              class="my-4"
-            />
-
-            <div class="flex justify-end">
-              <Button
-                @click="saveDisplayName"
-                class="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+      <div class="py-8 mx-auto container xl:w-[1200px]">
+        <h1>Welcome, {{ displayName }}</h1>
+        <p class="text-xs">{{ event_participants }}</p>
+        <client-only>
+          <div class="flex flex-row gap-32">
+            <div>
+              <!-- Interval Grid -->
+              <table
+                class="max-w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
               >
-                Save
-              </Button>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th v-for="(date, dateIndex) in dates" :key="dateIndex">
+                      {{ formatDate(date) }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                    <td>{{ time }}</td>
+                    <td
+                      v-for="(date, dateIndex) in dates"
+                      :key="dateIndex"
+                      @mousedown="startSelection(dateIndex, timeIndex)"
+                      @mouseup="endSelection"
+                      @mouseover="dragSelection(dateIndex, timeIndex)"
+                      class="h-10 w-20 p-0 text-center interval-cell"
+                    >
+                      <div
+                        :class="[
+                          'h-full w-full flex items-center justify-center border border-zinc-700 bg-zinc-950',
+                          isSelected(dateIndex, timeIndex)
+                            ? getMergedClass(dateIndex, timeIndex) +
+                              ' selected merged'
+                            : 'rounded-lg',
+                        ]"
+                      ></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          </DialogContent>
-        </Dialog>
-      </client-only>
+            <div>
+              <!-- Heatmap Grid -->
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th v-for="(date, dateIndex) in dates" :key="dateIndex">
+                      {{ formatDate(date) }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                    <td>{{ time }}</td>
+                    <td
+                      v-for="(date, dateIndex) in dates"
+                      :key="dateIndex"
+                      :style="{
+                        backgroundColor: getHeatmapColor(dateIndex, timeIndex),
+                      }"
+                      class="heatmap-cell"
+                    >
+                      {{ getAvailabilityCount(dateIndex, timeIndex) }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Existing Dialog and Toast Components -->
+          <Dialog :open="showDialog">
+            <DialogOverlay />
+            <DialogContent class="w-5/6 rounded-md">
+              <DialogTitle>Update Display Name</DialogTitle>
+              <DialogDescription>
+                Please enter your display name to continue.
+              </DialogDescription>
+
+              <Input
+                v-model="newDisplayName"
+                placeholder="Enter your display name"
+                class="my-4"
+              />
+
+              <div class="flex justify-end">
+                <Button
+                  @click="saveDisplayName"
+                  class="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+                >
+                  Save
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </client-only>
+      </div>
     </div>
     <Toaster />
-    <PageFooter/>
+    <PageFooter />
   </div>
 </template>
 
@@ -142,6 +146,7 @@ import debounce from "lodash.debounce";
 import { PageHeader } from "@/components/custom/page-header";
 import { EnterIcon } from "@radix-icons/vue";
 import { PageFooter } from "@/components/custom/page-footer";
+import { Separator } from "@/components/ui/separator";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
