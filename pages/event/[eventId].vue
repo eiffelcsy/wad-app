@@ -108,6 +108,7 @@ import { navigateTo } from "nuxt/app";
 import debounce from "lodash.debounce";
 
 const supabase = useSupabaseClient();
+const user = useSupabaseUser();
 const route = useRoute();
 const { toast } = useToast();
 
@@ -173,7 +174,7 @@ onMounted(async () => {
     );
     const timeMax = combineDateAndTime(findEvent.end_date, findEvent.end_time);
     let gCalEvents = await fetchGoogleCalEvents(timeMin, timeMax);
-    
+
     if (gCalEvents) {
       await updateAvailabilityFromGoogleCal(gCalEvents);
     }
@@ -208,12 +209,15 @@ async function fetchParticipantData() {
 }
 
 async function getOrCreateParticipant() {
-  const user = useSupabaseUser().value;
   let name = "";
 
-  if (user) {
-    name = user.user_metadata.name;
-    const participant = await ensureParticipant(name, user.id, user.email);
+  if (user.value) {
+    name = user.value.user_metadata.name;
+    const participant = await ensureParticipant(
+      name,
+      user.value.id,
+      user.value.email
+    );
     return participant;
   } else {
     if (!newDisplayName.value) {
@@ -289,19 +293,28 @@ async function ensureParticipant(name, user_id = null, email = null) {
 }
 
 async function fetchGoogleCalEvents(timeMin, timeMax) {
-  const user = useSupabaseUser();
+  const { data: isImported, error: isImportedError } = await supabase
+    .from("participants")
+    .select("gcal_imported")
+    .eq("event_id", event_id.value)
+    .eq("user_id", user.value.id)
+    .single();
 
-  if (user) {
-    try {
-      const response = await fetch(
-        `/api/calendar/events?timeMin=${timeMin}&timeMax=${timeMax}`
-      );
-      return response.json();
-    } catch (err) {
-      console.error("Error fetching events:", err.message);
-    }
+  if (isImportedError) {
+    console.log(isImportedError.message);
   } else {
-    return null;
+    if (user && !isImported.gcal_imported) {
+      try {
+        const response = await fetch(
+          `/api/calendar/events?timeMin=${timeMin}&timeMax=${timeMax}`
+        );
+        return response.json();
+      } catch (err) {
+        console.error("Error fetching events:", err.message);
+      }
+    } else {
+      return null;
+    }
   }
 }
 
@@ -321,10 +334,19 @@ async function updateAvailabilityFromGoogleCal(events) {
         intervals.value[index].selected = true;
       }
     });
-
   });
 
   await saveAvailability();
+  const { error: importError } = await supabase
+    .from("participants")
+    .update({ gcal_imported: "true" })
+    .eq("event_id", event_id.value)
+    .eq("user_id", user.value.id)
+    .single();
+
+  if (importError) {
+    console.log(importError.message);
+  }
 }
 
 function combineDateAndTime(startDate, startTime) {
@@ -399,7 +421,7 @@ function generateIntervals() {
       intervals.value.push({
         date,
         time,
-        selected: true,
+        selected: false,
       });
     }
   }
@@ -469,7 +491,7 @@ function loadAvailability(availabilityString) {
   }
 
   availabilityString.split("").forEach((char, index) => {
-    intervals.value[index].selected = char === "1";
+    intervals.value[index].selected = char === "0";
   });
 }
 
