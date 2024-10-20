@@ -20,7 +20,9 @@
       </Button>
     </div>
     <div class="min-h-screen bg-black">
-      <div class="py-6 md:py-8 mx-auto container xl:w-[1200px] flex flex-row justify-between">
+      <div
+        class="py-6 md:py-8 mx-auto container xl:w-[1200px] flex flex-row justify-between"
+      >
         <div>
           <h1
             class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
@@ -32,12 +34,33 @@
           </p>
         </div>
         <div class="flex flex-row items-center">
-          <Button variant="outline">
-            View Event Details
-          </Button>
-          <Button class="ml-2 border border-red-900 bg-red-800 text-white hover:bg-red-900">
-            Delete Event
-          </Button>
+          <Button variant="outline"> View Event Details </Button>
+          <AlertDialog>
+            <AlertDialogTrigger as-child>
+              <Button
+                class="ml-2 border border-red-900 bg-red-700 text-white hover:bg-red-900"
+              >
+                Delete Event
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle
+                  >Are you sure you want to delete this event?</AlertDialogTitle
+                >
+                <AlertDialogDescription>
+                  This action cannot be undone. Once deleted, the event will be
+                  permanently removed.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction class="bg-red-700 text-white hover:bg-red-900" @click="confirmDelete"
+                  >Delete</AlertDialogAction
+                >
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
       <Separator class="w-full" />
@@ -51,11 +74,11 @@
               >
                 <thead>
                   <tr>
-                    <th></th>
+                    <th class="pb-0.5"></th>
                     <th
                       v-for="(date, dateIndex) in dates"
                       :key="dateIndex"
-                      class="text-sm font-medium"
+                      class="text-sm font-medium pb-0.5"
                     >
                       {{ formatDate(date) }}
                     </th>
@@ -63,7 +86,12 @@
                 </thead>
                 <tbody>
                   <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                    <td v-if="timeIndex%2 == 0">{{ time }}</td>
+                    <td
+                      v-if="timeIndex % 2 == 0"
+                      class="border-t pl-2 pr-1 border-zinc-700"
+                    >
+                      {{ time }}
+                    </td>
                     <td v-else></td>
                     <td
                       v-for="(date, dateIndex) in dates"
@@ -629,6 +657,44 @@ function getMergedClass(dateIndex, timeIndex) {
   }
 
   return classes.trim();
+}
+
+async function deleteEventFromDB(eventId) {
+  // Placeholder for actual deletion logic
+  try {
+    const { error } = await supabase
+      .from('events')
+      .delete()
+      .eq('id', eventId);
+
+    if (error) {
+      throw error;
+    }
+    return true;
+  } catch (err) {
+    console.error('Error deleting event:', err.message);
+    return false;
+  }
+}
+
+async function confirmDelete() {
+  const success = await deleteEventFromDB(event_id.value);
+  if (success) {
+    toast({
+      title: 'Event Deleted',
+      description: 'The event has been successfully deleted.',
+      variant: 'success',
+    });
+    setTimeout(() => {
+      navigateTo('/');
+    }, 1000);
+  } else {
+    toast({
+      title: 'Deletion Failed',
+      description: 'There was an error deleting the event.',
+      variant: 'destructive',
+    });
+  }
 }
 </script>
 
