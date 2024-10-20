@@ -13,8 +13,8 @@
 </template>
 
 <script setup>
-import { PageFooter } from '@/components/ui/page-footer';
-import { PageHeader } from '@/components/ui/page-header';
+import { PageFooter } from '@/components/custom/page-footer';
+import { PageHeader } from '@/components/custom/page-header';
 
 const user = useSupabaseUser();
 
