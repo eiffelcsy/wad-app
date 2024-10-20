@@ -260,19 +260,28 @@
           </div>
         </div>
       </transition>
-      <transition name="fade">
-        <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 w-1/3">
-            <h2 class="text-xl font-semibold mb-4 text-zinc-800 dark:text-zinc-100">Event Created!</h2>
-            <p class="text-lg mb-2 text-zinc-700 dark:text-zinc-300">Event Code: <strong>{{ eventCode }}</strong></p>
-            <p class="text-lg mb-4 text-zinc-700 dark:text-zinc-300">Shareable Link: 
-              <a :href="shareableLink" class="text-blue-600" target="_blank">{{ shareableLink }}</a>
-            </p>
-            <button @click="copyLink" class="bg-blue-600 text-white py-2 px-4 rounded-md">Copy Link</button>
-            <button @click="closeModal" class="ml-4 bg-red-600 text-white py-2 px-4 rounded-md">Close</button>
-          </div>
-        </div>
-      </transition>
+        <!-- Dialog, its abit broken, but it works now -->
+        <div v-if="fun"></div>
+        <Dialog :open="showDialog" v-else>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle class="tw-text-xl">Event created successfully!</DialogTitle>
+            </DialogHeader>
+            <DialogDescription>
+                <p class="mt-2">Event Code: <strong>{{ eventCode }}</strong></p>
+                <p class="mt-2">Shareable Link: <a :href="shareableLink" class="text-blue-600" target="_blank">{{ shareableLink }}</a></p>
+                <Button @click="copyLink" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md">Copy Link</Button>
+            </DialogDescription>
+            <DialogFooter class="sm:justify-start">
+                <DialogClose as-child>
+                    <Button type="button" variant="secondary" @click="closeDialog">
+                        Close
+                    </Button>
+                </DialogClose>
+            </DialogFooter>
+        </DialogContent>
+        </Dialog>
+
 
     </div>
     <PageFooter />
@@ -296,6 +305,9 @@ import {
   NumberFieldInput,
 } from "@/components/ui/number-field";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/Dialog';
+import { Button } from '@/components/ui/Button';
+
 
 const supabase = useSupabaseClient();
 
@@ -371,7 +383,7 @@ const prevView = () => {
 // Event code and shareable link states
 const eventCode = ref(null);
 const shareableLink = ref("");
-const showModal = ref(false);
+const showDialog = ref(false);
 
 // Function to generate a unique event code
 const generateEventCode = async (): Promise<string | null> => {
@@ -436,9 +448,8 @@ const submitEvent = async () => {
     return;
   } 
   shareableLink.value = `${window.location.origin}/event/${eventCode.value}`;
-  showModal.value = true;
+  showDialog.value = true;
   // Redirect to event/[event-code]
-  // TODO: fix redirect, somehow its not working
 };
 
 const backHome = () => {
@@ -449,13 +460,15 @@ const backHome = () => {
 const formatDate = (date: Date) => {
   return dayjs(date).format("YYYY-MM-DD");
 };
-// Close modal
-const closeModal = () => {
-  showModal.value = false;
+// Close Dialog
+const closeDialog = () => {
+  showDialog.value = false;
 
   // Redirect to event page once modal closes
   navigateTo(`/event/${eventCode.value}`);
 };
+// fun function for testing
+const fun = ref(false);
 
 // Copy link to clipboard
 const copyLink = () => {
