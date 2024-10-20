@@ -72,7 +72,10 @@
             <Card>
               <CardHeader>
                 <CardTitle>Your Availability</CardTitle>
-                <CardDescription>Indicate blocks of time when you are <span class="font-bold">not</span> free.</CardDescription>
+                <CardDescription
+                  >Indicate blocks of time when you are
+                  <span class="font-bold">not</span> free.</CardDescription
+                >
               </CardHeader>
               <CardContent>
                 <div class="w-full flex items-center justify-center">
@@ -208,7 +211,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from "@/components/ui/card";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -637,10 +640,12 @@ function getAvailabilityCount(dateIndex, timeIndex) {
 // drag and click function
 const isDragging = ref(false); // Track if dragging is active
 const selectionMode = ref(true); // Track if we're selecting or deselecting
-let lastTouchedCell = null; // Track the last touched cell to avoid toggling the same cell multiple times
+const lastTouchedCell = ref(null); // Track the last touched cell to avoid toggling the same cell multiple times
+const touchMoved = ref(false);
 
 // Function to start selecting (for both mouse and touch)
 function startSelection(dateIndex, timeIndex) {
+  touchMoved.value = false;
   isDragging.value = true;
   const isAlreadySelected = isSelected(dateIndex, timeIndex);
   selectionMode.value = !isAlreadySelected; // Toggle the mode based on the initial cell's state
@@ -649,19 +654,31 @@ function startSelection(dateIndex, timeIndex) {
 }
 
 // Function to end the selection process (for both mouse and touch)
-function endSelection() {
+function endSelection(dateIndex, timeIndex) {
+  if (
+    isSelected(dateIndex, timeIndex) !== selectionMode.value &&
+    !touchMoved.value &&
+    (lastTouchedCell === null ||
+      lastTouchedCell.dateIndex !== dateIndex ||
+      lastTouchedCell.timeIndex !== timeIndex)
+  ) {
+    toggleInterval(dateIndex, timeIndex);
+  }
   isDragging.value = false;
-  lastTouchedCell = null; // Reset the last touched cell
-  // Trigger save logic if needed (e.g., debouncedSaveAvailability())
+  lastTouchedCell.value = null; // Reset the last touched cell
+  touchMoved.value = false;
 }
 
 // Function to handle dragging over cells (for both mouse and touch)
 function dragSelection(dateIndex, timeIndex) {
+  touchMoved.value = true;
   if (isDragging.value) {
     // Only toggle the cell if it hasn't already been toggled in the current drag operation
     if (
       isSelected(dateIndex, timeIndex) !== selectionMode.value &&
-      (lastTouchedCell === null || lastTouchedCell.dateIndex !== dateIndex || lastTouchedCell.timeIndex !== timeIndex)
+      (lastTouchedCell === null ||
+        lastTouchedCell.dateIndex !== dateIndex ||
+        lastTouchedCell.timeIndex !== timeIndex)
     ) {
       toggleInterval(dateIndex, timeIndex);
       lastTouchedCell = { dateIndex, timeIndex }; // Update last touched cell
