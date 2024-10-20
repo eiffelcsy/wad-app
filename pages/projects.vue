@@ -154,7 +154,7 @@ import { useMediaQuery } from "@vueuse/core";
 import { PageFooter } from "@/components/ui/page-footer";
 import { navigateTo } from "nuxt/app";
 
-const user = useSupabaseUser();
+// const user = useSupabaseUser();
 const supabase = useSupabaseClient();
 
 const isMobile = useMediaQuery("(max-width: 600px)");
@@ -163,8 +163,6 @@ const isOpen = ref(false);
 const selectedSortOption = ref("SortByActivity");
 
 const projects = ref([]);
-
-//const user = supabase.auth.getUser(); // Fetches the currently logged-in user
 
 const fetchProjects = async () => {
   const { data: associatedProjects, error: associatedError } = await supabase
