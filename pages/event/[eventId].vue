@@ -110,9 +110,7 @@
                           @mousedown="startSelection(dateIndex, timeIndex)"
                           @mouseover="dragSelection(dateIndex, timeIndex)"
                           @mouseup="endSelection"
-                          @touchstart="startSelection(dateIndex, timeIndex)"
-                          @touchmove.prevent="dragSelection(dateIndex, timeIndex)"
-                          @touchend="endSelection"
+                          @touchstart="tapSelection(dateIndex, timeIndex)"
                           class="h-6 w-20 p-0 text-center interval-cell"
                         >
                           <div
@@ -637,54 +635,65 @@ function getAvailabilityCount(dateIndex, timeIndex) {
   return availabilityCounts.value[intervalIndex] || 0;
 }
 
-// drag and click function
 const isDragging = ref(false); // Track if dragging is active
 const selectionMode = ref(true); // Track if we're selecting or deselecting
-const lastTouchedCell = ref(null); // Track the last touched cell to avoid toggling the same cell multiple times
-const touchMoved = ref(false);
+const startCell = ref(null); // Track the start cell for tap selection
+const endCell = ref(null); // Track the end cell for tap selection
 
-// Function to start selecting (for both mouse and touch)
+// Function to start selecting (both for drag and tap)
 function startSelection(dateIndex, timeIndex) {
-  touchMoved.value = false;
   isDragging.value = true;
   const isAlreadySelected = isSelected(dateIndex, timeIndex);
   selectionMode.value = !isAlreadySelected; // Toggle the mode based on the initial cell's state
   toggleInterval(dateIndex, timeIndex);
-  lastTouchedCell = { dateIndex, timeIndex }; // Store the initial cell
+  startCell.value = { dateIndex, timeIndex }; // Store the start cell for tap selection
 }
 
-// Function to end the selection process (for both mouse and touch)
-function endSelection(dateIndex, timeIndex) {
-  if (
-    isSelected(dateIndex, timeIndex) !== selectionMode.value &&
-    !touchMoved.value &&
-    (lastTouchedCell === null ||
-      lastTouchedCell.dateIndex !== dateIndex ||
-      lastTouchedCell.timeIndex !== timeIndex)
-  ) {
-    toggleInterval(dateIndex, timeIndex);
-  }
+// Function to end the selection process (for drag selection)
+function endSelection() {
   isDragging.value = false;
-  lastTouchedCell.value = null; // Reset the last touched cell
-  touchMoved.value = false;
+  startCell.value = null; // Reset start cell after dragging or tap selection is complete
+  endCell.value = null; // Reset end cell
+  // Trigger save logic if needed (e.g., debouncedSaveAvailability())
 }
 
-// Function to handle dragging over cells (for both mouse and touch)
+// Function to handle dragging over cells
 function dragSelection(dateIndex, timeIndex) {
-  touchMoved.value = true;
   if (isDragging.value) {
     // Only toggle the cell if it hasn't already been toggled in the current drag operation
-    if (
-      isSelected(dateIndex, timeIndex) !== selectionMode.value &&
-      (lastTouchedCell === null ||
-        lastTouchedCell.dateIndex !== dateIndex ||
-        lastTouchedCell.timeIndex !== timeIndex)
-    ) {
+    if (isSelected(dateIndex, timeIndex) !== selectionMode.value) {
       toggleInterval(dateIndex, timeIndex);
-      lastTouchedCell = { dateIndex, timeIndex }; // Update last touched cell
     }
   }
 }
+
+// Function to handle tap selection start and end (for touch devices)
+function tapSelection(dateIndex, timeIndex) {
+  if (!startCell.value) {
+    // If there's no start cell yet, set this as the start cell
+    startSelection(dateIndex, timeIndex);
+  } else {
+    // This is the end tap, so perform the selection for all cells between start and end
+    endCell.value = { dateIndex, timeIndex };
+    selectCellsInRange(startCell.value, endCell.value);
+    endSelection(); // Finalize the selection process
+  }
+}
+
+// Function to select all cells between the start and end points
+function selectCellsInRange(start, end) {
+  const [startDateIndex, endDateIndex] = [Math.min(start.dateIndex, end.dateIndex), Math.max(start.dateIndex, end.dateIndex)];
+  const [startTimeIndex, endTimeIndex] = [Math.min(start.timeIndex, end.timeIndex), Math.max(start.timeIndex, end.timeIndex)];
+
+  for (let i = startDateIndex; i <= endDateIndex; i++) {
+    for (let j = startTimeIndex; j <= endTimeIndex; j++) {
+      if (isSelected(i, j) !== selectionMode.value) {
+        toggleInterval(i, j);
+      }
+    }
+  }
+}
+
 
 function getMergedClass(dateIndex, timeIndex) {
   const hasAbove = timeIndex > 0 && isSelected(dateIndex, timeIndex - 1);
