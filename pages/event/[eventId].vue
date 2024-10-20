@@ -12,7 +12,7 @@
       <div class="flex flex-row gap-32">
         <div>
           <!-- Interval Grid -->
-          <table>
+          <table class="max-w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1">
             <thead>
               <tr>
                 <th>Time</th>
@@ -24,17 +24,21 @@
             <tbody>
               <tr v-for="(time, timeIndex) in times" :key="timeIndex">
                 <td>{{ time }}</td>
-                <!-- @click="toggleInterval(dateIndex, timeIndex)" -->
                 <td
                   v-for="(date, dateIndex) in dates"
                   :key="dateIndex"
                   @mousedown="startSelection(dateIndex, timeIndex)"
                   @mouseup="endSelection"
                   @mouseover="dragSelection(dateIndex, timeIndex)"
-                  :class="{ selected: isSelected(dateIndex, timeIndex) }"
-                  class="interval-cell"
+                  class="h-10 w-20 p-0 text-center interval-cell"
                 >
-                  <!-- Interval Cell -->
+                  <div
+                    :class="[ 
+                      'h-full w-full flex items-center justify-center border border-zinc-700 bg-zinc-950',
+                      isSelected(dateIndex, timeIndex) ? getMergedClass(dateIndex, timeIndex) + ' selected merged' : 'rounded-lg'
+                    ]"
+                  >
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -98,6 +102,7 @@
     <Toaster />
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
@@ -558,20 +563,37 @@ function dragSelection(dateIndex, timeIndex) {
     }
   }
 }
+
+function getMergedClass(dateIndex, timeIndex) {
+  const hasAbove = isSelected(dateIndex, timeIndex - 1);
+  const hasBelow = isSelected(dateIndex, timeIndex + 1);
+
+  let classes = "";
+
+  // Handle top and bottom corners only
+  if (!hasAbove) {
+    classes += " rounded-t-lg"; // Rounded top if no selected cell above
+  }
+  if (!hasBelow) {
+    classes += " rounded-b-lg"; // Rounded bottom if no selected cell below
+  }
+
+  return classes.trim();
+}
 </script>
 
 <style>
 .interval-cell {
-  width: 50px;
-  height: 30px;
-  border: 1px solid #8a8a8a;
-  background-color: #caffca;
   cursor: pointer;
   user-select: none; /* Prevent text selection while dragging */
 }
 
-.interval-cell.selected {
-  background-color: #ffb7b7;
+.interval-cell .selected {
+  @apply bg-red-400 border-red-400;
+}
+
+.interval-cell .merged {
+  border-spacing: 0 !important;
 }
 
 .heatmap-cell {
