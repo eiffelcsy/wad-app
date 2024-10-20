@@ -130,11 +130,11 @@
  * and custom components for toast notifications and navigation.
  */
 import { h, ref, onMounted, watch } from "vue";
-import { SunIcon, MoonIcon, ArrowLeftIcon } from "@radix-icons/vue";
+import { ArrowLeftIcon } from "@radix-icons/vue";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { Toaster, ToastAction } from "@/components/ui/toast";
 import { navigateTo } from "nuxt/app";
-import { PageFooter } from "@/components/ui/page-footer";
+import { PageFooter } from "@/components/custom/page-footer";
 
 // Accessing Supabase for authentication
 const supabase = useSupabaseClient();

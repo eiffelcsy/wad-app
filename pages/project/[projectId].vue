@@ -21,10 +21,10 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { SharedTodoList } from "@/components/ui/shared-todo-list";
+import { SharedTodoList } from "@/components/custom/shared-todo-list";
 import { Separator } from "~/components/ui/separator";
-import { PageHeader } from "@/components/ui/page-header";
-import { PageFooter } from "@/components/ui/page-footer";
+import { PageHeader } from "@/components/custom/page-header";
+import { PageFooter } from "@/components/custom/page-footer";
 
 const supabase = useSupabaseClient();
 

@@ -89,8 +89,8 @@
 import { onMounted, type Ref, ref } from "vue";
 import { ArrowLeftIcon } from "lucide-vue-next";
 import { navigateTo } from "nuxt/app";
-import { PageHeader } from "@/components/ui/page-header";
-import { PageFooter } from "@/components/ui/page-footer";
+import { PageHeader } from "@/components/custom/page-header";
+import { PageFooter } from "@/components/custom/page-footer";
 
 interface Errors {
   title?: string;

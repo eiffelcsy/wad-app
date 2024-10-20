@@ -286,8 +286,8 @@ import { navigateTo } from "nuxt/app";
 import type { DateRange } from "radix-vue";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { RangeCalendar } from "@/components/ui/range-calendar";
-import { PageHeader } from "@/components/ui/page-header";
-import { PageFooter } from "@/components/ui/page-footer";
+import { PageHeader } from "@/components/custom/page-header";
+import { PageFooter } from "@/components/custom/page-footer";
 import {
   NumberField,
   NumberFieldContent,
