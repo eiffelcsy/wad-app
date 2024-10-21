@@ -265,13 +265,20 @@
         <Dialog :open="showDialog" v-else>
         <DialogContent>
             <DialogHeader>
-                <DialogTitle class="tw-text-xl">Event created successfully!</DialogTitle>
+                <DialogTitle class="tw-text-xl">Event Code: <strong>{{ eventCode }}</strong></DialogTitle>
             </DialogHeader>
             <DialogDescription>
-                <p class="mt-2">Event Code: <strong>{{ eventCode }}</strong></p>
-                <p class="mt-2">Shareable Link: <a :href="shareableLink" class="text-blue-600" target="_blank">{{ shareableLink }}</a></p>
-                <Button @click="copyLink" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md">Copy Link</Button>
+              Share this code or link below.
             </DialogDescription>
+            <div class="flex items-center space-x-2">
+              <div class="grid flex-1 gap-2">
+                <Input readonly :value="shareableLink"/>
+              </div>
+              <Button type="submit" size="sm" class="px-3" @click="copyLink">
+                <span class="sr-only">Copy</span>
+                <Copy class="w-4 h-4" />
+              </Button>
+            </div>
             <DialogFooter class="sm:justify-start">
                 <DialogClose as-child>
                     <Button type="button" variant="secondary" @click="closeDialog">
@@ -307,6 +314,10 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Copy } from 'lucide-vue-next';
+import { nextTick } from 'vue';
 
 
 const supabase = useSupabaseClient();
@@ -447,9 +458,16 @@ const submitEvent = async () => {
     alert("Failed to create event. Please try again.");
     return;
   } 
+
+  // Set shareable link
   shareableLink.value = `${window.location.origin}/event/${eventCode.value}`;
-  showDialog.value = true;
-  // Redirect to event/[event-code]
+  
+  console.log("shareableLink set:", shareableLink.value);
+
+  // Only show dialog once the shareableLink is confirmed to be set
+  if (shareableLink.value) {
+    showDialog.value = true;
+  }
 };
 
 const backHome = () => {
