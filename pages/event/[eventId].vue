@@ -74,8 +74,17 @@
                 <CardTitle>Your Availability</CardTitle>
                 <CardDescription
                   >Indicate blocks of time when you are
-                  <span class="font-bold">not</span> free.</CardDescription
-                >
+                  <span class="font-bold">not</span> free.
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger> <Info class="size-4"/> </TooltipTrigger>
+                      <TooltipContent>
+                        <p><span class="font-bold">On Desktop:</span> Click and drag to select blocks</p>
+                        <p><span class="font-bold">On Mobile:</span> Tap to select start cell, then tap again to select end cell, selecting all the cells in between</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div class="w-full flex items-center justify-center">
@@ -110,7 +119,9 @@
                           @mousedown="startSelection(dateIndex, timeIndex)"
                           @mouseover="dragSelection(dateIndex, timeIndex)"
                           @mouseup="endSelection"
-                          @touchstart="tapSelection(dateIndex, timeIndex)"
+                          @touchstart.prevent="
+                            tapSelection(dateIndex, timeIndex)
+                          "
                           class="h-6 w-20 p-0 text-center interval-cell"
                         >
                           <div
@@ -210,6 +221,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info } from "lucide-vue-next";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -682,8 +700,14 @@ function tapSelection(dateIndex, timeIndex) {
 
 // Function to select all cells between the start and end points
 function selectCellsInRange(start, end) {
-  const [startDateIndex, endDateIndex] = [Math.min(start.dateIndex, end.dateIndex), Math.max(start.dateIndex, end.dateIndex)];
-  const [startTimeIndex, endTimeIndex] = [Math.min(start.timeIndex, end.timeIndex), Math.max(start.timeIndex, end.timeIndex)];
+  const [startDateIndex, endDateIndex] = [
+    Math.min(start.dateIndex, end.dateIndex),
+    Math.max(start.dateIndex, end.dateIndex),
+  ];
+  const [startTimeIndex, endTimeIndex] = [
+    Math.min(start.timeIndex, end.timeIndex),
+    Math.max(start.timeIndex, end.timeIndex),
+  ];
 
   for (let i = startDateIndex; i <= endDateIndex; i++) {
     for (let j = startTimeIndex; j <= endTimeIndex; j++) {
@@ -693,7 +717,6 @@ function selectCellsInRange(start, end) {
     }
   }
 }
-
 
 function getMergedClass(dateIndex, timeIndex) {
   const hasAbove = timeIndex > 0 && isSelected(dateIndex, timeIndex - 1);
