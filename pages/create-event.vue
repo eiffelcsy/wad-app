@@ -272,7 +272,7 @@
             </DialogDescription>
             <div class="flex items-center space-x-2">
               <div class="grid flex-1 gap-2">
-                <Input readonly :value="shareableLink"/>
+                <Input readonly :default-value="shareableLink"/>
               </div>
               <Button type="submit" size="sm" class="px-3" @click="copyLink">
                 <span class="sr-only">Copy</span>
@@ -315,9 +315,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Copy } from 'lucide-vue-next';
-import { nextTick } from 'vue';
 
 
 const supabase = useSupabaseClient();
