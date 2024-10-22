@@ -89,7 +89,7 @@
                   <CardDescription
                     >Indicate blocks of time when you are
                     <span class="font-bold">unavailable</span>. Tap to select
-                    start cell, then tap again to select end cell, selecting all
+                    start cell, then tap again to select end cell and all
                     the cells in between.
                   </CardDescription>
                 </CardHeader>
@@ -216,7 +216,7 @@
                 <CardDescription
                   >Indicate blocks of time when you are
                   <span class="font-bold">unavailable</span>. Click and drag to
-                  select blocks when you are not free.
+                  select blocks.
                 </CardDescription>
               </CardHeader>
               <CardContent>
