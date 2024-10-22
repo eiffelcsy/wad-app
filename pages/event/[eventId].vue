@@ -19,7 +19,7 @@
         <EnterIcon class="w-4 h-4 mr-2" />Login
       </Button>
     </div>
-    <div class="min-h-screen bg-black">
+    <div class="min-h-screen bg-zinc-50 dark:bg-black">
       <div
         class="py-6 md:py-8 mx-auto container xl:w-[1200px] flex flex-row justify-between"
       >
@@ -34,13 +34,22 @@
           </p>
         </div>
         <div class="flex flex-row items-center">
-          <Button variant="outline"> View Event Details </Button>
+          <Button variant="outline" v-if="isDesktop"> View Event Details </Button>
+          <Button variant="outline" size="icon" v-else> <List class="size-5"/> </Button>
           <AlertDialog>
             <AlertDialogTrigger as-child>
               <Button
-                class="ml-2 border border-red-900 bg-red-700 text-white hover:bg-red-900"
+                class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+                v-if="isDesktop"
               >
                 Delete Event
+              </Button>
+              <Button
+                size="icon"
+                class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+                v-else
+              >
+              <Trash2 class="size-5"/>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -68,36 +77,153 @@
       <Separator class="w-full" />
       <div class="py-8 mx-auto container">
         <client-only>
-          <div class="flex flex-col lg:flex-row gap-8">
-            <Card>
+          <Tabs default-value="your" v-if="!isDesktop">
+            <TabsList class="grid w-full grid-cols-2">
+              <TabsTrigger value="your"> Your Availability </TabsTrigger>
+              <TabsTrigger value="overall"> Overall Availability </TabsTrigger>
+            </TabsList>
+            <TabsContent value="your">
+              <Card class="lg:w-80 xl:w-96">
+                <CardHeader>
+                  <CardTitle>Your Availability</CardTitle>
+                  <CardDescription
+                    >Indicate blocks of time when you are
+                    <span class="font-bold">unavailable</span>. Tap to select
+                    start cell, then tap again to select end cell, selecting all
+                    the cells in between.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div class="w-full flex items-center justify-center">
+                    <!-- Interval Grid -->
+                    <table
+                      class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                    >
+                      <thead>
+                        <tr>
+                          <th class="pb-0.5"></th>
+                          <th
+                            v-for="(date, dateIndex) in dates"
+                            :key="dateIndex"
+                            class="text-sm font-medium pb-0.5"
+                          >
+                            {{ formatDate(date) }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                          <td
+                            v-if="timeIndex % 2 == 0"
+                            class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
+                          >
+                            {{ time }}
+                          </td>
+                          <td v-else></td>
+                          <td
+                            v-for="(date, dateIndex) in dates"
+                            :key="dateIndex"
+                            @mousedown="startSelection(dateIndex, timeIndex)"
+                            @mouseover="dragSelection(dateIndex, timeIndex)"
+                            @mouseup="endSelection"
+                            @touchstart.prevent="
+                              tapSelection(dateIndex, timeIndex)
+                            "
+                            class="h-6 p-0 text-center interval-cell"
+                          >
+                            <div
+                              :class="[
+                                'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950',
+                                isSelected(dateIndex, timeIndex)
+                                  ? getMergedClass(dateIndex, timeIndex) +
+                                    ' selected merged'
+                                  : 'rounded-lg',
+                              ]"
+                            ></div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="overall">
+              <Card class="lg:w-80 xl:w-96">
+                <CardHeader>
+                  <CardTitle>Overall Availability</CardTitle>
+                  <CardDescription
+                    >View the availability of everyone in the
+                    event.</CardDescription
+                  >
+                </CardHeader>
+                <CardContent>
+                  <div class="w-full flex items-center justify-center">
+                    <!-- Heatmap Grid -->
+                    <table
+                      class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                    >
+                      <thead>
+                        <tr>
+                          <th class="pb-0.5"></th>
+                          <th
+                            v-for="(date, dateIndex) in dates"
+                            :key="dateIndex"
+                            class="text-sm font-medium pb-0.5"
+                          >
+                            {{ formatDate(date) }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                          <td
+                            v-if="timeIndex % 2 == 0"
+                            class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
+                          >
+                            {{ time }}
+                          </td>
+                          <td v-else></td>
+                          <td
+                            v-for="(date, dateIndex) in dates"
+                            :key="dateIndex"
+                            class="h-6 p-0 text-center heatmap-cell"
+                          >
+                            <div
+                              class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md"
+                              :style="{
+                                backgroundColor: getHeatmapColor(
+                                  dateIndex,
+                                  timeIndex
+                                ),
+                              }"
+                            >
+                              {{ getAvailabilityCount(dateIndex, timeIndex) }}
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+          <div class="flex flex-col lg:flex-row gap-8" v-else>
+            <Card class="lg:w-80 xl:w-96">
               <CardHeader>
                 <CardTitle>Your Availability</CardTitle>
                 <CardDescription
                   >Indicate blocks of time when you are
-                  <span class="font-bold">unavailable</span>.
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger> <Info class="size-4" /> </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          <span class="font-bold">On Desktop:</span> Click and
-                          drag to select blocks
-                        </p>
-                        <p>
-                          <span class="font-bold">On Mobile:</span> Tap to
-                          select start cell, then tap again to select end cell,
-                          selecting all the cells in between
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <span class="font-bold">unavailable</span>. Click and drag to
+                  select blocks when you are not free.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div class="w-full flex items-center justify-center">
                   <!-- Interval Grid -->
                   <table
-                    class="max-w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                    class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
                   >
                     <thead>
                       <tr>
@@ -115,7 +241,7 @@
                       <tr v-for="(time, timeIndex) in times" :key="timeIndex">
                         <td
                           v-if="timeIndex % 2 == 0"
-                          class="border-t pl-2 pr-1 border-zinc-700"
+                          class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
                         >
                           {{ time }}
                         </td>
@@ -129,11 +255,11 @@
                           @touchstart.prevent="
                             tapSelection(dateIndex, timeIndex)
                           "
-                          class="h-6 w-20 p-0 text-center interval-cell"
+                          class="h-6 p-0 text-center interval-cell"
                         >
                           <div
                             :class="[
-                              'h-full w-full flex items-center justify-center border border-zinc-700 bg-zinc-950',
+                              'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950',
                               isSelected(dateIndex, timeIndex)
                                 ? getMergedClass(dateIndex, timeIndex) +
                                   ' selected merged'
@@ -147,7 +273,7 @@
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card class="lg:w-80 xl:w-96">
               <CardHeader>
                 <CardTitle>Overall Availability</CardTitle>
                 <CardDescription
@@ -159,7 +285,7 @@
                 <div class="w-full flex items-center justify-center">
                   <!-- Heatmap Grid -->
                   <table
-                    class="max-w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                    class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
                   >
                     <thead>
                       <tr>
@@ -177,7 +303,7 @@
                       <tr v-for="(time, timeIndex) in times" :key="timeIndex">
                         <td
                           v-if="timeIndex % 2 == 0"
-                          class="border-t pl-2 pr-1 border-zinc-700"
+                          class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
                         >
                           {{ time }}
                         </td>
@@ -185,10 +311,10 @@
                         <td
                           v-for="(date, dateIndex) in dates"
                           :key="dateIndex"
-                          class="h-6 w-20 p-0 text-center heatmap-cell"
+                          class="h-6 p-0 text-center heatmap-cell"
                         >
                           <div
-                            class="h-full w-full flex items-center justify-center border border-zinc-700 bg-zinc-950 text-xs rounded-md"
+                            class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md"
                             :style="{
                               backgroundColor: getHeatmapColor(
                                 dateIndex,
@@ -258,18 +384,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Info } from "lucide-vue-next";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { List, Trash2 } from "lucide-vue-next";
+import { useMediaQuery } from "@vueuse/core";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const route = useRoute();
 const { toast } = useToast();
+const isDesktop = useMediaQuery("(min-width: 1000px)");
 
 const showDialog = ref(false);
 const event_id = ref("");
@@ -681,7 +804,7 @@ function getHeatmapColor(dateIndex, timeIndex) {
   const count = availabilityCounts.value[intervalIndex] || 0;
   const totalParticipants = event_participants.value.length || 1; // Prevent division by zero
   const opacity = count / totalParticipants;
-  return `rgba(102, 204, 102, ${opacity})`; // Adjust the color as needed
+  return `rgba(34, 197, 94, ${opacity})`; // Adjust the color as needed
 }
 
 // Function to get the availability count for a cell
