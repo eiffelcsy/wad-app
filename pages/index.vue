@@ -302,6 +302,82 @@ if (user.value) {
   email.value = user.value.email;
 }
 
+  // Fetch upcoming events for the logged-in user
+  const fetchUpcomingEvents = async () => {
+    // Fetch event IDs from the participants table where the user is a participant
+    const { data: participantData, error: participantError } = await supabase
+      .from("participants")
+      .select("event_id")
+      .eq("user_id", user.value.id);
+  
+    if (participantError) {
+      console.error("Error fetching event IDs:", participantError.message);
+      return;
+    }
+  
+    // If no events are found in the participants table
+    if (!participantData || participantData.length === 0) {
+      console.log("No upcoming events found for this user.");
+      upcomingEvents.value = [];
+      return;
+    }
+  
+    // Extract event IDs
+    const eventIds = participantData.map((participant) => participant.event_id);
+  
+    // Fetch the event details for these event IDs
+    const { data: eventData, error: eventError } = await supabase
+      .from("events")
+      .select("*")
+      .in("id", eventIds) // Fetch events where the event ID is in the list of participant event IDs
+      .gte("start_date", new Date().toISOString().split("T")[0]) // Only fetch upcoming events (date greater than or equal to today)
+      .order("start_date", { ascending: true });
+  
+    if (eventError) {
+      console.error("Error fetching events:", eventError.message);
+    } else {
+      upcomingEvents.value = eventData;
+    }
+  };
+  
+  // Fetch TODOs for the logged-in user
+  const fetchTodos = async () => {
+    const { data, error } = await supabase
+      .from("todos")
+      .select("*")
+      .eq("assigned_to", user.value.id);
+  
+    if (error) {
+      console.error("Error fetching todos:", error.message);
+    } else {
+      todos.value = data;
+    }
+  };
+  
+  // Fetch data on component mount
+  onMounted(() => {
+    if (user.value) {
+      fetchUpcomingEvents();
+      fetchTodos();
+    }
+  });
+  
+  // Function to save the display name
+  const saveDisplayName = async () => {
+    if (newDisplayName.value) {
+      const { error } = await supabase.auth.updateUser({
+        data: { name: newDisplayName.value },
+      });
+  
+      if (error) {
+        console.error("Error updating profile:", error.message);
+      } else {
+        displayName.value = newDisplayName.value;
+        showDialog.value = false;
+      }
+    }
+  };
+  
 // Navigation functions for Events
 const toLogin = () => {
   navigateTo("/auth");
