@@ -31,8 +31,9 @@
               >
                 <span class="flex items-center justify-center">
                   <Ellipsis class="size-4 text-muted-foreground" />
-                </span> </Button
-            ></DrawerTrigger>
+                </span> 
+              </Button>
+            </DrawerTrigger>
             <DrawerContent>
               <div class="mx-auto mt-4 mb-8 w-full max-w-sm">
                 <RadioGroup
@@ -41,18 +42,18 @@
                 >
                   <div class="flex items-center space-x-4">
                     <RadioGroupItem
-                      id="SortByActivity"
-                      value="SortByActivity"
+                      id="sortByDate"
+                      value="sortByDate"
                       @click="closeDrawer"
                     />
-                    <Label for="SortByActivity" class="text-base font-normal"
-                      >Sort by Activity</Label
+                    <Label for="sortByDate" class="text-base font-normal"
+                      >Sort by Date</Label
                     >
                   </div>
                   <div class="flex items-center space-x-4">
                     <RadioGroupItem
-                      id="SortByName"
-                      value="SortByName"
+                      id="sortByName"
+                      value="sortByName"
                       @click="closeDrawer"
                     />
                     <Label for="SortByName" class="text-base font-normal"
@@ -64,14 +65,14 @@
             </DrawerContent>
           </Drawer>
         </div>
-        <Select v-if="!isMobile">
+        <Select v-if="!isMobile" default-value="sortByDate">
           <SelectTrigger class="max-w-36 mr-2">
             <SelectValue placeholder="Sort By..." />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="SortByActivity">Sort By Activity</SelectItem>
-              <SelectItem value="SortByName">Sort By Name</SelectItem>
+              <SelectItem value="sortByDate">Sort By Date</SelectItem>
+              <SelectItem value="sortByName">Sort By Name</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -92,39 +93,22 @@
         </Button>
       </div>
       <div class="min-h-screen">
-        <div
-          class="container w-full grid grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 justify-center"
-        >
-          <Card
-            v-for="(project, index) in projects"
-            :key="index"
-            class="mt-6 hover:border-zinc-700"
-          >
-            <NuxtLink
-              :to="{
-                name: 'project-projectId',
-                params: { projectId: project.id },
-              }"
-            >
-              <CardHeader class="gap-2">
-                <CardTitle>
-                  <div>
-                    <h1 class="text-xl hover:underline">{{ project.title }}</h1>
-                    <p class="text-base font-light text-zinc-500 mt-1">
-                      {{ project.id }}
-                    </p>
-                  </div>
-                </CardTitle>
-                <CardDescription
-                  ><Badge class="mt-2">{{ project.team_name }}</Badge
-                  ><br
-                /></CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p>{{ project.description }}</p>
-              </CardContent>
-            </NuxtLink>
-          </Card>
+        <div class="container w-full pt-8">
+          <Tabs default-value="all" class="w-full">
+            <TabsList class="w-full">
+              <TabsTrigger value="all" class="w-full"> All Events </TabsTrigger>
+              <TabsTrigger value="past" class="w-full">
+                Past Events
+              </TabsTrigger>
+              <TabsTrigger value="upcoming" class="w-full">
+                Upcoming Events
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="all">
+              Make changes to your account here.
+            </TabsContent>
+            <TabsContent value="past"> Change your password here. </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
@@ -133,12 +117,31 @@
 </template>
 
 <script setup>
-import { PageFooter } from "@/components/custom/page-footer";
 import { PageHeader } from "@/components/custom/page-header";
 import { Ellipsis, Plus, Search } from "lucide-vue-next";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useMediaQuery } from "@vueuse/core";
+import { PageFooter } from "@/components/custom/page-footer";
+import { navigateTo } from "nuxt/app";
 
-const user = useSupabaseUser();
-
-const displayName = ref(user.value.user_metadata.name);
-const email = ref(user.value.email);
+const isMobile = useMediaQuery("(max-width: 600px)");
 </script>

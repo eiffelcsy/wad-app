@@ -130,7 +130,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, onMounted } from "vue";
 import { PageHeader } from "@/components/custom/page-header";
 import { Ellipsis, Plus, Search } from "lucide-vue-next";
