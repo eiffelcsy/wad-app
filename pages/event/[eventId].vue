@@ -35,7 +35,7 @@
         </div>
         <div class="flex flex-row items-center">
           <Button variant="outline" v-if="isDesktop"> View Event Details </Button>
-          <Button variant="outline" size="icon" v-else> <List/> </Button>
+          <Button variant="outline" size="icon" v-else> <List class="size-5"/> </Button>
           <AlertDialog>
             <AlertDialogTrigger as-child>
               <Button
@@ -49,7 +49,7 @@
                 class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
                 v-else
               >
-              <Trash2/>
+              <Trash2 class="size-5"/>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
