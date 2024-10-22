@@ -68,19 +68,26 @@
       <Separator class="w-full" />
       <div class="py-8 mx-auto container">
         <client-only>
-          <div class="flex flex-col lg:flex-row gap-32">
+          <div class="flex flex-col lg:flex-row gap-8">
             <Card>
               <CardHeader>
                 <CardTitle>Your Availability</CardTitle>
                 <CardDescription
                   >Indicate blocks of time when you are
-                  <span class="font-bold">not</span> free.
+                  <span class="font-bold">unavailable</span>.
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger> <Info class="size-4"/> </TooltipTrigger>
+                      <TooltipTrigger> <Info class="size-4" /> </TooltipTrigger>
                       <TooltipContent>
-                        <p><span class="font-bold">On Desktop:</span> Click and drag to select blocks</p>
-                        <p><span class="font-bold">On Mobile:</span> Tap to select start cell, then tap again to select end cell, selecting all the cells in between</p>
+                        <p>
+                          <span class="font-bold">On Desktop:</span> Click and
+                          drag to select blocks
+                        </p>
+                        <p>
+                          <span class="font-bold">On Mobile:</span> Tap to
+                          select start cell, then tap again to select end cell,
+                          selecting all the cells in between
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -140,34 +147,64 @@
                 </div>
               </CardContent>
             </Card>
-            <div>
-              <!-- Heatmap Grid -->
-              <table>
-                <thead>
-                  <tr>
-                    <th>Time</th>
-                    <th v-for="(date, dateIndex) in dates" :key="dateIndex">
-                      {{ formatDate(date) }}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                    <td>{{ time }}</td>
-                    <td
-                      v-for="(date, dateIndex) in dates"
-                      :key="dateIndex"
-                      :style="{
-                        backgroundColor: getHeatmapColor(dateIndex, timeIndex),
-                      }"
-                      class="heatmap-cell"
-                    >
-                      {{ getAvailabilityCount(dateIndex, timeIndex) }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Overall Availability</CardTitle>
+                <CardDescription
+                  >View the availability of everyone in the
+                  event.</CardDescription
+                >
+              </CardHeader>
+              <CardContent>
+                <div class="w-full flex items-center justify-center">
+                  <!-- Heatmap Grid -->
+                  <table
+                    class="max-w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="pb-0.5"></th>
+                        <th
+                          v-for="(date, dateIndex) in dates"
+                          :key="dateIndex"
+                          class="text-sm font-medium pb-0.5"
+                        >
+                          {{ formatDate(date) }}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                        <td
+                          v-if="timeIndex % 2 == 0"
+                          class="border-t pl-2 pr-1 border-zinc-700"
+                        >
+                          {{ time }}
+                        </td>
+                        <td v-else></td>
+                        <td
+                          v-for="(date, dateIndex) in dates"
+                          :key="dateIndex"
+                          class="h-6 w-20 p-0 text-center heatmap-cell"
+                        >
+                          <div
+                            class="h-full w-full flex items-center justify-center border border-zinc-700 bg-zinc-950 text-xs rounded-md"
+                            :style="{
+                              backgroundColor: getHeatmapColor(
+                                dateIndex,
+                                timeIndex
+                              ),
+                            }"
+                          >
+                            {{ getAvailabilityCount(dateIndex, timeIndex) }}
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
           </div>
           <!-- Existing Dialog and Toast Components -->
           <Dialog :open="showDialog">
@@ -501,7 +538,7 @@ const saveDisplayName = async () => {
 
 // Interval Grid Methods
 function formatDate(date) {
-  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  const options = { year: "2-digit", month: "short", day: "2-digit" };
   return new Date(date).toLocaleDateString(undefined, options);
 }
 
@@ -784,13 +821,6 @@ async function confirmDelete() {
 
 .interval-cell .merged {
   border-spacing: 0 !important;
-}
-
-.heatmap-cell {
-  width: 50px;
-  height: 30px;
-  border: 1px solid #ccc;
-  text-align: center;
 }
 
 table {
