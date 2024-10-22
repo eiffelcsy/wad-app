@@ -3,6 +3,9 @@
   <div>
     <PageHeader />
     <div class="bg-zinc-50 dark:bg-black">
+      <div class="container w-full pt-8 md:pt-10 lg:pt-14">
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Your Projects</h1>
+      </div>
       <div class="container w-full flex flex-row justify-between pt-8">
         <div class="relative w-full max-h-10 pr-2 items-center">
           <Input
