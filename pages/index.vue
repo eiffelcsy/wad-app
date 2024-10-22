@@ -405,6 +405,6 @@ const toJoinTeam = () => {
   navigateTo("/join-team");
 };
 const toMyTeams = () => {
-  navigateTo("/my-teams");
+  navigateTo("/teams");
 };
 </script>
