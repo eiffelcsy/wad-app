@@ -153,14 +153,6 @@
                         Create Team
                         <PersonIcon class="ml-2" />
                       </Button>
-                      <Button
-                        variant="outline"
-                        class="mt-2 mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-                        @click="toMyTeams"
-                      >
-                        My Teams
-                        <PersonIcon class="ml-2" />
-                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -403,8 +395,5 @@ const toCreateTeam = () => {
 };
 const toJoinTeam = () => {
   navigateTo("/join-team");
-};
-const toMyTeams = () => {
-  navigateTo("/teams");
 };
 </script>
