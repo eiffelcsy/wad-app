@@ -6,9 +6,9 @@
       class="flex flex-row justify-between py-4 px-8 md:px-12 lg:px-16 bg-zinc-50 dark:bg-black"
     >
       <div class="flex items-center">
-        <NuxtLink to="/" class=""
-          ><p class="text-xl font-bold tracking-wider">MeetLah</p></NuxtLink
-        >
+        <NuxtLink to="/" class="">
+          <p class="text-xl font-bold tracking-wider">MeetLah</p>
+        </NuxtLink>
       </div>
       <Button
         @click="toLogin"
@@ -130,6 +130,41 @@
                   </CardFooter>
                 </Card>
               </div>
+                            <!-- Teams Section -->
+                            <div class="mt-4 md:mt-6 lg:mt-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Teams</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div class="flex flex-wrap">
+                      <Button
+                        variant="outline"
+                        class="mt-2 mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                        @click="toJoinTeam"
+                      >
+                        Join Team
+                        <PlusCircledIcon class="ml-2" />
+                      </Button>
+                      <Button
+                        class="mt-2 mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+                        @click="toCreateTeam"
+                      >
+                        Create Team
+                        <PersonIcon class="ml-2" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        class="mt-2 mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                        @click="toMyTeams"
+                      >
+                        My Teams
+                        <PersonIcon class="ml-2" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
               <div class="mt-4 md:mt-6 lg:mt-8">
                 <Card>
                   <CardHeader>
@@ -221,7 +256,7 @@
 </template>
 
 <script setup>
-import { CalendarIcon, EnterIcon, PlusCircledIcon } from "@radix-icons/vue";
+import { CalendarIcon, EnterIcon, PlusCircledIcon, PersonIcon } from "@radix-icons/vue";
 import { navigateTo } from "nuxt/app";
 import { PageHeader } from "@/components/custom/page-header";
 import {
@@ -267,83 +302,7 @@ if (user.value) {
   email.value = user.value.email;
 }
 
-// Fetch upcoming events for the logged-in user
-const fetchUpcomingEvents = async () => {
-  // Fetch event IDs from the participants table where the user is a participant
-  const { data: participantData, error: participantError } = await supabase
-    .from("participants")
-    .select("event_id")
-    .eq("user_id", user.value.id);
-
-  if (participantError) {
-    console.error("Error fetching event IDs:", participantError.message);
-    return;
-  }
-
-  // If no events are found in the participants table
-  if (!participantData || participantData.length === 0) {
-    console.log("No upcoming events found for this user.");
-    upcomingEvents.value = [];
-    return;
-  }
-
-  // Extract event IDs
-  const eventIds = participantData.map((participant) => participant.event_id);
-
-  // Fetch the event details for these event IDs
-  const { data: eventData, error: eventError } = await supabase
-    .from("events")
-    .select("*")
-    .in("id", eventIds) // Fetch events where the event ID is in the list of participant event IDs
-    .gte("start_date", new Date().toISOString().split("T")[0]) // Only fetch upcoming events (date greater than or equal to today)
-    .order("start_date", { ascending: true });
-
-  if (eventError) {
-    console.error("Error fetching events:", eventError.message);
-  } else {
-    upcomingEvents.value = eventData;
-  }
-};
-
-// Fetch TODOs for the logged-in user
-const fetchTodos = async () => {
-  const { data, error } = await supabase
-    .from("todos")
-    .select("*")
-    .eq("assigned_to", user.value.id);
-
-  if (error) {
-    console.error("Error fetching todos:", error.message);
-  } else {
-    todos.value = data;
-  }
-};
-
-// Fetch data on component mount
-onMounted(() => {
-  if (user.value) {
-    fetchUpcomingEvents();
-    fetchTodos();
-  }
-});
-
-// Function to save the display name
-const saveDisplayName = async () => {
-  if (newDisplayName.value) {
-    const { error } = await supabase.auth.updateUser({
-      data: { name: newDisplayName.value },
-    });
-
-    if (error) {
-      console.error("Error updating profile:", error.message);
-    } else {
-      displayName.value = newDisplayName.value;
-      showDialog.value = false;
-    }
-  }
-};
-
-// Navigation functions
+// Navigation functions for Events
 const toLogin = () => {
   navigateTo("/auth");
 };
@@ -356,5 +315,20 @@ const toCreate = () => {
 };
 const toJoin = () => {
   navigateTo("/join");
+};
+
+// Navigation functions for Teams
+const toCreateTeam = () => {
+  if (user.value) {
+    navigateTo("/create-team");
+  } else {
+    navigateTo("/auth");
+  }
+};
+const toJoinTeam = () => {
+  navigateTo("/join-team");
+};
+const toMyTeams = () => {
+  navigateTo("/my-teams");
 };
 </script>
