@@ -13,7 +13,7 @@
         <p
           class="text-base text-zinc-400 dark:text-zinc-500 text-center"
         >
-          Create and customize a new team by filling in the details below.
+          Create your own team by filling in the details below.
         </p>
       </div>
       <transition name="fade" mode="out-in">
