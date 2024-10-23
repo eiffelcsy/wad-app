@@ -102,15 +102,15 @@
           <div
             class="w-full flex flex-col mt-4 md:flex-row md:justify-center gap-4 md:gap-6 lg:gap-8"
           >
-            <Card class="w-2/3">
+            <Card class="w-full">
               <CardContent>
-                <div class="mb-8">
+                <div>
                   <h1
                     class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
                   >
                     Select Time Range
                   </h1>
-                  <div class="mt-4 lg:mt-8 flex flex-row justify-center gap-14">
+                  <div class="mt-4 lg:mt-8 flex flex-col md:flex-row justify-center gap-4 xl:gap-8">
                     <div>
                       <label
                         class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
@@ -273,18 +273,21 @@
           </div>
         </div>
 
-        <div v-else-if="currentView === 3" key="view3">
+        <div
+          v-else-if="currentView === 3"
+          key="view3"
+          class="relative w-full lg:w-1/2 h-full flex flex-col md:items-center md:mt-4 lg:mt-8"
+        >
           <!-- View 3: Review and Submit -->
-          <div class="mb-8">
-            <h1
-              class="text-lg md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
-            >
-              Review and Submit
-            </h1>
-            <p class="text-zinc-700 dark:text-zinc-300 mt-4">
-              Please review your information before submitting.
-            </p>
-            <div class="mt-6 space-y-2">
+          <Card class="w-full">
+            <CardHeader>
+              <CardTitle>Review and Submit</CardTitle>
+              <CardDescription
+                >Please review your information before
+                submitting.</CardDescription
+              >
+            </CardHeader>
+            <CardContent>
               <div>
                 <strong class="text-zinc-800 dark:text-zinc-100"
                   >Title:
@@ -313,7 +316,7 @@
               <div>
                 <strong class="text-zinc-800 dark:text-zinc-100">Time: </strong>
                 <span class="text-zinc-700 dark:text-zinc-300"
-                  >{{ startTime }} to {{ endTime }}</span
+                  >{{ startTime }}{{ startTimeMeridiem }} to {{ endTime }}{{ endTimeMeridiem }}</span
                 >
               </div>
               <div>
@@ -324,17 +327,18 @@
                   numberOfParticipants
                 }}</span>
               </div>
-            </div>
-          </div>
-          <div class="flex justify-between mt-8">
+            </CardContent>
+          </Card>
+          <div class="w-full grid grid-cols-1 lg:grid-cols-2 mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-8">
             <Button
               @click="prevView"
-              class="w-full mr-2 bg-zinc-200 dark:bg-zinc-800 text-black dark:text-white"
+              variant="outline"
+              class="w-full"
               >Back</Button
             >
             <Button
               @click="submitEvent"
-              class="w-full ml-2 bg-green-600 text-white"
+              class="w-full bg-green-600 text-white"
               >Create Event</Button
             >
           </div>
@@ -533,13 +537,22 @@ const convertTo24HourFormat = (time: string, meridiem: string): string => {
     hours = 0; // Handle 12:00 AM case (convert to 00:00)
   }
 
-  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+    2,
+    "0"
+  )}`;
 };
 
 // Function to submit the event
 const submitEvent = async () => {
-  const adjustedStartTime = convertTo24HourFormat(startTime.value, startTimeMeridiem.value);
-  const adjustedEndTime = convertTo24HourFormat(endTime.value, endTimeMeridiem.value);
+  const adjustedStartTime = convertTo24HourFormat(
+    startTime.value,
+    startTimeMeridiem.value
+  );
+  const adjustedEndTime = convertTo24HourFormat(
+    endTime.value,
+    endTimeMeridiem.value
+  );
 
   eventCode.value = await generateEventCode();
 
