@@ -10,9 +10,7 @@
         >
           New Event
         </h1>
-        <p
-          class="text-base text-zinc-400 dark:text-zinc-500"
-        >
+        <p class="text-base text-zinc-400 dark:text-zinc-500">
           Create and customize a new event by filling in the details below.
         </p>
       </div>
@@ -112,18 +110,58 @@
                   >
                     Select Time Range
                   </h1>
-                  <div class="mt-4 lg:mt-8 flex flex-row justify-center gap-8">
+                  <div class="mt-4 lg:mt-8 flex flex-row justify-center gap-14">
                     <div>
                       <label
                         class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                         >Start Time</label
                       >
-                      <input
-                        type="time"
-                        v-model="startTime"
-                        step="1800"
-                        class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-950 border rounded-md text-zinc-900 dark:text-zinc-200 self-center"
-                      />
+                      <div class="flex flex-row gap-2">
+                        <Select v-model="startTime">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Time" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="01:00"> 01:00 </SelectItem>
+                              <SelectItem value="01:30"> 01:30 </SelectItem>
+                              <SelectItem value="02:00"> 02:00 </SelectItem>
+                              <SelectItem value="02:30"> 02:30 </SelectItem>
+                              <SelectItem value="03:00"> 03:00 </SelectItem>
+                              <SelectItem value="03:30"> 03:30 </SelectItem>
+                              <SelectItem value="04:00"> 04:00 </SelectItem>
+                              <SelectItem value="04:30"> 04:30 </SelectItem>
+                              <SelectItem value="05:00"> 05:00 </SelectItem>
+                              <SelectItem value="05:30"> 05:30 </SelectItem>
+                              <SelectItem value="06:00"> 06:00 </SelectItem>
+                              <SelectItem value="06:30"> 06:30 </SelectItem>
+                              <SelectItem value="07:00"> 07:00 </SelectItem>
+                              <SelectItem value="07:30"> 07:30 </SelectItem>
+                              <SelectItem value="08:00"> 08:00 </SelectItem>
+                              <SelectItem value="08:30"> 08:30 </SelectItem>
+                              <SelectItem value="09:00"> 09:00 </SelectItem>
+                              <SelectItem value="09:30"> 09:30 </SelectItem>
+                              <SelectItem value="10:00"> 10:00 </SelectItem>
+                              <SelectItem value="10:30"> 10:30 </SelectItem>
+                              <SelectItem value="11:00"> 11:00 </SelectItem>
+                              <SelectItem value="11:30"> 11:30 </SelectItem>
+                              <SelectItem value="00:00"> 12:00 </SelectItem>
+                              <SelectItem value="00:30"> 12:30 </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <Select v-model="startTimeMeridiem">
+                          <SelectTrigger>
+                            <SelectValue placeholder="AM or PM" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="AM"> AM </SelectItem>
+                              <SelectItem value="PM"> PM </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <div
                         v-if="errors.startTime"
                         class="error absolute text-xs mt-1"
@@ -136,12 +174,52 @@
                         class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                         >End Time</label
                       >
-                      <input
-                        type="time"
-                        v-model="endTime"
-                        step="1800"
-                        class="mt-2 p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-950 border rounded-md text-zinc-900 dark:text-zinc-200"
-                      />
+                      <div class="flex flex-row gap-2">
+                        <Select v-model="endTime">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Time" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="01:00"> 01:00 </SelectItem>
+                              <SelectItem value="01:30"> 01:30 </SelectItem>
+                              <SelectItem value="02:00"> 02:00 </SelectItem>
+                              <SelectItem value="02:30"> 02:30 </SelectItem>
+                              <SelectItem value="03:00"> 03:00 </SelectItem>
+                              <SelectItem value="03:30"> 03:30 </SelectItem>
+                              <SelectItem value="04:00"> 04:00 </SelectItem>
+                              <SelectItem value="04:30"> 04:30 </SelectItem>
+                              <SelectItem value="05:00"> 05:00 </SelectItem>
+                              <SelectItem value="05:30"> 05:30 </SelectItem>
+                              <SelectItem value="06:00"> 06:00 </SelectItem>
+                              <SelectItem value="06:30"> 06:30 </SelectItem>
+                              <SelectItem value="07:00"> 07:00 </SelectItem>
+                              <SelectItem value="07:30"> 07:30 </SelectItem>
+                              <SelectItem value="08:00"> 08:00 </SelectItem>
+                              <SelectItem value="08:30"> 08:30 </SelectItem>
+                              <SelectItem value="09:00"> 09:00 </SelectItem>
+                              <SelectItem value="09:30"> 09:30 </SelectItem>
+                              <SelectItem value="10:00"> 10:00 </SelectItem>
+                              <SelectItem value="10:30"> 10:30 </SelectItem>
+                              <SelectItem value="11:00"> 11:00 </SelectItem>
+                              <SelectItem value="11:30"> 11:30 </SelectItem>
+                              <SelectItem value="00:00"> 12:00 </SelectItem>
+                              <SelectItem value="00:30"> 12:30 </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <Select v-model="endTimeMeridiem">
+                          <SelectTrigger>
+                            <SelectValue placeholder="AM or PM" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="AM"> AM </SelectItem>
+                              <SelectItem value="PM"> PM </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <div
                         v-if="errors.endTime"
                         class="error absolute text-xs mt-1"
@@ -208,23 +286,25 @@
             </p>
             <div class="mt-6 space-y-2">
               <div>
-                <strong class="text-zinc-800 dark:text-zinc-100">Title: </strong>
+                <strong class="text-zinc-800 dark:text-zinc-100"
+                  >Title:
+                </strong>
                 <span class="text-zinc-700 dark:text-zinc-300">{{
                   title
                 }}</span>
               </div>
               <div v-if="description">
                 <strong class="text-zinc-800 dark:text-zinc-100"
-                  >Description: </strong
-                >
+                  >Description:
+                </strong>
                 <span class="text-zinc-700 dark:text-zinc-300">{{
                   description
                 }}</span>
               </div>
               <div>
                 <strong class="text-zinc-800 dark:text-zinc-100"
-                  >Date Range: </strong
-                >
+                  >Date Range:
+                </strong>
                 <span class="text-zinc-700 dark:text-zinc-300"
                   >{{ formatDate(dateRange.start) }} to
                   {{ formatDate(dateRange.end) }}</span
@@ -238,8 +318,8 @@
               </div>
               <div>
                 <strong class="text-zinc-800 dark:text-zinc-100"
-                  >Number of Participants: </strong
-                >
+                  >Number of Participants:
+                </strong>
                 <span class="text-zinc-700 dark:text-zinc-300">{{
                   numberOfParticipants
                 }}</span>
@@ -260,36 +340,36 @@
           </div>
         </div>
       </transition>
-        <!-- Dialog, its abit broken, but it works now -->
-        <div v-if="fun"></div>
-        <Dialog :open="showDialog" v-else>
+      <!-- Dialog, its abit broken, but it works now -->
+      <div v-if="fun"></div>
+      <Dialog :open="showDialog" v-else>
         <DialogContent>
-            <DialogHeader>
-                <DialogTitle class="tw-text-xl">Event Code: <strong>{{ eventCode }}</strong></DialogTitle>
-            </DialogHeader>
-            <DialogDescription>
-              Share this code or link below.
-            </DialogDescription>
-            <div class="flex items-center space-x-2">
-              <div class="grid flex-1 gap-2">
-                <Input readonly :default-value="shareableLink"/>
-              </div>
-              <Button type="submit" size="sm" class="px-3" @click="copyLink">
-                <span class="sr-only">Copy</span>
-                <Copy class="w-4 h-4" />
-              </Button>
+          <DialogHeader>
+            <DialogTitle class="tw-text-xl"
+              >Event Code: <strong>{{ eventCode }}</strong></DialogTitle
+            >
+          </DialogHeader>
+          <DialogDescription>
+            Share this code or link below.
+          </DialogDescription>
+          <div class="flex items-center space-x-2">
+            <div class="grid flex-1 gap-2">
+              <Input readonly :default-value="shareableLink" />
             </div>
-            <DialogFooter class="sm:justify-start">
-                <DialogClose as-child>
-                    <Button type="button" variant="secondary" @click="closeDialog">
-                        Close
-                    </Button>
-                </DialogClose>
-            </DialogFooter>
+            <Button type="submit" size="sm" class="px-3" @click="copyLink">
+              <span class="sr-only">Copy</span>
+              <Copy class="w-4 h-4" />
+            </Button>
+          </div>
+          <DialogFooter class="sm:justify-start">
+            <DialogClose as-child>
+              <Button type="button" variant="secondary" @click="closeDialog">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
         </DialogContent>
-        </Dialog>
-
-
+      </Dialog>
     </div>
     <PageFooter />
   </div>
@@ -312,11 +392,27 @@ import {
   NumberFieldInput,
 } from "@/components/ui/number-field";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Copy } from 'lucide-vue-next';
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Copy } from "lucide-vue-next";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const supabase = useSupabaseClient();
 
@@ -338,6 +434,8 @@ const title = ref<string>(""); // Title is a string
 const description = ref<string>(""); // Description is a string
 const startTime = ref<string | null>(null); // startTime can be string or null
 const endTime = ref<string | null>(null); // endTime can be string or null
+const startTimeMeridiem = ref<string | null>(null);
+const endTimeMeridiem = ref<string | null>(null);
 const numberOfParticipants = ref<number>(1); // numberOfParticipants is a number
 const currentView = ref<number>(1); // currentView is a number
 const errors = ref<Errors>({}); // errors is an object with optional fields
@@ -364,10 +462,10 @@ const validateCurrentView = (): boolean => {
       errors.value.dateRange = "Start date and end date are required.";
     }
   } else if (currentView.value === 2) {
-    if (!startTime.value) {
+    if (!startTime.value || !startTimeMeridiem.value) {
       errors.value.startTime = "Start time is required.";
     }
-    if (!endTime.value) {
+    if (!endTime.value || !endTimeMeridiem.value) {
       errors.value.endTime = "End time is required.";
     }
     if (!numberOfParticipants.value || numberOfParticipants.value <= 0) {
@@ -426,8 +524,23 @@ const generateEventCode = async (): Promise<string | null> => {
   return code;
 };
 
+const convertTo24HourFormat = (time: string, meridiem: string): string => {
+  let [hours, minutes] = time.split(":").map(Number);
+
+  if (meridiem === "PM" && hours !== 12) {
+    hours += 12; // Convert to PM by adding 12 hours
+  } else if (meridiem === "AM" && hours === 12) {
+    hours = 0; // Handle 12:00 AM case (convert to 00:00)
+  }
+
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+};
+
 // Function to submit the event
 const submitEvent = async () => {
+  const adjustedStartTime = convertTo24HourFormat(startTime.value, startTimeMeridiem.value);
+  const adjustedEndTime = convertTo24HourFormat(endTime.value, endTimeMeridiem.value);
+
   eventCode.value = await generateEventCode();
 
   if (!eventCode) {
@@ -442,8 +555,8 @@ const submitEvent = async () => {
     creator_user_id: user.id,
     start_date: dayjs(dateRange.value.start).format("YYYY-MM-DD"),
     end_date: dayjs(dateRange.value.end).format("YYYY-MM-DD"),
-    start_time: startTime.value,
-    end_time: endTime.value,
+    start_time: adjustedStartTime,
+    end_time: adjustedEndTime,
     number_of_participants: numberOfParticipants.value,
     code: eventCode.value,
   };
@@ -455,11 +568,11 @@ const submitEvent = async () => {
     console.error("Error inserting event:", error);
     alert("Failed to create event. Please try again.");
     return;
-  } 
+  }
 
   // Set shareable link
   shareableLink.value = `${window.location.origin}/event/${eventCode.value}`;
-  
+
   console.log("shareableLink set:", shareableLink.value);
 
   // Only show dialog once the shareableLink is confirmed to be set
@@ -489,7 +602,7 @@ const fun = ref(false);
 // Copy link to clipboard
 const copyLink = () => {
   navigator.clipboard.writeText(shareableLink.value);
-  alert('Link copied to clipboard!');
+  alert("Link copied to clipboard!");
 };
 </script>
 
