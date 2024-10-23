@@ -80,7 +80,7 @@
               type="password"
               placeholder="Re-enter Password"
               required
-              class="w-full text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600"
+              class="w-full text-sm sm:text-base p-2 sm:p-3 text-zinc-900 dark:text-zinc-200"
               autocomplete="new-password"
             />
           </div>

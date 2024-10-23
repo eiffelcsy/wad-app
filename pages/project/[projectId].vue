@@ -137,7 +137,6 @@
 </template>
 
 <script setup>
-import "./assets/css/tailwind.css";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { SharedTodoList } from "@/components/custom/shared-todo-list";
