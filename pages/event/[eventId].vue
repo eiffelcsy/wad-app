@@ -88,7 +88,7 @@
                   <CardTitle>Your Availability</CardTitle>
                   <CardDescription
                     >Indicate blocks of time when you are
-                    <span class="font-bold">unavailable</span>. Tap to select
+                    <span class="font-bold text-base">unavailable</span>. Tap to select
                     start cell, then tap again to select end cell and all
                     the cells in between.
                   </CardDescription>
@@ -215,7 +215,7 @@
                 <CardTitle>Your Availability</CardTitle>
                 <CardDescription
                   >Indicate blocks of time when you are
-                  <span class="font-bold">unavailable</span>. Click and drag to
+                  <span class="font-bold text-base">unavailable</span>. Click and drag to
                   select blocks.
                 </CardDescription>
               </CardHeader>
@@ -918,6 +918,7 @@ async function confirmDelete() {
       title: "Event Deleted",
       description: "The event has been successfully deleted.",
       variant: "success",
+      duration: 1000,
     });
     setTimeout(() => {
       navigateTo("/");
@@ -927,6 +928,7 @@ async function confirmDelete() {
       title: "Deletion Failed",
       description: "There was an error deleting the event.",
       variant: "destructive",
+      duration: 1000,
     });
   }
 }

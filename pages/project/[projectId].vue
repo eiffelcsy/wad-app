@@ -20,7 +20,7 @@
         </h2>
         <div class="grid grid-cols-3 gap-4">
           <div class="col-auto">
-            <p class="mb-2 text-red-600 font-semibold font-sans tracking-wide">
+            <p class="mb-2 text-red-500 font-semibold font-sans tracking-wide">
               Pending
             </p>
             <draggable
@@ -46,7 +46,7 @@
           </div>
           <div class="col-auto">
             <p
-              class="mb-2 text-amber-400 font-semibold font-sans tracking-wide"
+              class="mb-2 text-amber-500 font-semibold font-sans tracking-wide"
             >
               In Progress
             </p>
@@ -102,7 +102,7 @@
 
           <div class="col-auto">
             <p
-              class="mb-2 text-green-600 font-semibold font-sans tracking-wide"
+              class="mb-2 text-green-500 font-semibold font-sans tracking-wide"
             >
               Completed
             </p>

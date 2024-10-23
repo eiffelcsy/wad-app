@@ -23,7 +23,7 @@
             type="text"
             placeholder="Enter Code"
             required
-            class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 bg-zinc-50 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-200 border dark:border-zinc-600"
+            class="w-full h-12 text-sm sm:text-base p-2 sm:p-3"
           />
         </div>
 

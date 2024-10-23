@@ -204,7 +204,7 @@ const fetchProjects = async () => {
     const team = teamDetails.find((team) => team.id === project.team_id);
     return {
       ...project,
-      team_name: team ? team.name : "Unknown Team",
+      team_name: team ? team.team_name : "Unknown Team",
     };
   });
 

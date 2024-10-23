@@ -6,12 +6,12 @@
     >
       <div class="mx-auto w-full lg:w-1/2">
         <h1
-          class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4 text-center"
+          class="text-2xl md:text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
         >
           New Team
         </h1>
         <p
-          class="text-base text-zinc-400 dark:text-zinc-500 text-center"
+          class="text-base text-zinc-400 dark:text-zinc-500"
         >
           Create your own team by filling in the details below.
         </p>
