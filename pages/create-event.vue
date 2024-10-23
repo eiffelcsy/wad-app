@@ -279,7 +279,7 @@
           class="relative w-full lg:w-1/2 h-full flex flex-col md:items-center md:mt-4 lg:mt-8"
         >
           <!-- View 3: Review and Submit -->
-          <Card class="w-full">
+          <Card class="w-full mt-4">
             <CardHeader>
               <CardTitle>Review and Submit</CardTitle>
               <CardDescription
@@ -287,8 +287,8 @@
                 submitting.</CardDescription
               >
             </CardHeader>
-            <CardContent>
-              <div>
+            <CardContent class="flex flex-col items-center">
+              <div class="w-80 lg:w-96 flex flex-row justify-between">
                 <strong class="text-zinc-800 dark:text-zinc-100"
                   >Title:
                 </strong>
@@ -296,7 +296,7 @@
                   title
                 }}</span>
               </div>
-              <div v-if="description">
+              <div v-if="description" class="md:w-80 lg:w-96 flex flex-row justify-between">
                 <strong class="text-zinc-800 dark:text-zinc-100"
                   >Description:
                 </strong>
@@ -304,7 +304,7 @@
                   description
                 }}</span>
               </div>
-              <div>
+              <div class="w-80 lg:w-96 flex flex-row justify-between">
                 <strong class="text-zinc-800 dark:text-zinc-100"
                   >Date Range:
                 </strong>
@@ -313,13 +313,13 @@
                   {{ formatDate(dateRange.end) }}</span
                 >
               </div>
-              <div>
+              <div class="w-80 lg:w-96 flex flex-row justify-between">
                 <strong class="text-zinc-800 dark:text-zinc-100">Time: </strong>
                 <span class="text-zinc-700 dark:text-zinc-300"
                   >{{ startTime }}{{ startTimeMeridiem }} to {{ endTime }}{{ endTimeMeridiem }}</span
                 >
               </div>
-              <div>
+              <div class="w-80 lg:w-96 flex flex-row justify-between">
                 <strong class="text-zinc-800 dark:text-zinc-100"
                   >Number of Participants:
                 </strong>
@@ -600,7 +600,7 @@ const backHome = () => {
 
 // Utility function to format date
 const formatDate = (date: Date) => {
-  return dayjs(date).format("YYYY-MM-DD");
+  return dayjs(date).format("DD MMM YYYY");
 };
 // Close Dialog
 const closeDialog = () => {
