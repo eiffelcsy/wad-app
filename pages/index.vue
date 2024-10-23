@@ -191,9 +191,6 @@
                 <CardHeader>
                   <CardTitle>Manage Teams</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p>Insert teams list here?</p>
-                </CardContent>
                 <CardFooter
                   class="flex justify-between md:justify-start px-6 pb-6"
                 >
