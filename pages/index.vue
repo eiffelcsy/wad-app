@@ -39,16 +39,14 @@
             class="mt-2 mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
             @click="toCreate"
           >
-            Create Event
-            <CalendarIcon class="ml-2" />
+            <CalendarIcon class="mr-2" />Create Event
           </Button>
           <Button
             variant="outline"
             class="mt-2 ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
             @click="toJoin"
           >
-            Join Event
-            <PlusCircledIcon class="ml-2" />
+            <PlusCircledIcon class="mr-2" />Join Event
           </Button>
         </div>
 
@@ -113,19 +111,17 @@
                     class="flex justify-between md:justify-start px-6 pb-6"
                   >
                     <Button
-                      variant="outline"
-                      class="mt-2 md:mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-                      @click="toJoin"
-                    >
-                      Join Event
-                      <PlusCircledIcon class="ml-2" />
-                    </Button>
-                    <Button
-                      class="mt-2 md:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
+                      class="mt-2 md:mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
                       @click="toCreate"
                     >
-                      Create Event
-                      <CalendarIcon class="ml-2" />
+                      <CalendarIcon class="mr-2" />Create Event
+                    </Button>
+                    <Button
+                      variant="outline"
+                      class="mt-2 md:ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                      @click="toJoin"
+                    >
+                      <PlusCircledIcon class="mr-2" />Join Event
                     </Button>
                   </CardFooter>
                 </Card>
@@ -195,19 +191,17 @@
                   class="flex justify-between md:justify-start px-6 pb-6"
                 >
                   <Button
-                    variant="outline"
-                    class="mt-2 md:mr-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-                    @click="toJoinTeam"
-                  >
-                    Join Team
-                    <PlusCircledIcon class="ml-2" />
-                  </Button>
-                  <Button
-                    class="mt-2 md:ml-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
+                    class="mt-2 md:mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
                     @click="toCreateTeam"
                   >
-                    Create Team
-                    <PersonIcon class="ml-2" />
+                    <PersonIcon class="mr-2" />Create Team
+                  </Button>
+                  <Button
+                    variant="outline"
+                    class="mt-2 md:ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                    @click="toJoinTeam"
+                  >
+                    <PlusCircledIcon class="mr-2" />Join Team
                   </Button>
                 </CardFooter>
               </Card>
