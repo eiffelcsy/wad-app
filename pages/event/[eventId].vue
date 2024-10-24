@@ -34,24 +34,24 @@
           </p>
         </div>
         <div class="flex flex-row items-center">
-          <Button variant="outline" class="w-full" v-if="isDesktop">
+          <Button variant="outline" v-if="!isMobile">
             View Event Details
           </Button>
-          <Button variant="outline" size="icon" class="w-full" v-else>
+          <Button variant="outline" size="icon" v-if="isMobile">
             <List class="size-5" />
           </Button>
           <AlertDialog>
             <AlertDialogTrigger as-child>
               <Button
-                class="w-full ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
-                v-if="isDesktop"
+                class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+                v-if="!isMobile"
               >
                 Delete Event
               </Button>
               <Button
                 size="icon"
-                class="w-full ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
-                v-else
+                class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+                v-if="isMobile"
               >
                 <Trash2 class="size-5" />
               </Button>
@@ -81,7 +81,7 @@
       <Separator class="w-full" />
       <div class="py-8 mx-auto container">
         <client-only>
-          <Tabs default-value="your" v-if="!isDesktop">
+          <Tabs default-value="your" v-if="isMobile">
             <TabsList class="grid w-full grid-cols-2">
               <TabsTrigger value="your"> Your Availability </TabsTrigger>
               <TabsTrigger value="overall"> Overall Availability </TabsTrigger>
@@ -92,7 +92,7 @@
                   <CardTitle>Your Availability</CardTitle>
                   <CardDescription
                     >Indicate blocks of time when you are
-                    <span class="font-bold text-base">unavailable</span>. Tap to
+                    <span class="font-bold text-red-300">unavailable</span>. Tap to
                     select start cell, then tap again to select end cell and all
                     the cells in between.
                   </CardDescription>
@@ -157,7 +157,7 @@
                 <CardHeader>
                   <CardTitle>Overall Availability</CardTitle>
                   <CardDescription
-                    >View the availability of everyone in the
+                    >View the <span class="font-bold text-green-400">availability</span> of everyone in the
                     event.</CardDescription
                   >
                 </CardHeader>
@@ -219,7 +219,7 @@
                 <CardTitle>Your Availability</CardTitle>
                 <CardDescription
                   >Indicate blocks of time when you are
-                  <span class="font-bold text-base">unavailable</span>. Click
+                  <span class="font-bold text-red-300">unavailable</span>. Click
                   and drag to select blocks.
                 </CardDescription>
               </CardHeader>
@@ -281,7 +281,7 @@
               <CardHeader>
                 <CardTitle>Overall Availability</CardTitle>
                 <CardDescription
-                  >View the availability of everyone in the
+                  >View the <span class="font-bold text-green-400">availability</span> of everyone in the
                   event.</CardDescription
                 >
               </CardHeader>
@@ -396,7 +396,7 @@ const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const route = useRoute();
 const { toast } = useToast();
-const isDesktop = useMediaQuery("(min-width: 1000px)");
+const isMobile = useMediaQuery("(max-width: 1000px)");
 
 const showDialog = ref(false);
 const event_id = ref("");
