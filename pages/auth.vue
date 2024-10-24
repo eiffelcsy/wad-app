@@ -88,7 +88,7 @@
           <!-- Submit button with dynamic text based on auth type -->
           <Button
             type="submit"
-            class="w-full text-sm sm:text-base py-2 sm:py-3 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+            class="w-full text-sm sm:text-base py-2 sm:py-3 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black mt-4"
           >
             {{ authType === "login" ? "Sign In" : "Sign Up" }}
           </Button>
