@@ -10,55 +10,29 @@
       </div>
       <div class="container w-full flex flex-row justify-between pt-8">
         <div class="relative w-full max-h-10 pr-2 items-center">
-          <Input
-            id="searchEvents"
-            type="text"
-            placeholder="Search Events..."
-            class="pl-10 text-base md:text-sm"
-          />
-          <span
-            class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
-          >
+          <Input id="searchEvents" type="text" placeholder="Search Events..." class="pl-10 text-base md:text-sm" />
+          <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
             <Search class="size-6 text-muted-foreground" />
           </span>
           <Drawer v-if="isMobile" v-model:open="isOpen">
             <DrawerTrigger as-child>
-              <Button
-                as-child
-                size="icon"
-                variant="ghost"
-                class="absolute end-3 inset-y-0 max-w-[32px] hover:bg-transparent transform active:translate-y-px transition-transform"
-              >
+              <Button as-child size="icon" variant="ghost"
+                class="absolute end-3 inset-y-0 max-w-[32px] hover:bg-transparent transform active:translate-y-px transition-transform">
                 <span class="flex items-center justify-center">
                   <Ellipsis class="size-4 text-muted-foreground" />
-                </span> 
+                </span>
               </Button>
             </DrawerTrigger>
             <DrawerContent>
               <div class="mx-auto mt-4 mb-8 w-full max-w-sm">
-                <RadioGroup
-                  v-model="selectedSortOption"
-                  class="flex flex-col gap-4"
-                >
+                <RadioGroup v-model="selectedSortOption" class="flex flex-col gap-4">
                   <div class="flex items-center space-x-4">
-                    <RadioGroupItem
-                      id="sortByDate"
-                      value="sortByDate"
-                      @click="closeDrawer"
-                    />
-                    <Label for="sortByDate" class="text-base font-normal"
-                      >Sort by Date</Label
-                    >
+                    <RadioGroupItem id="sortByDate" value="sortByDate" @click="closeDrawer" />
+                    <Label for="sortByDate" class="text-base font-normal">Sort by Date</Label>
                   </div>
                   <div class="flex items-center space-x-4">
-                    <RadioGroupItem
-                      id="sortByName"
-                      value="sortByName"
-                      @click="closeDrawer"
-                    />
-                    <Label for="SortByName" class="text-base font-normal"
-                      >Sort by Name</Label
-                    >
+                    <RadioGroupItem id="sortByName" value="sortByName" @click="closeDrawer" />
+                    <Label for="SortByName" class="text-base font-normal">Sort by Name</Label>
                   </div>
                 </RadioGroup>
               </div>
@@ -76,20 +50,13 @@
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Button
-          @click="navigateTo('/create-event')"
-          v-if="isMobile"
-          size="icon"
-          class="min-w-[40px] text-zinc-100 dark:text-zinc-900"
-        >
+        <Button @click="navigateTo('/create-event')" v-if="isMobile" size="icon"
+          class="min-w-[40px] text-zinc-100 dark:text-zinc-900">
           <Plus class="size-4" />
         </Button>
-        <Button
-          @click="navigateTo('/create-event')"
-          v-else
-          class="text-zinc-100 dark:text-zinc-900"
-        >
-          New Event<Plus class="size-4 ml-2" />
+        <Button @click="navigateTo('/create-event')" v-else class="text-zinc-100 dark:text-zinc-900">
+          New Event
+          <Plus class="size-4 ml-2" />
         </Button>
       </div>
       <div class="min-h-screen">
@@ -105,9 +72,39 @@
               </TabsTrigger>
             </TabsList>
             <TabsContent value="all">
-              Make changes to your account here.
+              <Card>
+                <CardHeader>
+                  <CardTitle>All Events</CardTitle>
+                  <CardDescription>See all your events, past, present and
+                    future.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableCaption>All Events</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Title</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Date Range</TableHead>
+                        <TableHead>Time Range</TableHead>
+                        <TableHead>Event Code</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell> INV001 </TableCell>
+                        <TableCell>Paid</TableCell>
+                        <TableCell>Credit Card</TableCell>
+                        <TableCell> $250.00 </TableCell>
+                        <TableCell> $250.00 </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
             </TabsContent>
-            <TabsContent value="past"> Change your password here. </TabsContent>
+            <TabsContent value="past"> </TabsContent>
+            <TabsContent value="upcoming"> </TabsContent>
           </Tabs>
         </div>
       </div>
@@ -135,6 +132,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Label } from "@/components/ui/label";

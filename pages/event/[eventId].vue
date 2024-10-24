@@ -1009,7 +1009,7 @@ async function confirmDelete() {
 }
 </script>
 
-<style>
+<style scoped>
 .interval-cell {
   cursor: pointer;
   user-select: none; /* Prevent text selection while dragging */

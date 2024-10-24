@@ -99,7 +99,7 @@
                                   name: 'event-eventId',
                                   params: { eventId: event.code },
                                 }"
-                                ><Pencil class="size-4"
+                                ><ArrowUpRight class="size-4 hover:opacity-70"
                               /></NuxtLink>
                             </TableCell>
                           </TableRow>
@@ -108,20 +108,30 @@
                     </div>
                   </CardContent>
                   <CardFooter
-                    class="flex justify-between md:justify-start px-6 pb-6"
+                    class="flex flex-col md:flex-row items-end justify-between px-6 pb-6"
                   >
+                    <div class="w-full md:w-auto flex justify-start gap-4 md:gap-0">
+                      <Button
+                        class="mt-2 md:mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
+                        @click="toCreate"
+                      >
+                        <CalendarIcon class="mr-2" />Create Event
+                      </Button>
+                      <Button
+                        variant="outline"
+                        class="mt-2 md:ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                        @click="toJoin"
+                      >
+                        <PlusCircledIcon class="mr-2" />Join Event
+                      </Button>
+                    </div>
                     <Button
-                      class="mt-2 md:mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
-                      @click="toCreate"
+                      variant="link"
+                      class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8 mt-4"
+                      @click="navigateTo('/events')"
                     >
-                      <CalendarIcon class="mr-2" />Create Event
-                    </Button>
-                    <Button
-                      variant="outline"
-                      class="mt-2 md:ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-                      @click="toJoin"
-                    >
-                      <PlusCircledIcon class="mr-2" />Join Event
+                      View all Events
+                      <ArrowRight class="size-4 ml-2" />
                     </Button>
                   </CardFooter>
                 </Card>
@@ -142,7 +152,7 @@
                   <CardFooter class="flex justify-end">
                     <Button
                       variant="link"
-                      class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8"
+                      class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8 mt-2"
                       @click="navigateTo('/projects')"
                     >
                       View all Projects
@@ -262,7 +272,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowRight, Pencil } from "lucide-vue-next";
+import { ArrowRight, ArrowUpRight, Pencil } from "lucide-vue-next";
 import { PageFooter } from "@/components/custom/page-footer";
 import { gCalButton } from "@/components/custom/gcal-button";
 import { mCalButton } from "@/components/custom/mcal-button";
