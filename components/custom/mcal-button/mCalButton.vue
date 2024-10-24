@@ -17,11 +17,11 @@
       </Button>
   
       <!-- Display Connect button if not connected -->
-      <Button class="w-full" v-else @click="connectMicrosoftCalendar">
+      <Button class="w-full" v-else @click="connectMicrosoftCalendar" variant="outline">
         <img
           src="/icons/microsoft.svg"
           alt="mIcon"
-          class="mr-4 size-4"
+          class="mr-4 size-4 invert"
         />
         Connect to Microsoft Calendar
       </Button>

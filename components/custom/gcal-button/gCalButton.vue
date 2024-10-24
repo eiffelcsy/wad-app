@@ -14,11 +14,11 @@
         <CircleCheckBig class="mr-2 size-4" /> Google Calendar is Connected
       </template>
     </Button>
-    <Button class="w-full" v-else @click="connectGoogleCalendar">
+    <Button class="w-full" v-else @click="connectGoogleCalendar" variant="outline">
       <img
         src="/icons/google.svg"
         alt="gIcon"
-        class="mr-4 size-4 invert dark:invert-0"
+        class="mr-4 size-4 dark:invert"
       />
       Connect to Google Calendar
     </Button>

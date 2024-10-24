@@ -176,10 +176,9 @@
                       </p>
                     </div>
                   </div>
-                  <div class="mt-8 flex flex-col gap-6">
+                  <div class="mt-8 flex flex-col gap-4">
                     <gCalButton />
                     <mCalButton />
-                    <Button>Placeholder for Apple Calendar</Button>
                   </div>
                 </CardContent>
               </Card>
