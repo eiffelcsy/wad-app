@@ -37,7 +37,7 @@
             >
               <template #item="{ element: task }">
                 <li
-                  class="task-item p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move"
+                  class="task-item p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move transition-shadow duration-300 hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300"
                 >
                   {{ task.title }} - {{ task.status }}
                 </li>
@@ -64,7 +64,7 @@
             >
               <template #item="{ element: task }">
                 <li
-                  class="p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move"
+                  class="p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300"
                 >
                   {{ task.title }} - {{ task.status }}
                 </li>
@@ -116,11 +116,12 @@
               ghost-class="moving-card"
               :animation="200"
               :empty-insert-threshold="100"
+              :hover
               filter=".action-button"
             >
               <template #item="{ element: task }">
                 <li
-                  class="p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move"
+                  class="p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move transition-shadow duration-300 hover:shadow-lg hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300"
                 >
                   {{ task.title }} - {{ task.status }}
                 </li>
