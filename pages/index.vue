@@ -178,7 +178,7 @@
                   </div>
                   <div class="mt-8 flex flex-col gap-6">
                     <gCalButton />
-                    <Button>Placeholder for Microsoft Outlook</Button>
+                    <mCalButton />
                     <Button>Placeholder for Apple Calendar</Button>
                   </div>
                 </CardContent>
@@ -266,6 +266,7 @@ import {
 import { ArrowRight, Pencil } from "lucide-vue-next";
 import { PageFooter } from "@/components/custom/page-footer";
 import { gCalButton } from "@/components/custom/gcal-button";
+import { mCalButton } from "@/components/custom/mcal-button";
 
 // Supabase setup
 const supabase = useSupabaseClient();
