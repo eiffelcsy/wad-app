@@ -33,6 +33,9 @@ export default defineNuxtConfig({
       GAPI_CLIENT_SECRET: process.env.GAPI_CLIENT_SECRET,
       GAPI_KEY: process.env.GAPI_KEY,
       GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
+      MS_GRAPH_CLIENT_ID: process.env.MS_GRAPH_CLIENT_ID,
+      MS_GRAPH_CLIENT_SECRET: process.env.MS_GRAPH_CLIENT_SECRET,
+      MS_GRAPH_REDIRECT_URI: process.env.MS_GRAPH_REDIRECT_URI,
     },
   },
   supabase: {

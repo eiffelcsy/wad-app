@@ -34,22 +34,26 @@
           </p>
         </div>
         <div class="flex flex-row items-center">
-          <Button variant="outline" class="w-full" v-if="isDesktop"> View Event Details </Button>
-          <Button variant="outline" size="icon" v-else> <List class="size-5"/> </Button>
+          <Button variant="outline" v-if="!isMobile">
+            View Event Details
+          </Button>
+          <Button variant="outline" size="icon" v-if="isMobile">
+            <List class="size-5" />
+          </Button>
           <AlertDialog>
             <AlertDialogTrigger as-child>
               <Button
-                class="w-full ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
-                v-if="isDesktop"
+                class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+                v-if="!isMobile"
               >
                 Delete Event
               </Button>
               <Button
                 size="icon"
                 class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
-                v-else
+                v-if="isMobile"
               >
-              <Trash2 class="size-5"/>
+                <Trash2 class="size-5" />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -77,7 +81,7 @@
       <Separator class="w-full" />
       <div class="py-8 mx-auto container">
         <client-only>
-          <Tabs default-value="your" v-if="!isDesktop">
+          <Tabs default-value="your" v-if="isMobile">
             <TabsList class="grid w-full grid-cols-2">
               <TabsTrigger value="your"> Your Availability </TabsTrigger>
               <TabsTrigger value="overall"> Overall Availability </TabsTrigger>
@@ -88,8 +92,8 @@
                   <CardTitle>Your Availability</CardTitle>
                   <CardDescription
                     >Indicate blocks of time when you are
-                    <span class="font-bold text-base">unavailable</span>. Tap to select
-                    start cell, then tap again to select end cell and all
+                    <span class="font-bold text-red-300">unavailable</span>. Tap to
+                    select start cell, then tap again to select end cell and all
                     the cells in between.
                   </CardDescription>
                 </CardHeader>
@@ -153,7 +157,7 @@
                 <CardHeader>
                   <CardTitle>Overall Availability</CardTitle>
                   <CardDescription
-                    >View the availability of everyone in the
+                    >View the <span class="font-bold text-green-400">availability</span> of everyone in the
                     event.</CardDescription
                   >
                 </CardHeader>
@@ -215,8 +219,8 @@
                 <CardTitle>Your Availability</CardTitle>
                 <CardDescription
                   >Indicate blocks of time when you are
-                  <span class="font-bold text-base">unavailable</span>. Click and drag to
-                  select blocks.
+                  <span class="font-bold text-red-300">unavailable</span>. Click
+                  and drag to select blocks.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -277,7 +281,7 @@
               <CardHeader>
                 <CardTitle>Overall Availability</CardTitle>
                 <CardDescription
-                  >View the availability of everyone in the
+                  >View the <span class="font-bold text-green-400">availability</span> of everyone in the
                   event.</CardDescription
                 >
               </CardHeader>
@@ -392,7 +396,7 @@ const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const route = useRoute();
 const { toast } = useToast();
-const isDesktop = useMediaQuery("(min-width: 1000px)");
+const isMobile = useMediaQuery("(max-width: 1000px)");
 
 const showDialog = ref(false);
 const event_id = ref("");
@@ -455,10 +459,18 @@ onMounted(async () => {
       findEvent.start_time
     );
     const timeMax = combineDateAndTime(findEvent.end_date, findEvent.end_time);
-    let gCalEvents = await fetchGoogleCalEvents(timeMin, timeMax);
+    const [gCalEvents, mCalEvents] = await Promise.all([
+      fetchGoogleCalEvents(timeMin, timeMax),
+      fetchMicrosoftCalEvents(timeMin, timeMax)
+    ]);
 
-    if (gCalEvents) {
+    // Once the events are fetched, update availability based on the results
+    if (gCalEvents && gCalEvents.length > 0) {
       await updateAvailabilityFromGoogleCal(gCalEvents);
+    }
+
+    if (mCalEvents && mCalEvents.length > 0) {
+      await updateAvailabilityFromMicrosoftCal(mCalEvents);
     }
   }
 });
@@ -588,7 +600,7 @@ async function fetchGoogleCalEvents(timeMin, timeMax) {
     if (user && !isImported.gcal_imported) {
       try {
         const response = await fetch(
-          `/api/calendar/events?timeMin=${timeMin}&timeMax=${timeMax}`
+          `/api/calendar/gEvents?timeMin=${timeMin}&timeMax=${timeMax}`
         );
         return response.json();
       } catch (err) {
@@ -622,6 +634,69 @@ async function updateAvailabilityFromGoogleCal(events) {
   const { error: importError } = await supabase
     .from("participants")
     .update({ gcal_imported: "true" })
+    .eq("event_id", event_id.value)
+    .eq("user_id", user.value.id)
+    .single();
+
+  if (importError) {
+    console.log(importError.message);
+  }
+}
+
+// Function to fetch Microsoft Calendar events based on time range
+async function fetchMicrosoftCalEvents(timeMin, timeMax) {
+  // Check if Microsoft Calendar events have already been imported
+  const { data: isImported, error: isImportedError } = await supabase
+    .from("participants")
+    .select("mcal_imported")
+    .eq("event_id", event_id.value)
+    .eq("user_id", user.value.id)
+    .single();
+
+  if (isImportedError) {
+    console.log(isImportedError.message);
+  } else {
+    if (user && !isImported.mcal_imported) {
+      try {
+        const response = await fetch(
+          `/api/calendar/mEvents?timeMin=${timeMin}&timeMax=${timeMax}`
+        );
+        return response.json();
+      } catch (err) {
+        console.error("Error fetching Microsoft Calendar events:", err.message);
+      }
+    } else {
+      return null;
+    }
+  }
+}
+
+// Function to update availability based on fetched Microsoft Calendar events
+async function updateAvailabilityFromMicrosoftCal(events) {
+  events.forEach((event) => {
+    const eventStart = new Date(`${event.start.dateTime}Z`);
+    const eventEnd = new Date(`${event.end.dateTime}Z`);
+
+    intervals.value.forEach((interval, index) => {
+      const intervalStart = new Date(interval.date + "T" + interval.time);
+      const intervalEnd = new Date(intervalStart.getTime() + 30 * 60000);
+
+      const isOverlapping =
+        eventStart < intervalEnd && eventEnd > intervalStart;
+
+      if (isOverlapping) {
+        intervals.value[index].selected = true;
+      }
+    });
+  });
+
+  // Save the updated availability intervals
+  await saveAvailability();
+
+  // Mark Microsoft Calendar events as imported in the database
+  const { error: importError } = await supabase
+    .from("participants")
+    .update({ mcal_imported: "true" })
     .eq("event_id", event_id.value)
     .eq("user_id", user.value.id)
     .single();
@@ -934,7 +1009,7 @@ async function confirmDelete() {
 }
 </script>
 
-<style>
+<style scoped>
 .interval-cell {
   cursor: pointer;
   user-select: none; /* Prevent text selection while dragging */

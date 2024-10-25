@@ -3,14 +3,14 @@
     class="flex flex-row justify-between py-4 px-8 md:px-12 lg:px-16 border-b"
   >
     <div class="flex items-center">
-      <NuxtLink to="/" class=""
-      ><p class="text-xl font-bold tracking-wider">
+      <NuxtLink to="/"
+      ><p class="text-xl font-bold tracking-wider hover:opacity-80">
         MeetLah
       </p></NuxtLink
     >
     </div>
-    <div>
-      <div class="relative inline-block">
+    <div class="flex gap-1">
+      <div class="relative block">
         <Button variant="ghost" size="icon" class="hover:bg-transparent">
           <Avatar class="w-8 h-8 border bg-zinc-50 dark:bg-zinc-900">
             <BellIcon
@@ -37,18 +37,13 @@
             class="font-semibold border-zinc-200 dark:border-zinc-700 hover:bg-transparent"
           >
             <Avatar class="w-8 h-8 border bg-zinc-50 dark:bg-zinc-900">
-              <UserRoundIcon
-                size="20px"
-                strokeWidth="{1}"
-                class="opacity-70 hover:opacity-100"
-              />
+
             </Avatar>
           </Button>
         </SheetTrigger>
         <SheetContent class="flex flex-col">
           <SheetHeader class="flex flex-row items-center">
             <Avatar class="w-10 h-10 mr-2">
-              <UserRoundIcon size="24px" strokeWidth="{1}" class="opacity-60" />
             </Avatar>
             <div>
               <SheetTitle class="text-left">
