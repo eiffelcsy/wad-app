@@ -2,7 +2,7 @@
 <template>
   <div>
     <PageHeader />
-    <div class="bg-zinc-50 dark:bg-black">
+    <div class="bg-zinc-50 dark:bg-black min-h-screen">
       <div class="container w-full pt-8 md:pt-10 lg:pt-14">
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">
           Your Events
@@ -66,7 +66,11 @@
             </DrawerContent>
           </Drawer>
         </div>
-        <Select v-if="!isMobile" default-value="sortByDate" v-model="selectedSortOption">
+        <Select
+          v-if="!isMobile"
+          default-value="sortByDate"
+          v-model="selectedSortOption"
+        >
           <SelectTrigger class="max-w-36 mr-2">
             <SelectValue placeholder="Sort By..." />
           </SelectTrigger>
@@ -94,142 +98,138 @@
           <Plus class="size-4 ml-2" />
         </Button>
       </div>
-      <div class="min-h-screen">
-        <div class="container w-full pt-8">
-          <Tabs default-value="all" class="w-full">
-            <TabsList class="w-full">
-              <TabsTrigger value="all" class="w-full"> All Events </TabsTrigger>
-              <TabsTrigger value="past" class="w-full">
-                Past Events
-              </TabsTrigger>
-              <TabsTrigger value="upcoming" class="w-full">
-                Upcoming Events
-              </TabsTrigger>
-            </TabsList>
+      <div class="container w-full py-8">
+        <Tabs default-value="all" class="w-full">
+          <TabsList class="w-full">
+            <TabsTrigger value="all" class="w-full"> All Events </TabsTrigger>
+            <TabsTrigger value="past" class="w-full"> Past Events </TabsTrigger>
+            <TabsTrigger value="upcoming" class="w-full">
+              Upcoming Events
+            </TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="all">
-              <Card>
-                <CardHeader>
-                  <CardTitle>All Events</CardTitle>
-                  <CardDescription>Showing all your events.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Title</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Date Range</TableHead>
-                        <TableHead>Time Range</TableHead>
-                        <TableHead>Event Code</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow v-for="event in allEvents" :key="event.id">
-                        <TableCell>{{ event.title }}</TableCell>
-                        <TableCell>{{ event.description }}</TableCell>
-                        <TableCell
-                          >{{ event.start_date }} to
-                          {{ event.end_date }}</TableCell
-                        >
-                        <TableCell
-                          >{{ event.start_time }} to
-                          {{ event.end_time }}</TableCell
-                        >
-                        <TableCell>{{ event.code }}</TableCell>
-                        <TableCell></TableCell>
-                        <!-- Placeholder for actions -->
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
+          <TabsContent value="all">
+            <Card>
+              <CardHeader>
+                <CardTitle>All Events</CardTitle>
+                <CardDescription>Showing all your events.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Date Range</TableHead>
+                      <TableHead>Time Range</TableHead>
+                      <TableHead>Event Code</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow v-for="event in allEvents" :key="event.id">
+                      <TableCell>{{ event.title }}</TableCell>
+                      <TableCell>{{ event.description }}</TableCell>
+                      <TableCell
+                        >{{ event.start_date }} to
+                        {{ event.end_date }}</TableCell
+                      >
+                      <TableCell
+                        >{{ event.start_time }} to
+                        {{ event.end_time }}</TableCell
+                      >
+                      <TableCell>{{ event.code }}</TableCell>
+                      <TableCell></TableCell>
+                      <!-- Placeholder for actions -->
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-            <TabsContent value="past">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Past Events</CardTitle>
-                  <CardDescription
-                    >Showing events that have already occurred.</CardDescription
-                  >
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Title</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Date Range</TableHead>
-                        <TableHead>Time Range</TableHead>
-                        <TableHead>Event Code</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow v-for="event in pastEvents" :key="event.id">
-                        <TableCell>{{ event.title }}</TableCell>
-                        <TableCell>{{ event.description }}</TableCell>
-                        <TableCell
-                          >{{ event.start_date }} to
-                          {{ event.end_date }}</TableCell
-                        >
-                        <TableCell
-                          >{{ event.start_time }} to
-                          {{ event.end_time }}</TableCell
-                        >
-                        <TableCell>{{ event.code }}</TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
+          <TabsContent value="past">
+            <Card>
+              <CardHeader>
+                <CardTitle>Past Events</CardTitle>
+                <CardDescription
+                  >Showing events that have already occurred.</CardDescription
+                >
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Date Range</TableHead>
+                      <TableHead>Time Range</TableHead>
+                      <TableHead>Event Code</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow v-for="event in pastEvents" :key="event.id">
+                      <TableCell>{{ event.title }}</TableCell>
+                      <TableCell>{{ event.description }}</TableCell>
+                      <TableCell
+                        >{{ event.start_date }} to
+                        {{ event.end_date }}</TableCell
+                      >
+                      <TableCell
+                        >{{ event.start_time }} to
+                        {{ event.end_time }}</TableCell
+                      >
+                      <TableCell>{{ event.code }}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-            <TabsContent value="upcoming">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Upcoming Events</CardTitle>
-                  <CardDescription
-                    >Showing events that are yet to occur.</CardDescription
-                  >
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Title</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Date Range</TableHead>
-                        <TableHead>Time Range</TableHead>
-                        <TableHead>Event Code</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow v-for="event in upcomingEvents" :key="event.id">
-                        <TableCell>{{ event.title }}</TableCell>
-                        <TableCell>{{ event.description }}</TableCell>
-                        <TableCell
-                          >{{ event.start_date }} to
-                          {{ event.end_date }}</TableCell
-                        >
-                        <TableCell
-                          >{{ event.start_time }} to
-                          {{ event.end_time }}</TableCell
-                        >
-                        <TableCell>{{ event.code }}</TableCell>
-                        <TableCell></TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
+          <TabsContent value="upcoming">
+            <Card>
+              <CardHeader>
+                <CardTitle>Upcoming Events</CardTitle>
+                <CardDescription
+                  >Showing events that are yet to occur.</CardDescription
+                >
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Date Range</TableHead>
+                      <TableHead>Time Range</TableHead>
+                      <TableHead>Event Code</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow v-for="event in upcomingEvents" :key="event.id">
+                      <TableCell>{{ event.title }}</TableCell>
+                      <TableCell>{{ event.description }}</TableCell>
+                      <TableCell
+                        >{{ event.start_date }} to
+                        {{ event.end_date }}</TableCell
+                      >
+                      <TableCell
+                        >{{ event.start_time }} to
+                        {{ event.end_time }}</TableCell
+                      >
+                      <TableCell>{{ event.code }}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   </div>
@@ -283,17 +283,20 @@ const fetchEvents = async () => {
   if (!user.value) return;
 
   // Step 1: Fetch event IDs from participants table where user is a participant
-  const { data: participantUserData, error: participantUserError } = await supabase
-    .from("participants")
-    .select("event_id")
-    .eq("user_id", user.value.id);
+  const { data: participantUserData, error: participantUserError } =
+    await supabase
+      .from("participants")
+      .select("event_id")
+      .eq("user_id", user.value.id);
 
   if (participantUserError) {
     console.error("Error fetching participant data:", participantUserError);
     return;
   }
 
-  const eventIds = participantUserData.map((participant) => participant.event_id);
+  const eventIds = participantUserData.map(
+    (participant) => participant.event_id
+  );
 
   // Step 2: Fetch event details from events table using event IDs
   const { data: eventData, error: eventError } = await supabase
@@ -316,22 +319,20 @@ onMounted(() => {
 const currentDate = new Date();
 currentDate.setHours(0, 0, 0, 0);
 
-const searchQuery = ref(""); // For the search input
+const searchQuery = ref(""); 
 
-// Sorting function based on selected criteria
 const sortedAndFilteredEvents = computed(() => {
   let filteredEvents = events.value;
 
-  // Step 1: Filter events by search query
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
-    filteredEvents = filteredEvents.filter(event =>
-      event.title.toLowerCase().includes(query) ||
-      (event.description && event.description.toLowerCase().includes(query))
+    filteredEvents = filteredEvents.filter(
+      (event) =>
+        event.title.toLowerCase().includes(query) ||
+        (event.description && event.description.toLowerCase().includes(query))
     );
   }
 
-  // Step 2: Sort events based on selected option
   return filteredEvents.slice().sort((a, b) => {
     if (selectedSortOption.value === "sortByDate") {
       return new Date(b.start_date) - new Date(a.start_date);
@@ -342,13 +343,15 @@ const sortedAndFilteredEvents = computed(() => {
   });
 });
 
-// Update the computed properties to use sortedAndFilteredEvents
 const allEvents = computed(() => sortedAndFilteredEvents.value);
 const pastEvents = computed(() =>
-  sortedAndFilteredEvents.value.filter(event => new Date(event.start_date) < currentDate)
+  sortedAndFilteredEvents.value.filter(
+    (event) => new Date(event.start_date) < currentDate
+  )
 );
 const upcomingEvents = computed(() =>
-  sortedAndFilteredEvents.value.filter(event => new Date(event.start_date) >= currentDate)
+  sortedAndFilteredEvents.value.filter(
+    (event) => new Date(event.start_date) >= currentDate
+  )
 );
-
 </script>
