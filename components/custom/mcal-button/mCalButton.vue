@@ -21,7 +21,7 @@
         <img
           src="/icons/microsoft.svg"
           alt="mIcon"
-          class="mr-4 size-4 invert"
+          class="mr-4 size-5"
         />
         Connect to Microsoft Calendar
       </Button>

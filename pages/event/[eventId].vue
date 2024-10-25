@@ -1019,16 +1019,6 @@ async function confirmDelete() {
   @apply bg-red-400 border-red-400;
 }
 
-.interval-cell .merged {
-  border-spacing: 0 !important;
-}
-
-table {
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  /* Add some spacing between the grids */
-}
-
 th,
 td {
   text-align: center;

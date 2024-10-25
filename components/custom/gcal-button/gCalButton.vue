@@ -18,7 +18,7 @@
       <img
         src="/icons/google.svg"
         alt="gIcon"
-        class="mr-4 size-4 dark:invert"
+        class="mr-4 size-5"
       />
       Connect to Google Calendar
     </Button>

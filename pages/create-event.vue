@@ -368,7 +368,7 @@
           <DialogFooter class="sm:justify-start">
             <DialogClose as-child>
               <Button type="button" variant="secondary" @click="closeDialog">
-                Close
+                Go to Event
               </Button>
             </DialogClose>
           </DialogFooter>
