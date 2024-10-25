@@ -1,5 +1,8 @@
 <template>
 <div>
+    <EditEvent/>
+</div>
+<div>
     <div v-if="fun" class="flex justify-center items-center h-screen">
         <Button type="button" variant="primary" @click="showDialog = true">
             Show Dialog
@@ -29,6 +32,7 @@
 import { ref } from 'vue';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { EditEvent } from '@/components/custom/edit-event';
 
 export default {
     components: {
