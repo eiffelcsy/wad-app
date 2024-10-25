@@ -13,8 +13,9 @@
           <Input
             id="searchEvents"
             type="text"
-            placeholder="Search Events..."
+            placeholder="Search Event Titles..."
             class="pl-10 text-base md:text-sm"
+            v-model="searchQuery"
           />
           <span
             class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
@@ -52,12 +53,12 @@
                   </div>
                   <div class="flex items-center space-x-4">
                     <RadioGroupItem
-                      id="sortByName"
-                      value="sortByName"
+                      id="sortByTitle"
+                      value="sortByTitle"
                       @click="closeDrawer"
                     />
-                    <Label for="SortByName" class="text-base font-normal"
-                      >Sort by Name</Label
+                    <Label for="SortByTitle" class="text-base font-normal"
+                      >Sort by Title</Label
                     >
                   </div>
                 </RadioGroup>
@@ -65,14 +66,14 @@
             </DrawerContent>
           </Drawer>
         </div>
-        <Select v-if="!isMobile" default-value="sortByDate">
+        <Select v-if="!isMobile" default-value="sortByDate" v-model="selectedSortOption">
           <SelectTrigger class="max-w-36 mr-2">
             <SelectValue placeholder="Sort By..." />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectItem value="sortByDate">Sort By Date</SelectItem>
-              <SelectItem value="sortByName">Sort By Name</SelectItem>
+              <SelectItem value="sortByTitle">Sort By Title</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -315,12 +316,39 @@ onMounted(() => {
 const currentDate = new Date();
 currentDate.setHours(0, 0, 0, 0);
 
-const allEvents = computed(() => events.value);
-const pastEvents = computed(() => 
-  events.value.filter((event) => new Date(event.start_date) < currentDate)
+const searchQuery = ref(""); // For the search input
+
+// Sorting function based on selected criteria
+const sortedAndFilteredEvents = computed(() => {
+  let filteredEvents = events.value;
+
+  // Step 1: Filter events by search query
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    filteredEvents = filteredEvents.filter(event =>
+      event.title.toLowerCase().includes(query) ||
+      (event.description && event.description.toLowerCase().includes(query))
+    );
+  }
+
+  // Step 2: Sort events based on selected option
+  return filteredEvents.slice().sort((a, b) => {
+    if (selectedSortOption.value === "sortByDate") {
+      return new Date(b.start_date) - new Date(a.start_date);
+    } else if (selectedSortOption.value === "sortByTitle") {
+      return a.title.localeCompare(b.title);
+    }
+    return 0;
+  });
+});
+
+// Update the computed properties to use sortedAndFilteredEvents
+const allEvents = computed(() => sortedAndFilteredEvents.value);
+const pastEvents = computed(() =>
+  sortedAndFilteredEvents.value.filter(event => new Date(event.start_date) < currentDate)
 );
-const upcomingEvents = computed(() => 
-  events.value.filter((event) => new Date(event.start_date) >= currentDate)
+const upcomingEvents = computed(() =>
+  sortedAndFilteredEvents.value.filter(event => new Date(event.start_date) >= currentDate)
 );
 
 </script>

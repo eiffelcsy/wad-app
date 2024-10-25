@@ -64,8 +64,8 @@
                     <CardTitle>Upcoming Events</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div v-if="upcomingEvents.length === 0">
-                      No upcoming events.
+                    <div v-if="upcomingEvents.length === 0" class="text-base text-zinc-400 dark:text-zinc-500">
+                      No upcoming events found.
                     </div>
                     <div v-else>
                       <Table>
@@ -142,7 +142,7 @@
                     <CardTitle>Project TODOs</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div v-if="todos.length === 0">No TODOs found.</div>
+                    <div v-if="todos.length === 0" class="text-base text-zinc-400 dark:text-zinc-500">No assigned TODOs found.</div>
                     <ul v-else>
                       <li v-for="todo in todos" :key="todo.id">
                         {{ todo.title }} - {{ todo.status }}
