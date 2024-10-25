@@ -4,10 +4,10 @@
   >
     <div class="flex items-center">
       <NuxtLink to="/"
-      ><p class="text-xl font-bold tracking-wider hover:opacity-80">
-        MeetLah
-      </p></NuxtLink
-    >
+        ><p class="text-xl font-bold tracking-wider hover:opacity-80">
+          MeetLah
+        </p></NuxtLink
+      >
     </div>
     <div class="flex gap-1">
       <div class="relative block">
@@ -37,13 +37,14 @@
             class="font-semibold border-zinc-200 dark:border-zinc-700 hover:bg-transparent"
           >
             <Avatar class="w-8 h-8 border bg-zinc-50 dark:bg-zinc-900">
-
+              <img :src="profilePictureUrl" />
             </Avatar>
           </Button>
         </SheetTrigger>
         <SheetContent class="flex flex-col">
           <SheetHeader class="flex flex-row items-center">
             <Avatar class="w-10 h-10 mr-2">
+              <img :src="profilePictureUrl" />
             </Avatar>
             <div>
               <SheetTitle class="text-left">
@@ -140,6 +141,16 @@ const user = useSupabaseUser();
 
 const displayName = ref(user.value.user_metadata.name);
 const email = ref(user.value.email);
+const profilePictureUrl = ref("");
+
+if (user.value.app_metadata.provider == "email" && !user.value.app_metadata.providers.includes('google')) {
+  const { data: profilePicData, error: profilePicError } = supabase.storage
+    .from("profile-pictures")
+    .getPublicUrl(`pics/default-${user.value.id}.png`);
+  profilePictureUrl.value = profilePicData.publicUrl;
+} else {
+  profilePictureUrl.value = user.value.user_metadata.avatar_url;
+}
 
 /**
  * Logs the user out using Supabase's authentication.

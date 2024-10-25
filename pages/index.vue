@@ -300,7 +300,7 @@ const todos = ref([]);
 // Fetch user info and open dialog if display name is missing
 if (user.value) {
   email.value = user.value.email;
-  if (user.value.app_metadata.provider == "email") {
+  if (user.value.app_metadata.provider == "email" && !user.value.app_metadata.providers.includes('google')) {
     const { data: profilePicData, error: profilePicError } = supabase.storage
       .from("profile-pictures")
       .getPublicUrl(`pics/default-${user.value.id}.png`);
