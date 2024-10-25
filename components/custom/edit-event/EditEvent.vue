@@ -17,11 +17,54 @@
                 </DialogDescription>
             </DialogHeader>
             <div class="grid gap-4 py-4 overflow-y-auto px-6">
-                <div class="flex flex-col justify-between h-[300dvh]">
-                    <p>
-                        This is some placeholder content to show the scrolling behavior for modals. We use repeated line breaks to demonstrate how content can exceed minimum inner height, thereby showing inner scrolling. When content becomes longer than the predefined max-height of modal, content will be cropped and scrollable within the modal.
-                    </p>
-                    <p>This content should appear at the bottom after you scroll.</p>
+                <div class="flex flex-col justify-between">
+                    <div class="w-full flex flex-col mt-4 md:flex-row md:justify-center gap-4 md:gap-6 lg:gap-8">
+                        <Card class="w-full">
+                            <CardContent class="pt-4">
+                                <div>
+                                <h1
+                                    class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                                > Title </h1>
+                                <Input
+                                    id="title"
+                                    type="text"
+                                    placeholder="Enter Title"
+                                    
+                                    class="w-full h-12 text-sm sm:text-base p-2 sm:p-3"
+                                />
+                    
+                                </div>
+                                <div class="pt-4">
+                                    <h1
+                                        class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:my-4"
+                                    >
+                                        Description
+                                    </h1>
+                                    <Textarea
+                                        id="description"
+                                        type="text"
+                                        placeholder="Enter Description"
+                                        
+                                        class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 mt-2"
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent class="pt-4">
+                                <div>
+                                    <h1 class="text-base md:text-xl lg:text-2xl text-zinc-800 dark:text-zinc-100 font-semibold my-2 lg:mb-4"
+                                    > Select Date Range</h1>
+                                    <div class="mt-2 flex justify-center items-center">
+                                        <RangeCalendar
+                                            v-model="dateRange"
+                                            class="rounded-md border"
+                                        />
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </div>
             <DialogFooter class="p-6 pt-0">
@@ -53,6 +96,12 @@ import { useRoute } from "vue-router";
 import { navigateTo } from "nuxt/app";
 import { useMediaQuery } from "@vueuse/core";
 import debounce from "lodash.debounce";
+import { RangeCalendar } from "@/components/ui/range-calendar";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { List, Trash2 } from "lucide-vue-next";
+
 // toast alert
 import { useToast } from "@/components/ui/toast/use-toast";
 import { Toaster } from "@/components/ui/toast";
