@@ -1,6 +1,8 @@
 <template>
   <span>
-    <div class="min-h-screen flex flex-col justify-center items-center bg-zinc-50 dark:bg-black">
+    <div
+      class="min-h-screen flex flex-col justify-center items-center bg-zinc-50 dark:bg-black"
+    >
       <!-- Container for the authentication form -->
       <div class="w-full max-w-[32rem] p-8 flex flex-col justify-center">
         <!-- Dynamic heading based on authentication type (login or register) -->
@@ -27,7 +29,7 @@
           <div ref="googleButton"></div>
         </div>
 
-        <Separator label="OR" class="mt-8"/>
+        <Separator label="OR" class="mt-8" />
 
         <!-- Authentication form (handles both login and registration) -->
         <form @submit.prevent="handleLogin" class="w-full mt-2">
@@ -120,7 +122,7 @@
       <!-- Toaster component for displaying notifications -->
       <Toaster />
     </div>
-    <PageFooter/>
+    <PageFooter />
   </span>
 </template>
 
@@ -156,6 +158,58 @@ const googleButton = ref(null); // Reference to the Google Sign-In button contai
 const toggleAuthType = () => {
   authType.value = authType.value === "login" ? "register" : "login";
 };
+
+function getRandomColorAndComplement() {
+  // Generate a random color and its complementary color
+  const color1 = `#${Math.floor(Math.random() * 16777215)
+    .toString(16)
+    .padStart(6, "0")}`;
+  const color2 = `#${(0xffffff ^ parseInt(color1.slice(1), 16))
+    .toString(16)
+    .padStart(6, "0")}`;
+  return { color1, color2 };
+}
+
+function generateGradientImage(width, height, color1, color2) {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+
+  const gradient = context.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, color1);
+  gradient.addColorStop(1, color2);
+
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, width, height);
+
+  return canvas.toDataURL("image/png");
+}
+
+async function uploadDefaultProfilePicture(userId) {
+  const { color1, color2 } = getRandomColorAndComplement();
+  const dataUrl = generateGradientImage(200, 200, color1, color2);
+  const response = await fetch(dataUrl);
+  const blob = await response.blob();
+  const filePath = `pics/default-${userId}.png`;
+
+  const { error } = await supabase.storage
+    .from("profile-pictures")
+    .upload(filePath, blob, {
+      cacheControl: "3600",
+      upsert: true,
+    });
+
+  if (error) {
+    console.error("Error uploading default profile picture:", error);
+    return null;
+  }
+
+  const { data } = supabase.storage
+    .from("profile-pictures")
+    .getPublicUrl(filePath);
+  return data.publicUrl;
+}
 
 /**
  * Handles form submission for both login and registration.
@@ -198,55 +252,40 @@ const handleLogin = async () => {
       }, 1200);
     }
   } else {
-    // Registration process
+    // Registration code with profile picture upload
     if (password.value !== confirmPassword.value) {
-      // Check if passwords match
       passwordMismatch.value = true;
       toast({
-        title: "Uh oh! Something went wrong.",
-        description: "Passwords do not match.",
+        title: "Passwords do not match",
         variant: "destructive",
-        action: h(
-          ToastAction,
-          {
-            altText: "Try again",
-          },
-          {
-            default: () => "Try again",
-          }
-        ),
       });
       return;
     }
 
-    // Attempt to register the user
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email.value,
       password: password.value,
     });
+
     if (error) {
-      // Display error toast if registration fails
       toast({
         title: "Registration Failed",
         description: error.message,
         variant: "destructive",
-        action: h(
-          ToastAction,
-          {
-            altText: "Try again",
-          },
-          {
-            default: () => "Try again",
-          }
-        ),
       });
-    } else {
-      // Display success toast indicating email confirmation is needed
-      toast({
-        title: "Email Confirmation Sent",
-        description: "Check your inbox.",
-        variant: "success",
-      });
+      return;
+    }
+
+    const userId = data.user.id;
+    if (userId) {
+      const profilePictureUrl = await uploadDefaultProfilePicture(userId);
+      if (profilePictureUrl) {
+        toast({
+          title: "Registration Successful",
+          description: "Check your inbox for email confirmation.",
+          variant: "success",
+        });
+      }
     }
   }
 };
@@ -256,19 +295,6 @@ const handleLogin = async () => {
  */
 const backHome = () => {
   navigateTo("/");
-};
-
-/**
- * Toggles between dark and light modes by adding/removing the 'dark' class
- * on the HTML document element.
- */
-const toggleDarkMode = () => {
-  isDark.value = !isDark.value;
-  if (isDark.value) {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
 };
 
 /**

@@ -64,7 +64,10 @@
                     <CardTitle>Upcoming Events</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div v-if="upcomingEvents.length === 0" class="text-base text-zinc-400 dark:text-zinc-500">
+                    <div
+                      v-if="upcomingEvents.length === 0"
+                      class="text-base text-zinc-400 dark:text-zinc-500"
+                    >
                       No upcoming events found.
                     </div>
                     <div v-else>
@@ -110,7 +113,9 @@
                   <CardFooter
                     class="flex flex-col md:flex-row items-end justify-between px-6 pb-6"
                   >
-                    <div class="w-full md:w-auto flex justify-start gap-4 md:gap-0">
+                    <div
+                      class="w-full md:w-auto flex justify-start gap-4 md:gap-0"
+                    >
                       <Button
                         class="mt-2 md:mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
                         @click="toCreate"
@@ -142,7 +147,12 @@
                     <CardTitle>Project TODOs</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div v-if="todos.length === 0" class="text-base text-zinc-400 dark:text-zinc-500">No assigned TODOs found.</div>
+                    <div
+                      v-if="todos.length === 0"
+                      class="text-base text-zinc-400 dark:text-zinc-500"
+                    >
+                      No assigned TODOs found.
+                    </div>
                     <ul v-else>
                       <li v-for="todo in todos" :key="todo.id">
                         {{ todo.title }} - {{ todo.status }}
@@ -171,11 +181,7 @@
                 <CardContent>
                   <div class="flex flex-row">
                     <Avatar class="w-16 h-16 mr-6">
-                      <UserRoundIcon
-                        size="24px"
-                        strokeWidth="{1}"
-                        class="opacity-60"
-                      />
+                      <img :src="profilePictureUrl" />
                     </Avatar>
                     <div>
                       <h1 class="text-2xl font-semibold">
@@ -283,6 +289,7 @@ const supabase = useSupabaseClient();
 const showDialog = ref(false);
 const newDisplayName = ref("");
 const displayName = ref("");
+const profilePictureUrl = ref("");
 const email = ref("");
 const user = useSupabaseUser();
 
@@ -292,12 +299,21 @@ const todos = ref([]);
 
 // Fetch user info and open dialog if display name is missing
 if (user.value) {
+  email.value = user.value.email;
+  if (user.value.app_metadata.provider == "email") {
+    const { data: profilePicData, error: profilePicError } = supabase.storage
+      .from("profile-pictures")
+      .getPublicUrl(`pics/default-${user.value.id}.png`);
+    profilePictureUrl.value = profilePicData.publicUrl;
+  } else {
+    profilePictureUrl.value = user.value.user_metadata.avatar_url;
+  }
+
   if (user.value.user_metadata.name) {
     displayName.value = user.value.user_metadata.name;
   } else {
     showDialog.value = true;
   }
-  email.value = user.value.email;
 }
 
 // Fetch upcoming events for the logged-in user
