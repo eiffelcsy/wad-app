@@ -127,6 +127,9 @@
                     </TableRow>
                   </TableHeader>
                   <TableBody>
+                    <TableRow v-if="allEvents.length == 0">
+                      <TableCell colspan="6" class="text-center">No Events Found.</TableCell>
+                    </TableRow>
                     <TableRow v-for="event in allEvents" :key="event.id">
                       <TableCell>{{ event.title }}</TableCell>
                       <TableCell>{{ event.description }}</TableCell>
@@ -169,6 +172,9 @@
                     </TableRow>
                   </TableHeader>
                   <TableBody>
+                    <TableRow v-if="pastEvents.length == 0">
+                      <TableCell colspan="6" class="text-center">No Events Found.</TableCell>
+                    </TableRow>
                     <TableRow v-for="event in pastEvents" :key="event.id">
                       <TableCell>{{ event.title }}</TableCell>
                       <TableCell>{{ event.description }}</TableCell>
@@ -210,6 +216,9 @@
                     </TableRow>
                   </TableHeader>
                   <TableBody>
+                    <TableRow v-if="upcomingEvents.length == 0">
+                      <TableCell colspan="6" class="text-center">No Events Found.</TableCell>
+                    </TableRow>
                     <TableRow v-for="event in upcomingEvents" :key="event.id">
                       <TableCell>{{ event.title }}</TableCell>
                       <TableCell>{{ event.description }}</TableCell>

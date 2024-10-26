@@ -66,7 +66,7 @@
                       :key="team.team_id"
                       :value="team.team_id"
                     >
-                      {{ team.teams.name }}
+                      {{ team.teams.team_name }}
                     </SelectItem>
                   </SelectGroup>
                 </SelectContent>
@@ -110,7 +110,7 @@ onMounted(async () => {
   if (user.value) {
     const { data, error } = await supabase
       .from("team_members")
-      .select("team_id, teams(name)")
+      .select("team_id, teams(team_name)")
       .eq("user_id", user.value.id);
 
     if (error) {
