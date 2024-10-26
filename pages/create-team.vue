@@ -229,6 +229,7 @@ const generateTeamCode = async (): Promise<string | null> => {
 
 // Function to submit the team
 const submitTeam = async () => {
+  // Generate the team code
   teamCode.value = await generateTeamCode();
 
   if (!teamCode.value) {
@@ -236,29 +237,54 @@ const submitTeam = async () => {
     return;
   }
 
-  // Prepare data for insertion
+  // Prepare data for the new team
   const teamData = {
     team_name: teamName.value,
     description: description.value,
-    creator_user_id: user?.id || null,  // Use the current user ID
+    creator_user_id: user?.id || null, // Use the current user ID
     code: teamCode.value,
   };
 
-  // Insert into Supabase
-  const { data, error } = await supabase.from('teams').insert([teamData]);
+  try {
+    // Insert the new team into the 'teams' table
+    const { data: newTeam, error: teamError } = await supabase
+      .from('teams')
+      .insert([teamData])
+      .select() // Retrieve the inserted data to get the 'id'
+      .single();
 
-  if (error) {
-    console.error('Error creating team:', error);
-    alert('Failed to create team. Please try again.');
-    return;
-  }
+    if (teamError || !newTeam) {
+      console.error('Error creating team:', teamError);
+      alert('Failed to create team. Please try again.');
+      return;
+    }
 
-  // Set shareable link
-  shareableLink.value = `${window.location.origin}/team/${teamCode.value}`;
+    // Insert the creator as the "owner" in the 'team_members' table
+    const teamId = newTeam.id; // Use the id of the newly created team
 
-  // Show dialog after team is created
-  if (shareableLink.value) {
-    showDialog.value = true;
+    const { error: memberError } = await supabase.from('team_members').insert({
+      team_id: teamId,
+      user_id: user?.id,
+      role: 'owner', // Set the role as "owner" for the team creator
+      added_at: new Date().toISOString(),
+    });
+
+    if (memberError) {
+      console.error('Error adding creator to team_members:', memberError);
+      alert('Failed to add team creator as a member. Please try again.');
+      return;
+    }
+
+    // Set the shareable link for the new team
+    shareableLink.value = `${window.location.origin}/team/${teamCode.value}`;
+
+    // Show dialog with the team code and link
+    if (shareableLink.value) {
+      showDialog.value = true;
+    }
+  } catch (e) {
+    console.error('Unexpected error:', e.message);
+    alert('An unexpected error occurred. Please try again.');
   }
 };
 

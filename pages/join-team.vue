@@ -57,6 +57,7 @@
   const { toast } = useToast();
   
   const joinCode = ref("");
+  const user = useSupabaseUser().value; // Assuming you have user data accessible
   
   /**
    * Redirects the user to the home page.
@@ -92,14 +93,14 @@
     }
   
     try {
-      // Query the 'teams' table in Supabase to check if the code exists
-      const { data, error } = await supabase
+      // Query the 'teams' table to get the team ID using the join code
+      const { data: teamData, error: teamError } = await supabase
         .from("teams")
-        .select("code")
+        .select("id")
         .eq("code", code)
         .single();
   
-      if (error || !data) {
+      if (teamError || !teamData) {
         // Display an error toast if the code does not exist
         toast({
           title: "Uh oh! Something went wrong.",
@@ -115,10 +116,73 @@
             }
           ),
         });
-      } else {
-        // Navigate to the team page if the code exists
-        navigateTo(`/team/${code}`);
+        return;
       }
+  
+      const teamId = teamData.id;
+      const userId = user?.id;
+  
+      // Check if the user is already a member of the team
+      const { data: membershipData, error: membershipError } = await supabase
+        .from("team_members")
+        .select("team_id")
+        .eq("team_id", teamId)
+        .eq("user_id", userId)
+        .single();
+  
+      if (membershipData) {
+        // Display an error toast if the user is already in the team
+        toast({
+          title: "You're already a member.",
+          description: "You cannot join the same team twice.",
+          variant: "destructive",
+          action: h(
+            ToastAction,
+            {
+              altText: "OK",
+            },
+            {
+              default: () => "OK",
+            }
+          ),
+        });
+        return;
+      }
+  
+      // If the user is not already a member, add them as a member
+      const { error: insertError } = await supabase.from("team_members").insert({
+        team_id: teamId,
+        user_id: userId,
+        role: "member", // Set role as "member"
+        added_at: new Date().toISOString(),
+      });
+  
+      if (insertError) {
+        // Handle any errors during insertion
+        toast({
+          title: "Uh oh! Something went wrong.",
+          description: insertError.message,
+          variant: "destructive",
+          action: h(
+            ToastAction,
+            {
+              altText: "Try again",
+            },
+            {
+              default: () => "Try again",
+            }
+          ),
+        });
+        return;
+      }
+  
+      // Successfully joined the team, navigate to the team page
+      toast({
+        title: "Success!",
+        description: "You have joined the team.",
+        variant: "success",
+      });
+      navigateTo(`/team/${code}`);
     } catch (err) {
       // Handle any unexpected errors
       toast({
