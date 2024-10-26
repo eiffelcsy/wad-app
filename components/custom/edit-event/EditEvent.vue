@@ -1,5 +1,4 @@
 <template>
-<div class="dialog-container">
     <Dialog>
         <DialogTrigger as-child>
             <Button variant="outline" v-if="!isMobile">
@@ -8,7 +7,6 @@
             <Button variant="outline" size="icon" v-if="isMobile">
                 <List class="size-5"></list>
             </Button>
-        <!--max-w-[600px] w-full grid-rows-[auto_minmax(0,1fr)_auto] p-0 max-h-[90dvh] overflow-hidden-->
         </DialogTrigger>
         <DialogContent class="dialog-content w-full max-w-[600px] overflow-hidden">
             <DialogHeader class="p-6 pb-0">
@@ -197,26 +195,20 @@
                 </div>
             </div>
             <!-- test p 2 -->
-            
             <DialogFooter class="p-6 pt-0 box-border">
+                <DialogClose>
+                    Cancel
+                </DialogClose>
                 <Button type="submit" @click="updateEvent">
                     Save changes
                 </Button>
             </DialogFooter>
         </DialogContent>
     </Dialog>
-</div>
 </template>
 
 <style scoped>
-/* Container to prevent overflow */
-.dialog-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    overflow-x: hidden;
-}
+
 
 /* Dialog content styling with max width fixed */
 .dialog-content {

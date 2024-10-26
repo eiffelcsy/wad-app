@@ -33,13 +33,10 @@
             Event Code: <span class="font-bold">{{ event_code }}</span>
           </p>
         </div>
-        <div class="flex flex-row items-center">
-          <Button variant="outline" v-if="!isMobile">
-            View Event Details
-          </Button>
-          <Button variant="outline" size="icon" v-if="isMobile">
-            <List class="size-5" />
-          </Button>
+        <div class="flex flex-row items-center space-x-2">
+          
+          <EditEvent/>
+          
           <AlertDialog>
             <AlertDialogTrigger as-child>
               <Button
@@ -391,6 +388,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { List, Trash2 } from "lucide-vue-next";
 import { useMediaQuery } from "@vueuse/core";
+import { EditEvent } from '@/components/custom/edit-event';
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
