@@ -123,30 +123,10 @@
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectItem value="01:00"> 01:00 </SelectItem>
-                              <SelectItem value="01:30"> 01:30 </SelectItem>
-                              <SelectItem value="02:00"> 02:00 </SelectItem>
-                              <SelectItem value="02:30"> 02:30 </SelectItem>
-                              <SelectItem value="03:00"> 03:00 </SelectItem>
-                              <SelectItem value="03:30"> 03:30 </SelectItem>
-                              <SelectItem value="04:00"> 04:00 </SelectItem>
-                              <SelectItem value="04:30"> 04:30 </SelectItem>
-                              <SelectItem value="05:00"> 05:00 </SelectItem>
-                              <SelectItem value="05:30"> 05:30 </SelectItem>
-                              <SelectItem value="06:00"> 06:00 </SelectItem>
-                              <SelectItem value="06:30"> 06:30 </SelectItem>
-                              <SelectItem value="07:00"> 07:00 </SelectItem>
-                              <SelectItem value="07:30"> 07:30 </SelectItem>
-                              <SelectItem value="08:00"> 08:00 </SelectItem>
-                              <SelectItem value="08:30"> 08:30 </SelectItem>
-                              <SelectItem value="09:00"> 09:00 </SelectItem>
-                              <SelectItem value="09:30"> 09:30 </SelectItem>
-                              <SelectItem value="10:00"> 10:00 </SelectItem>
-                              <SelectItem value="10:30"> 10:30 </SelectItem>
-                              <SelectItem value="11:00"> 11:00 </SelectItem>
-                              <SelectItem value="11:30"> 11:30 </SelectItem>
-                              <SelectItem value="00:00"> 12:00 </SelectItem>
-                              <SelectItem value="00:30"> 12:30 </SelectItem>
+                              <template v-for="hour in 12" :key="hour">
+                                <SelectItem :value="`${hour.toString().padStart(2, '0')}:00`"> {{ `${hour.toString().padStart(2, '0')}:00` }} </SelectItem>
+                                <SelectItem :value="`${hour.toString().padStart(2, '0')}:30`"> {{ `${hour.toString().padStart(2, '0')}:30` }} </SelectItem>
+                              </template>
                             </SelectGroup>
                           </SelectContent>
                         </Select>
@@ -181,30 +161,10 @@
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectItem value="01:00"> 01:00 </SelectItem>
-                              <SelectItem value="01:30"> 01:30 </SelectItem>
-                              <SelectItem value="02:00"> 02:00 </SelectItem>
-                              <SelectItem value="02:30"> 02:30 </SelectItem>
-                              <SelectItem value="03:00"> 03:00 </SelectItem>
-                              <SelectItem value="03:30"> 03:30 </SelectItem>
-                              <SelectItem value="04:00"> 04:00 </SelectItem>
-                              <SelectItem value="04:30"> 04:30 </SelectItem>
-                              <SelectItem value="05:00"> 05:00 </SelectItem>
-                              <SelectItem value="05:30"> 05:30 </SelectItem>
-                              <SelectItem value="06:00"> 06:00 </SelectItem>
-                              <SelectItem value="06:30"> 06:30 </SelectItem>
-                              <SelectItem value="07:00"> 07:00 </SelectItem>
-                              <SelectItem value="07:30"> 07:30 </SelectItem>
-                              <SelectItem value="08:00"> 08:00 </SelectItem>
-                              <SelectItem value="08:30"> 08:30 </SelectItem>
-                              <SelectItem value="09:00"> 09:00 </SelectItem>
-                              <SelectItem value="09:30"> 09:30 </SelectItem>
-                              <SelectItem value="10:00"> 10:00 </SelectItem>
-                              <SelectItem value="10:30"> 10:30 </SelectItem>
-                              <SelectItem value="11:00"> 11:00 </SelectItem>
-                              <SelectItem value="11:30"> 11:30 </SelectItem>
-                              <SelectItem value="00:00"> 12:00 </SelectItem>
-                              <SelectItem value="00:30"> 12:30 </SelectItem>
+                              <template v-for="hour in 12" :key="hour">
+                                <SelectItem :value="`${hour.toString().padStart(2, '0')}:00`"> {{ `${hour.toString().padStart(2, '0')}:00` }} </SelectItem>
+                                <SelectItem :value="`${hour.toString().padStart(2, '0')}:30`"> {{ `${hour.toString().padStart(2, '0')}:30` }} </SelectItem>
+                              </template>
                             </SelectGroup>
                           </SelectContent>
                         </Select>
