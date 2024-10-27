@@ -1,15 +1,17 @@
 <template>
   <div class="w-full mx-auto">
-    <div class="flex flex-row justify-between p-2 mb-2">
+    <div class="flex flex-row justify-between mb-4">
       <div>
         <h1 class="text-xl font-semibold">Project TODOs</h1>
         <p class="text-base text-zinc-400 dark:text-zinc-500">
-          Tasks to be completed
+          List of tasks to be completed
         </p>
       </div>
-      <Button @click="isOpen = true"
-        >New Task<PlusIcon class="size-4 ml-2"
-      /></Button>
+      <div class="flex items-center">
+        <Button @click="isOpen = true"
+          >New Task<PlusIcon class="size-4 ml-2"
+        /></Button>
+      </div>
     </div>
     <DataTable :columns="columns" :data="data" />
 
@@ -218,9 +220,9 @@ const handleRealTimeChange = (payload) => {
         ...data.value.slice(index + 1),
       ];
     }
-    console.log('Deleted Todo:', oldTodo);
+    console.log("Deleted Todo:", oldTodo);
   }
-}
+};
 
 async function createNewTask() {
   if (!newTaskTitle.value || !selectedMember.value) {
