@@ -273,6 +273,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { List, Trash2 } from "lucide-vue-next";
+import dayjs from "dayjs";
 
 // toast alert
 import { useToast } from "@/components/ui/toast/use-toast";
@@ -282,8 +283,44 @@ import { Toaster } from "@/components/ui/toast";
 const isMobile = useMediaQuery("(max-width: 1000px)");
 const supabase = useSupabaseClient();
 
-// Get the event ID from the route
+// Declare variables for event details
+const title = ref('');
+const description = ref('');
+const dateRange = ref({ start: '', end: '' });
+const startTime = ref('');
+const endTime = ref('');
+const numberOfParticipants = ref(1);
+const eventCode = ref(''); // Assign this from the route params later
 
+// Fetch event details
+onMounted(async () => {
+    // Get the event code from the route
+    const eventCode = route.params.eventId;
+    console.log(eventCode);
+
+    // Fetch current event details from the database
+    const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('code', eventCode.value)
+        .single();
+
+    if (error) {
+        console.error("Error fetching event data:", error);
+        return;
+    }
+
+    // Populate the fields with the fetched data
+    // title.value = data.title;
+    // description.value = data.description;
+    // dateRange.value = { start: data.start_date, end: data.end_date };
+    // startTime.value = data.start_time;
+    // endTime.value = data.end_time;
+    // numberOfParticipants.value = data.number_of_participants;
+});
+
+// Get the event ID from the route
+const route = useRoute();
 
 //Get the current user from Supabase
 const user = useSupabaseUser().value;
@@ -292,6 +329,10 @@ const user = useSupabaseUser().value;
 async function updateEvent() {
   try {
     const user = useSupabaseUser();
+
+    // Get the start and end times in 24-hour format
+    const adjustedStartTime = dayjs(startTime.value, "hh:mm A").format("HH:mm");
+    const adjustedEndTime = dayjs(endTime.value, "hh:mm A").format("HH:mm");
 
     const updates = {
         title: title.value,
@@ -305,11 +346,22 @@ async function updateEvent() {
         code: eventCode.value,
     }
 
-    const { error } = await supabase.from('events').upsert([updates])
+    // Update the event in the database
+        const { error } = await supabase
+            .from('events')
+            .update(updates)
+            .eq('code', eventCode.value);
 
-    if (error) throw error
-  } catch (error) {
-    alert(error.message)
-  } 
+        if (error) throw error;
+
+        // Optionally show a success message
+        alert("Event updated successfully!");
+
+        // Reload or navigate to the updated event page
+        navigateTo(`/events/${eventCode.value}`);
+    } catch (error) {
+        console.error("Error updating event:", error.message);
+        alert("There was an error updating the event.");
+    }
 }
 </script>
