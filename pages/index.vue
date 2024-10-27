@@ -174,6 +174,40 @@
             </div>
 
             <div class="order-last lg:order-1">
+              <Card class="mb-4 md:mb-6 lg:mb-8">
+                <CardHeader>
+                  <CardTitle>Manage Teams</CardTitle>
+                </CardHeader>
+                <CardFooter
+                  class="flex flex-col md:flex-row items-end justify-between px-6 pb-6"
+                >
+                  <div
+                    class="w-full md:w-auto flex justify-start gap-4 md:gap-0"
+                  >
+                    <Button
+                      class="mt-2 md:mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
+                      @click="toCreateTeam"
+                    >
+                      <PersonIcon class="mr-2" />Create Team
+                    </Button>
+                    <Button
+                      variant="outline"
+                      class="mt-2 md:ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                      @click="toJoinTeam"
+                    >
+                      <PlusCircledIcon class="mr-2" />Join Team
+                    </Button>
+                  </div>
+                  <Button
+                    variant="link"
+                    class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8 mt-4"
+                    @click="navigateTo('/teams')"
+                  >
+                    View all Teams
+                    <ArrowRight class="size-4 ml-2" />
+                  </Button>
+                </CardFooter>
+              </Card>
               <Card>
                 <CardHeader>
                   <CardTitle>Your Profile</CardTitle>
@@ -197,28 +231,6 @@
                     <mCalButton />
                   </div>
                 </CardContent>
-              </Card>
-              <Card class="mt-4 md:mt-6 lg:mt-8">
-                <CardHeader>
-                  <CardTitle>Manage Teams</CardTitle>
-                </CardHeader>
-                <CardFooter
-                  class="flex justify-between md:justify-start px-6 pb-6"
-                >
-                  <Button
-                    class="mt-2 md:mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
-                    @click="toCreateTeam"
-                  >
-                    <PersonIcon class="mr-2" />Create Team
-                  </Button>
-                  <Button
-                    variant="outline"
-                    class="mt-2 md:ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-                    @click="toJoinTeam"
-                  >
-                    <PlusCircledIcon class="mr-2" />Join Team
-                  </Button>
-                </CardFooter>
               </Card>
             </div>
           </div>
@@ -300,7 +312,10 @@ const todos = ref([]);
 // Fetch user info and open dialog if display name is missing
 if (user.value) {
   email.value = user.value.email;
-  if (user.value.app_metadata.provider == "email" && !user.value.app_metadata.providers.includes('google')) {
+  if (
+    user.value.app_metadata.provider == "email" &&
+    !user.value.app_metadata.providers.includes("google")
+  ) {
     const { data: profilePicData, error: profilePicError } = supabase.storage
       .from("profile-pictures")
       .getPublicUrl(`pics/default-${user.value.id}.png`);
