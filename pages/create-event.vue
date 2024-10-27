@@ -304,7 +304,7 @@
           </div>
         </div>
       </transition>
-      <!-- Dialog, its abit broken, but it works now -->
+
       <div v-if="fun"></div>
       <Dialog :open="showDialog" v-else>
         <DialogContent>
