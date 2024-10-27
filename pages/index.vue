@@ -1,56 +1,9 @@
 <template>
   <div>
-    <PageHeader v-if="user" class="dark:bg-zinc-950" />
-    <div
-      v-else
-      class="flex flex-row justify-between py-4 px-8 md:px-12 lg:px-16 bg-zinc-50 dark:bg-black"
-    >
-      <div class="flex items-center">
-        <NuxtLink to="/" class="">
-          <p class="text-xl font-bold tracking-wider">MeetLah</p>
-        </NuxtLink>
-      </div>
-      <Button
-        @click="toLogin"
-        variant="outline"
-        class="lg:right-12 border-zinc-300 dark:border-zinc-600"
-      >
-        <EnterIcon class="w-4 h-4 mr-2" />Login
-      </Button>
-    </div>
+    <PageHeader class="dark:bg-zinc-950" />
     <div class="bg-zinc-50 dark:bg-black">
       <div class="container min-h-screen">
-        <div
-          v-if="!user"
-          class="w-full h-lvh content-center md:w-2/3 md:px-8 lg:w-1/2 lg:px-16"
-        >
-          <h1
-            class="text-3xl md:text-4xl lg:text-5xl text-zinc-800 dark:text-zinc-100 font-bold my-2"
-          >
-            Simplify Scheduling. Amplify Collaboration.
-          </h1>
-          <p
-            class="text-base md:text-lg lg:text-xl text-zinc-400 dark:text-zinc-500 my-2 lg:my-4 lg:pr-4"
-          >
-            MeetLah makes it easy to coordinate meetings and events. Share your
-            availability, let others pick a time, and get notified instantly.
-          </p>
-          <Button
-            class="mt-2 mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-            @click="toCreate"
-          >
-            <CalendarIcon class="mr-2" />Create Event
-          </Button>
-          <Button
-            variant="outline"
-            class="mt-2 ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
-            @click="toJoin"
-          >
-            <PlusCircledIcon class="mr-2" />Join Event
-          </Button>
-        </div>
-
-        <div v-else class="w-full pt-8 md:pt-10 lg:pt-14">
+        <div class="w-full pt-8 md:pt-10 lg:pt-14">
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold">
             Hi, {{ displayName }}!
           </h1>
@@ -266,12 +219,7 @@
 </template>
 
 <script setup>
-import {
-  CalendarIcon,
-  EnterIcon,
-  PlusCircledIcon,
-  PersonIcon,
-} from "@radix-icons/vue";
+import { CalendarIcon, PlusCircledIcon, PersonIcon } from "@radix-icons/vue";
 import { navigateTo } from "nuxt/app";
 import { PageHeader } from "@/components/custom/page-header";
 import {
@@ -294,6 +242,10 @@ import { ArrowRight, ArrowUpRight, Pencil } from "lucide-vue-next";
 import { PageFooter } from "@/components/custom/page-footer";
 import { gCalButton } from "@/components/custom/gcal-button";
 import { mCalButton } from "@/components/custom/mcal-button";
+
+definePageMeta({
+  middleware: "landing",
+});
 
 // Supabase setup
 const supabase = useSupabaseClient();
@@ -407,10 +359,6 @@ const saveDisplayName = async () => {
   }
 };
 
-// Navigation functions for Events
-const toLogin = () => {
-  navigateTo("/auth");
-};
 const toCreate = () => {
   if (user.value) {
     navigateTo("/create-event");

@@ -15,7 +15,13 @@ export default defineNuxtConfig({
   ],
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@nuxtjs/supabase", "@nuxtjs/color-mode"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "shadcn-nuxt",
+    "@nuxtjs/supabase",
+    "@nuxtjs/color-mode",
+    "@nuxt/image",
+  ],
   shadcn: {
     /**
      * Prefix for all the imported component
@@ -43,7 +49,7 @@ export default defineNuxtConfig({
       login: "/auth",
       callback: "/",
       include: undefined,
-      exclude: ["/", "/event/*", "/join"],
+      exclude: ["/", "/landing", "/event/*", "/join"],
       cookieRedirect: false,
     },
   },
