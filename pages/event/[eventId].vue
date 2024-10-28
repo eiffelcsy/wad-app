@@ -34,9 +34,8 @@
           </p>
         </div>
         <div class="flex flex-row items-center space-x-2">
-          
-          <EditEvent/>
-          
+          <EditEvent />
+
           <AlertDialog>
             <AlertDialogTrigger as-child>
               <Button
@@ -89,9 +88,9 @@
                   <CardTitle>Your Availability</CardTitle>
                   <CardDescription
                     >Indicate blocks of time when you are
-                    <span class="font-bold text-red-300">unavailable</span>. Tap to
-                    select start cell, then tap again to select end cell and all
-                    the cells in between.
+                    <span class="font-bold text-red-300">unavailable</span>. Tap
+                    to select start cell, then tap again to select end cell and
+                    all the cells in between.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -154,8 +153,10 @@
                 <CardHeader>
                   <CardTitle>Overall Availability</CardTitle>
                   <CardDescription
-                    >View the <span class="font-bold text-green-400">availability</span> of everyone in the
-                    event. Find a timeslot that suits everyone's schedule.</CardDescription
+                    >View the
+                    <span class="font-bold text-green-400">availability</span>
+                    of everyone in the event. Find a timeslot that suits
+                    everyone's schedule.</CardDescription
                   >
                 </CardHeader>
                 <CardContent>
@@ -260,7 +261,7 @@
                         >
                           <div
                             :class="[
-                              'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950',
+                              'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 transition-all duration-300 ease-in-out',
                               isSelected(dateIndex, timeIndex)
                                 ? getMergedClass(dateIndex, timeIndex) +
                                   ' selected merged'
@@ -278,8 +279,11 @@
               <CardHeader>
                 <CardTitle>Overall Availability</CardTitle>
                 <CardDescription
-                  >View the <span class="font-bold text-green-400">availability</span> of everyone in the
-                  event. <br/> Find a timeslot that suits everyone's schedule.</CardDescription
+                  >View the
+                  <span class="font-bold text-green-400">availability</span> of
+                  everyone in the event. <br />
+                  Find a timeslot that suits everyone's
+                  schedule.</CardDescription
                 >
               </CardHeader>
               <CardContent>
@@ -315,7 +319,7 @@
                           class="h-6 p-0 text-center heatmap-cell"
                         >
                           <div
-                            class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md"
+                            class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md transition-all duration-500 ease-in-out"
                             :style="{
                               backgroundColor: getHeatmapColor(
                                 dateIndex,
@@ -388,7 +392,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { List, Trash2 } from "lucide-vue-next";
 import { useMediaQuery } from "@vueuse/core";
-import { EditEvent } from '@/components/custom/edit-event';
+import { EditEvent } from "@/components/custom/edit-event";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -459,7 +463,7 @@ onMounted(async () => {
     const timeMax = combineDateAndTime(findEvent.end_date, findEvent.end_time);
     const [gCalEvents, mCalEvents] = await Promise.all([
       fetchGoogleCalEvents(timeMin, timeMax),
-      fetchMicrosoftCalEvents(timeMin, timeMax)
+      fetchMicrosoftCalEvents(timeMin, timeMax),
     ]);
 
     // Once the events are fetched, update availability based on the results

@@ -11,7 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         el: container,
         smooth: true,
         multiplier: 0.8,
-        lerp:0.025,
+        lerp:0.075,
       });
     } else if (!container) {
       console.error(`Element with selector "${selector}" not found.`);
