@@ -3,49 +3,43 @@
     <div id="scroll-container" data-scroll-container>
       <main class="min-h-screen">
         <!-- Hero Section -->
-        <section class="px-4 py-20 md:py-32" data-scroll-section>
+        <section
+          class="h-screen px-4 flex justify-center items-center bg-zinc-50 overflow-hidden"
+          data-scroll-section
+        >
           <div class="max-w-6xl mx-auto">
-            <div class="flex flex-col md:flex-row items-center gap-12">
+            <div class="flex flex-col md:flex-row items-center gap-24">
               <div class="flex-1 space-y-8">
                 <h1
-                  class="text-5xl md:text-6xl font-bold tracking-tight text-gray-900"
+                  class="text-5xl md:text-6xl font-bold tracking-tight"
                   data-scroll
                 >
                   Schedule meetings & manage projects with ease
                 </h1>
-                <p class="text-xl text-gray-600">
+                <p class="text-lg lg:text-xl">
                   MeetLah combines intelligent scheduling with powerful project
                   management tools to help teams work smarter, not harder.
                 </p>
                 <div class="flex gap-4">
-                  <Button size="lg" variant="default">
-                    Get Started Free
-                  </Button>
-                  <Button size="lg" variant="outline">
-                    <PlayCircle class="mr-2 h-5 w-5" />
-                    Watch Demo
-                  </Button>
+                  <Button variant="default" class="w-32"> Get Started </Button>
+                  <Button variant="outline" class="w-32"> How it Works </Button>
                 </div>
               </div>
-              <div class="flex-1 relative">
-                <div
-                  class="absolute inset-0 bg-gradient-to-tr from-blue-50 to-indigo-50 rounded-2xl transform rotate-2"
-                ></div>
-                <img
-                  src=""
-                  alt="MeetLah Dashboard Preview"
-                  class="relative rounded-xl shadow-xl"
-                />
+              <div class="flex-1 order-first md:order-last relative">
+                <!-- <NuxtImg src="/images/landing_dashboard.png" class="scale-110 md:scale-125 lg:scale-140 lg:translate-x-36"></NuxtImg> -->
+                <video autoplay loop muted playsinline class="scale-110 md:scale-125 lg:scale-140 lg:translate-x-36">
+                  <source src="/images/test_vid.mp4" type="video/mp4" />
+                </video>
               </div>
             </div>
           </div>
         </section>
 
         <!-- Features Section -->
-        <section class="px-4 py-20 bg-white">
+        <section class="px-4 py-20 bg-white" data-scroll-section>
           <div class="max-w-6xl mx-auto">
             <div class="grid md:grid-cols-3 gap-8">
-              <Card class="relative overflow-hidden">
+              <Card class="relative overflow-hidden" data-scroll>
                 <CardHeader>
                   <div
                     class="h-12 w-12 rounded-lg bg-black/90 flex items-center justify-center mb-4"
@@ -62,7 +56,7 @@
                 </CardContent>
               </Card>
 
-              <Card class="relative overflow-hidden">
+              <Card class="relative overflow-hidden" data-scroll>
                 <CardHeader>
                   <div
                     class="h-12 w-12 rounded-lg bg-black/90 flex items-center justify-center mb-4"
@@ -79,7 +73,7 @@
                 </CardContent>
               </Card>
 
-              <Card class="relative overflow-hidden">
+              <Card class="relative overflow-hidden" data-scroll>
                 <CardHeader>
                   <div
                     class="h-12 w-12 rounded-lg bg-black/90 flex items-center justify-center mb-4"
@@ -149,11 +143,12 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted } from "vue";
 const { $initLocomotiveScroll } = useNuxtApp();
 
-onMounted(() => {
-  $initLocomotiveScroll('#scroll-container');
+onMounted(async () => {
+  await nextTick();
+  $initLocomotiveScroll("#scroll-container");
 });
 </script>
 

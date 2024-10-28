@@ -155,7 +155,7 @@
                   <CardTitle>Overall Availability</CardTitle>
                   <CardDescription
                     >View the <span class="font-bold text-green-400">availability</span> of everyone in the
-                    event.</CardDescription
+                    event. Find a timeslot that suits everyone's schedule.</CardDescription
                   >
                 </CardHeader>
                 <CardContent>
@@ -279,7 +279,7 @@
                 <CardTitle>Overall Availability</CardTitle>
                 <CardDescription
                   >View the <span class="font-bold text-green-400">availability</span> of everyone in the
-                  event.</CardDescription
+                  event. <br/> Find a timeslot that suits everyone's schedule.</CardDescription
                 >
               </CardHeader>
               <CardContent>

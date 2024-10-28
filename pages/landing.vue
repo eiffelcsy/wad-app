@@ -16,6 +16,7 @@
         <EnterIcon class="w-4 h-4 mr-2" />Login
       </Button>
     </div>
+    <h1 class="text-3xl">Work in Progress</h1>
   </div>
 </template>
 
