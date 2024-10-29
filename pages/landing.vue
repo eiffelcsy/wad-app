@@ -11,7 +11,7 @@
       <Button
         @click="toLogin"
         variant="outline"
-        class="lg:right-12 border-zinc-300 dark:border-zinc-600"
+        class=" border-zinc-300 dark:border-zinc-600"
       >
         <EnterIcon class="w-4 h-4 mr-2" />Login
       </Button>

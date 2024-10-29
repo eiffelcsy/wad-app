@@ -1,7 +1,7 @@
 import LocomotiveScroll from "locomotive-scroll";
 
 export default defineNuxtPlugin((nuxtApp) => {
-  let scrollInstance;
+  let scrollInstance: { destroy: () => void; } | null;
 
   nuxtApp.provide("initLocomotiveScroll", (selector: string) => {
     const container = document.querySelector(selector);
@@ -10,7 +10,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       scrollInstance = new LocomotiveScroll({
         el: container,
         smooth: true,
-        multiplier: 0.8,
+        multiplier: 0.2,
         lerp:0.075,
       });
     } else if (!container) {
