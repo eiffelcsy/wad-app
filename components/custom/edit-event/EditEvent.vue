@@ -30,7 +30,7 @@
                                     id="title"
                                     type="text"
                                     placeholder="Enter Title"
-                                    
+                                    v-model="title"
                                     class="w-full h-12 text-sm sm:text-base p-2 sm:p-3"
                                 />
                     
@@ -45,7 +45,7 @@
                                         id="description"
                                         type="text"
                                         placeholder="Enter Description"
-                                        
+                                        v-model="description"
                                         class="w-full h-12 lg:h-40 text-sm sm:text-base p-2 sm:p-3 mt-2"
                                     />
                                 </div>
@@ -264,7 +264,7 @@ import {
 
 // idk js import first
 import { ref, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router"; 
 import { navigateTo } from "nuxt/app";
 import { useMediaQuery } from "@vueuse/core";
 import debounce from "lodash.debounce";
@@ -274,94 +274,107 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { List, Trash2 } from "lucide-vue-next";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
 
 // toast alert
 import { useToast } from "@/components/ui/toast/use-toast";
 import { Toaster } from "@/components/ui/toast";
 
 
-const isMobile = useMediaQuery("(max-width: 1000px)");
+// Setup reactive variables
 const supabase = useSupabaseClient();
-
-// Declare variables for event details
+const user = useSupabaseUser().value;
+const router = useRouter();
+const route = useRoute();
+const isMobile = useMediaQuery("(max-width: 1000px)");
 const title = ref('');
 const description = ref('');
 const dateRange = ref({ start: '', end: '' });
 const startTime = ref('');
+const startTimeMeridiem = ref('');
 const endTime = ref('');
+const endTimeMeridiem = ref('');
 const numberOfParticipants = ref(1);
-const eventCode = ref(''); // Assign this from the route params later
+const currentCode = useRoute().params.eventId; // Use directly from route
+
 
 // Fetch event details
 onMounted(async () => {
-    // Get the event code from the route
-    const eventCode = route.params.eventId;
-    console.log(eventCode);
-
-    // Fetch current event details from the database
-    const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .eq('code', eventCode.value)
-        .single();
-
-    if (error) {
-        console.error("Error fetching event data:", error);
+    if (!supabase) {
+        console.error("Supabase client not initialized");
         return;
     }
+    console.log(currentCode);
+    // Fetch current event details from the database
+    const { data: findEvent, error: findEventError } = await supabase
+        .from("events")
+        .select("*")
+        .eq("code", currentCode)
+        .single();
 
-    // Populate the fields with the fetched data
-    // title.value = data.title;
-    // description.value = data.description;
-    // dateRange.value = { start: data.start_date, end: data.end_date };
-    // startTime.value = data.start_time;
-    // endTime.value = data.end_time;
-    // numberOfParticipants.value = data.number_of_participants;
+  if (findEventError) {
+    console.error("Error fetching event details:", findEventError.message);
+    alert("There was an error fetching the event details.");
+  } else {
+    title.value = findEvent.title;
+    description.value = findEvent.description;
+    startTime.value = findEvent.start_time;
+    endTime.value = findEvent.end_time;
+    numberOfParticipants.value = findEvent.number_of_participants;
+  }
+
 });
-
-// Get the event ID from the route
-const route = useRoute();
-
-//Get the current user from Supabase
-const user = useSupabaseUser().value;
 
 // Update event details
 async function updateEvent() {
-  try {
-    const user = useSupabaseUser();
+    let updates; 
+    try {
+        // Combine time and meridiem for parsing
+        const startTimeString = `${startTime.value.toString().trim()} ${startTimeMeridiem.value.toString().trim()}`;
+        const endTimeString = `${endTime.value.toString().trim()} ${endTimeMeridiem.value.toString().trim()}`;
 
-    // Get the start and end times in 24-hour format
-    const adjustedStartTime = dayjs(startTime.value, "hh:mm A").format("HH:mm");
-    const adjustedEndTime = dayjs(endTime.value, "hh:mm A").format("HH:mm");
+        // Parse and format the time in 24-hour format
+        const adjustedStartTime = dayjs(startTimeString, "hh:mm A").format("HH:mm");
+        const adjustedEndTime = dayjs(endTimeString, "hh:mm A").format("HH:mm");
 
-    const updates = {
-        title: title.value,
-        description: description.value,
-        creator_user_id: user.id,
-        start_date: dayjs(dateRange.value.start).format("YYYY-MM-DD"),
-        end_date: dayjs(dateRange.value.end).format("YYYY-MM-DD"),
-        start_time: adjustedStartTime,
-        end_time: adjustedEndTime,
-        number_of_participants: numberOfParticipants.value,
-        code: eventCode.value,
-    }
+        console.log("Parsed start time (24hr):", adjustedStartTime);
+        console.log("Parsed end time (24hr):", adjustedEndTime);
 
-    // Update the event in the database
+        updates = {
+            title: title.value,
+            description: description.value,
+            creator_user_id: user.id,
+            start_date: dayjs(dateRange.value.start).format("YYYY-MM-DD"),
+            end_date: dayjs(dateRange.value.end).format("YYYY-MM-DD"),
+            start_time: adjustedStartTime,
+            end_time: adjustedEndTime,
+            number_of_participants: numberOfParticipants.value,
+            code: currentCode,
+        }
+        // Update the event in the database
         const { error } = await supabase
             .from('events')
             .update(updates)
-            .eq('code', eventCode.value);
-
+            .eq('code', currentCode);
         if (error) throw error;
-
         // Optionally show a success message
+        console.log(updates);
         alert("Event updated successfully!");
 
-        // Reload or navigate to the updated event page
-        navigateTo(`/events/${eventCode.value}`);
+        // After successful update, use router.push to navigate back to the event page
+        await router.push(`/event/${currentCode}`);
+        
+        // Optionally, reload the page with a full refresh
+        window.location.reload();
+
     } catch (error) {
+        console.log(updates);
         console.error("Error updating event:", error.message);
         alert("There was an error updating the event.");
     }
+    console.log(updates);
+
 }
 </script>
