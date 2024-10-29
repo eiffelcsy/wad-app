@@ -22,8 +22,8 @@
               Track tasks across stages for clear progress management. Click and drag to move tasks around.  
             </p>
           </div>
-          <div class="grid grid-cols-3 gap-4">
-            <div class="col-auto border p-4 rounded-lg">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="col-auto border p-4 rounded-lg sm:col-span-1">
               <p
                 class="mb-2 text-red-500 font-semibold font-sans tracking-wide"
               >
@@ -70,7 +70,7 @@
               >
                 <template #item="{ element: task }">
                   <li
-                    class="p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300"
+                    class="p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-shadow duration-300"
                   >
                     {{ task.title }} - {{ task.status }}
                   </li>
@@ -142,14 +142,12 @@ const projectInfo = ref({});
 const pendingTasks = ref([]);
 const doingTasks = ref([]);
 const doneTasks = ref([]);
-//const reviewTasks = ref([]);
 
 const onDragEnd = async () => {
   console.log("Tasks updated:", {
     pendingTasks: pendingTasks.value,
     doingTasks: doingTasks.value,
     doneTasks: doneTasks.value,
-    // reviewTasks: reviewTasks.value,
   });
 
   const allTasks = [
