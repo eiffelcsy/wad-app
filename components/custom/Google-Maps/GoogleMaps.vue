@@ -24,15 +24,86 @@
 
 </template>
 
+<script>
+    import { GoogleMap } from 'vue3-google-map';
+    export default {
+        name: 'GoogleMaps',
+        components: {
 
+        },
+        data () {
+            return {
+                apiKey: process.env.NUXT_MAPS_API_KEY,
+                center: { lat: 51.5072, lng: 0.1276 },
+                map: null,
+                autocomplete: null,
+                currentPlace: null,
+                markers: [],
+                places: [],
+                isDragging: false,
+                files: [],
+                url: null,
+            }
+        },
+        mounted() {
+            this.geolocate();
+        },
+        methods: {
+            setPlace(place) {
+            if (place && place.geometry) {
+                this.currentPlace = place;
+                this.center = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+                };
+                this.reverseGeocode(this.center.lat, this.center.lng);
+            }
+            },
+            geolocate() {
+            navigator.geolocation.getCurrentPosition(position => {
+                this.center = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+                };
+            });
+            },
+            reverseGeocode(lat, lng) {
+            const geocoder = new google.maps.Geocoder();
+            const latlng = { lat, lng };
+            geocoder.geocode({ location: latlng }, (results, status) => {
+                if (status === 'OK') {
+                if (results[0]) {
+                    const addressComponents = results[0].address_components;
+                    const postalCode = addressComponents.find(component =>
+                    component.types.includes('postal_code')
+                    ).long_name;
+                    const fullName = results[0].formatted_address;
 
-<style>
+                    console.log(`Full Name: ${fullName}, Postal Code: ${postalCode}`);
+                    // Save the full name and postal code as needed
+                } else {
+                    console.log('No results found');
+                }
+                } else {
+                console.log('Geocoder failed due to: ' + status);
+                }
+            });
+            },
+            onFileChange(e) {
+            const file = e.target.files[0],
+            url = URL.createObjectURL(file)
+            } 
+        }
+            }
+</script>
+
+<style> 
     
 </style> -->
 
 <template>
     <GoogleMap
-      apiKey = process.env.NUXT_MAPS_API_KEY
+      :api-key="apiKey"
       style="width: 100%; height: 500px"
       :center="center"
       :zoom="15"
@@ -43,15 +114,21 @@
   
   <script>
   import { GoogleMap, Marker } from "vue3-google-map";
+  import { useRuntimeConfig } from '#app';
+
   
-  const apiKey = process.env.NUXT_MAPS_API_KEY;
+//   const YOUR_GOOGLE_MAPS_API_KEY = process.env.NUXT_ENV_MAPS_API_KEY;
   
   export default {
-    name: "App",
+    
     components: { GoogleMap, Marker },
     data() {
-      const center = { lat: 1.296568, lng: 103.852119 };
-      return { center, apiKey };
+        const config = useRuntimeConfig();
+        const center = { lat:  1.296568, lng: 103.852119 };
+        return { 
+            center, 
+            apiKey: config.public.NUXT_ENV_MAPS_API_KEY,
+        };
     },
   };
   </script>
