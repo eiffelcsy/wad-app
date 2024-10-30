@@ -111,5 +111,3 @@ watch([Meta_J, Ctrl_J], (v) => {
 })
 
 </script>
-
-<style scoped></style>

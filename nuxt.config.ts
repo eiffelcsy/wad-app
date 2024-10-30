@@ -57,4 +57,5 @@ export default defineNuxtConfig({
     preference: 'system',
     classSuffix: ''
   },
+  css: ['~/assets/css/locomotive-scroll.css', '~/assets/css/tailwind.css'],
 });
