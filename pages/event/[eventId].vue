@@ -453,7 +453,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { List, Trash2 } from "lucide-vue-next";
 import { useMediaQuery } from "@vueuse/core";
 import { EditEvent } from "@/components/custom/edit-event";
-import  GoogleMaps  from "@/components/custom/google-maps/GoogleMaps.vue";
+import  {GoogleMaps}  from "@/components/custom/Google-Maps";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
