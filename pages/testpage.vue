@@ -41,7 +41,7 @@
         </div>
         <!-- Hero Section -->
         <section
-          class="h-screen px-8 pt-8 lg:pt-20 flex flex-col mx-auto justify-center items-center bg-zinc-50 dark:bg-zinc-950"
+          class="h-screen px-8 pt-8 lg:pt-[10vh] flex flex-col mx-auto justify-center items-center bg-zinc-50 dark:bg-zinc-950"
           data-scroll-section
         >
           <div
@@ -111,7 +111,7 @@
               class="hover:-translate-y-10 transition duration-300 ease-in-out"
             >
               <div
-                class="relative w-96 lg:h-64 border rounded-xl bg-white dark:bg-indigo-950/20 fade-in-bottom hidden lg:block"
+                class="relative w-96 lg:h-64 border rounded-xl bg-white dark:bg-zinc-950 fade-in-bottom hidden lg:block"
               ></div>
             </div>
 
@@ -306,7 +306,7 @@
               </div>
             </div>
             <div class="my-10 flex flex-row justify-evenly items-center">
-              <div class="relative w-[36rem] h-80 overflow-hidden">
+              <div class="relative w-[36rem] h-80 overflow-hidden" v-if="$colorMode.value === 'light'">
                 <img
                   src="/images/landing_img_1.png"
                   class="absolute top-12 left-0 max-w-none object-none"
@@ -318,6 +318,9 @@
                 <div
                   class="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-b from-transparent to-white z-10"
                 ></div>
+              </div>
+              <div class="relative w-[36rem] h-80 overflow-hidden" v-if="$colorMode.value === 'dark'">
+                
               </div>
               <div class="w-96">
                 <h1 class="text-3xl font-medium">
@@ -344,7 +347,7 @@
                   space.
                 </p>
               </div>
-              <div class="relative w-[36rem] h-80 overflow-hidden">
+              <div class="relative w-[36rem] h-80 overflow-hidden" v-if="$colorMode.value === 'light'">
                 <img
                   src="/images/landing_img_1.png"
                   class="absolute top-12 left-0 max-w-none object-none"
@@ -357,9 +360,12 @@
                   class="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-b from-transparent to-white z-10"
                 ></div>
               </div>
+              <div class="relative w-[36rem] h-80 overflow-hidden" v-if="$colorMode.value === 'dark'">
+                
+              </div>
             </div>
             <div class="my-10 flex flex-row justify-evenly items-center">
-              <div class="relative w-[36rem] h-80 overflow-hidden">
+              <div class="relative w-[36rem] h-80 overflow-hidden" v-if="$colorMode.value === 'light'">
                 <img
                   src="/images/landing_img_1.png"
                   class="absolute top-12 left-0 max-w-none object-none"
@@ -371,6 +377,9 @@
                 <div
                   class="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-b from-transparent to-white z-10"
                 ></div>
+              </div>
+              <div class="relative w-[36rem] h-80 overflow-hidden" v-if="$colorMode.value === 'dark'">
+                
               </div>
               <div class="w-96">
                 <h1 class="text-3xl font-medium">
@@ -416,8 +425,8 @@
             ></div>
           </div>
         </section>
+        <PageFooter data-scroll-section />
       </main>
-      <PageFooter data-scroll-section />
     </div>
   </ClientOnly>
 </template>
