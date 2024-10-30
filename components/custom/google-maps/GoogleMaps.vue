@@ -117,7 +117,7 @@
 
   const config = useRuntimeConfig();
   const center = { lat:  1.296568, lng: 103.852119 };
-  const apiKey = config.public.GAPI_KEY;
+  const apiKey = config.public.GMAPS_API_KEY;
   </script>
 
 <style>
