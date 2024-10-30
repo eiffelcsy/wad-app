@@ -81,6 +81,7 @@
             <TabsList class="grid w-full grid-cols-2">
               <TabsTrigger value="your"> Your Availability </TabsTrigger>
               <TabsTrigger value="overall"> Overall Availability </TabsTrigger>
+              <TabsTrigger value="result"> Recommeded Timeslots </TabsTrigger>
             </TabsList>
             <TabsContent value="your">
               <Card class="lg:w-80 xl:w-96">
@@ -210,6 +211,19 @@
                 </CardContent>
               </Card>
             </TabsContent>
+            <TabsContent value="result">
+              <Card class="lg:w-80 xl:w-96">
+                <CardHeader>
+                  <CardTitle>Recommended Timeslots</CardTitle>
+                  <CardDescription
+                    > Below are timeslots with the highest <span class="font-bold text-green-400">availability</span> among everyone.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <h1>blablabla</h1>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
           <div class="flex flex-col lg:flex-row gap-8" v-else>
             <Card class="lg:w-80 xl:w-96">
@@ -336,6 +350,53 @@
                 </div>
               </CardContent>
             </Card>
+            <Card class="lg:w-80 xl:w-96">
+              <CardHeader>
+                <CardTitle>Recommended Timeslots</CardTitle>
+                <CardDescription>Below are the timeslots with the highest <span class="font-bold text-green-400">availability</span> among everyone.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div class="w-full flex items-center justify-center">
+                  <ol>
+                    <li v-for="(count, timeslot) in getSortedAvailability()" :key="timeslot" class="flex items-center space-x-4 mb-2">
+                    <!-- Date portion with box, slight curves, and padding -->
+                      <div class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm">
+                        {{ timeslot }}
+                      </div>
+                      
+                      <!-- Number of people available in light green color -->
+                      <span class="text-green-500 font-semibold">
+                        {{ count }} people available
+                      </span>
+                  </li>
+                  </ol>
+                </div>
+              </CardContent>
+            </Card>
+            <div class="ml-auto">
+              <div>
+    <!-- Button to trigger overlay -->
+    <button
+      class="bg-blue-500 text-black bg-white rounded px-4 h-[60px]"
+      @click= "toggleOverlay"
+    >
+      Suggest Location
+    </button>
+
+    <!-- Overlay -->
+    <div v-if="showOverlay" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div class="bg-white rounded-lg shadow-lg w-4/5 max-w-lg h-4/5 p-4 relative">
+        <button
+          class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          @click="closeOverlay"
+        >
+        &times;
+      </button>
+      <GoogleMaps/>
+      </div>
+    </div>
+  </div>
+    </div>
           </div>
           <!-- Existing Dialog and Toast Components -->
           <Dialog :open="showDialog">
@@ -393,6 +454,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { List, Trash2 } from "lucide-vue-next";
 import { useMediaQuery } from "@vueuse/core";
 import { EditEvent } from "@/components/custom/edit-event";
+import  GoogleMaps  from "@/components/custom/google-maps/GoogleMaps.vue";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -420,6 +482,8 @@ const intervals = ref([]);
 const participant_name = ref(null);
 
 const event_code = route.params.eventId;
+
+const showOverlay = ref(false);
 
 onMounted(async () => {
   // Fetch event details from Supabase
@@ -890,6 +954,30 @@ function getAvailabilityCount(dateIndex, timeIndex) {
   return availabilityCounts.value[intervalIndex] || 0;
 }
 
+function getSortedAvailability() {
+  // Create an array to hold timeslot and count pairs
+  let availabilityDict = [];
+
+  // Iterate over the intervals and calculate availability counts for each timeslot
+  intervals.value.forEach((interval, index) => {
+    const timeSlot = `${interval.date} ${interval.time}`;
+    const availabilityCount = availabilityCounts.value[index] || 0;
+    availabilityDict.push({ timeslot: timeSlot, count: availabilityCount });
+  });
+
+  // Sort the array by availability count from most to least
+  availabilityDict.sort((a, b) => b.count - a.count);
+
+  // Convert it back into a dictionary if you prefer a plain object
+  let sortedAvailability = {};
+  availabilityDict.forEach(({ timeslot, count }) => {
+    sortedAvailability[timeslot] = count;
+  });
+
+  return sortedAvailability;
+}
+
+
 const isDragging = ref(false); // Track if dragging is active
 const selectionMode = ref(true); // Track if we're selecting or deselecting
 const startCell = ref(null); // Track the start cell for tap selection
@@ -1009,6 +1097,17 @@ async function confirmDelete() {
     });
   }
 }
+
+function toggleOverlay() {
+  showOverlay.value = true;
+  console.log("Overlay toggled to true"); // Debug message
+}
+
+function closeOverlay() {
+  showOverlay.value = false;
+  console.log("Overlay toggled to false"); // Debug message
+}
+
 </script>
 
 <style scoped>
