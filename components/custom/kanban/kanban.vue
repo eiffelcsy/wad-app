@@ -13,7 +13,7 @@
             >
             Pending
             </p>
-            <button  @click="togglePending"  type="button" class="text-gray-500">
+            <button v-if="isMobile" @click="togglePending"  type="button" class="text-gray-500">
             {{ isPendingVisible ? 'Collapse': 'Expand' }}
             </button>
             <div v-bind="isPendingVisible" v-if="isPendingVisible">
@@ -23,7 +23,7 @@
                 v-model="pendingTasks"
                 item-key="id"
                 @end="onDragEnd"
-                class="w-auto min-h-96 max-w-md dark:bg-zinc-950 rounded-lg p-4"
+                class="w-auto min-h-fit max-w-md dark:bg-zinc-950 rounded-lg p-4"
                 :animation="200"
                 ghost-class="moving-card"
                 filter=".action-button"
@@ -45,7 +45,7 @@
             >
             In Progress
             </p>
-            <button @click="toggleDoing" type="button" class="text-gray-500">
+            <button v-if="isMobile" @click="toggleDoing" type="button" class="text-gray-500">
             {{ isDoingVisible ? 'Collapse': 'Expand'}}
             </button>
             <div v-if="isDoingVisible">
@@ -55,7 +55,7 @@
                 v-model="doingTasks"
                 item-key="id"
                 @end="onDragEnd"
-                class="w-auto min-h-96 max-w-md dark:bg-zinc-950 rounded-lg p-4"
+                class="w-auto min-h-fit max-w-md dark:bg-zinc-950 rounded-lg p-4"
                 :animation="200"
                 ghost-class="moving-card"
                 filter=".action-button"
@@ -77,7 +77,7 @@
             >
             Completed
             </p>
-            <button @click="toggleDone"  type="button" class="text-gray-500">
+            <button v-if="isMobile" @click="toggleDone"  type="button" class="text-gray-500">
             {{ isDoneVisible ? 'Collapse': 'Expand' }}
             </button>
             <div v-if="isDoneVisible">
@@ -87,7 +87,7 @@
                 v-model="doneTasks"
                 item-key="id"
                 @end="onDragEnd"
-                class="w-auto min-h-96 max-w-md dark:bg-zinc-950 rounded-lg p-4"
+                class="w-auto min-h-fit max-w-md dark:bg-zinc-950 rounded-lg p-4"
                 ghost-class="moving-card"
                 :animation="200"
                 :empty-insert-threshold="100"
@@ -109,7 +109,7 @@
 </template>
 
 <script setup>
-    import { ref, onMounted } from "vue";
+    import { ref, onMounted, onBeforeUnmount } from "vue";
     import draggable from "vuedraggable";
 
     const supabase = useSupabaseClient();
@@ -121,6 +121,8 @@
     const isPendingVisible = ref(true);
     const isDoingVisible = ref(true);
     const isDoneVisible = ref(true);
+    const isMobile = ref(false);
+    //const isMobile = ref(window.innerWidth < 481)
 
     const props = defineProps({
     projectId: {
@@ -242,8 +244,22 @@
         isDoneVisible.value = !isDoneVisible.value;
     }
 
+    const checkIfMobile = () => {
+        if (window.innerWidth < 482){
+            isMobile.value = true;
+        }
+        else{
+            isMobile.value = false;
+        }
+    }
     onMounted(()=>{
         fetchTasks()
+        checkIfMobile()
+        window.addEventListener('resize', checkIfMobile); // Update mobile state on resize
     })
+    onBeforeUnmount(() => {
+        window.removeEventListener('resize', checkIfMobile); // Clean up listener
+    });
+    
 
 </script>
