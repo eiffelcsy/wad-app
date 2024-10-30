@@ -252,11 +252,30 @@
             isMobile.value = false;
         }
     }
+
+    const handleRealTimeChange = (payload) => {
+        fetchTasks()
+    };
+
     onMounted(()=>{
         fetchTasks()
         checkIfMobile()
         window.addEventListener('resize', checkIfMobile); // Update mobile state on resize
-    })
+        const subscription = supabase
+            .channel(`public:todos`)
+            .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "todos",
+                filter: `project_id=eq.${props.projectId}`,
+            },
+            handleRealTimeChange
+            )
+        .subscribe();
+    });
+
     onBeforeUnmount(() => {
         window.removeEventListener('resize', checkIfMobile); // Clean up listener
     });
