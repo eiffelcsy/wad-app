@@ -112,25 +112,12 @@
     </GoogleMap>
   </template>
   
-  <script>
+  <script setup>
   import { GoogleMap, Marker } from "vue3-google-map";
-  import { useRuntimeConfig } from '#app';
 
-  
-//   const YOUR_GOOGLE_MAPS_API_KEY = process.env.NUXT_ENV_MAPS_API_KEY;
-  
-  export default {
-    
-    components: { GoogleMap, Marker },
-    data() {
-        const config = useRuntimeConfig();
-        const center = { lat:  1.296568, lng: 103.852119 };
-        return { 
-            center, 
-            apiKey: config.public.NUXT_ENV_MAPS_API_KEY,
-        };
-    },
-  };
+  const config = useRuntimeConfig();
+  const center = { lat:  1.296568, lng: 103.852119 };
+  const apiKey = config.public.GAPI_KEY;
   </script>
 
 <style>
