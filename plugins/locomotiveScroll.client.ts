@@ -10,7 +10,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       scrollInstance = new LocomotiveScroll({
         el: container,
         smooth: true,
-        multiplier: 0.2,
+        multiplier: 1,
         lerp:0.075,
       });
     } else if (!container) {

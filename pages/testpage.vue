@@ -31,59 +31,91 @@
         </div>
         <!-- Hero Section -->
         <section
-          class="h-screen px-8 py-20 justify-center bg-zinc-50 overflow-hidden"
+          class="h-screen px-8 py-8 lg:py-20 flex flex-col mx-auto justify-center items-center bg-zinc-50"
           data-scroll-section
         >
-          <div class="h-full flex flex-col mx-auto justify-center items-center">
-            <div class="flex-1 max-w-3xl w-full text-center space-y-8">
-              <h1
-                class="text-5xl md:text-7xl font-bold tracking-tight fade-in-bottom"
-                data-scroll
+          <div
+            class="flex-1 max-w-3xl w-full lg:text-center space-y-4 md:space-y-6 lg:space-y-8"
+          >
+            <h1
+              class="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight fade-in-bottom"
+              data-scroll
+            >
+              <span class="keywords text-indigo-600">Schedule</span>
+              meetings <br />
+              <span class="keywords text-indigo-600">& Manage</span>
+              projects <br />
+              with ease.
+            </h1>
+            <p class="text-base lg:text-lg fade-in-bottom" data-scroll>
+              <span class="text-indigo-600 font-semibold">MeetLah</span>
+              combines intelligent scheduling with powerful project management
+              tools to help teams work smarter, not harder.
+            </p>
+            <div
+              class="flex flex-col md:flex-row gap-4 fade-in-bottom justify-center"
+              data-scroll
+            >
+              <form
+                @submit.prevent="handleJoin"
+                class="flex flex-row justify-center"
               >
-                <span class="keywords text-indigo-600">Schedule</span>
-                meetings <br />
-                <span class="keywords text-indigo-600">& Manage</span>
-                projects <br />
-                with ease.
-              </h1>
-              <p class="text-base lg:text-lg fade-in-bottom" data-scroll>
-                <span class="text-indigo-600 font-semibold">MeetLah</span>
-                combines intelligent scheduling with powerful project management
-                tools to help teams work smarter, not harder.
-              </p>
-              <div
-                class="flex flex-col md:flex-row gap-4 fade-in-bottom justify-center"
-                data-scroll
-              >
-                <form
-                  @submit.prevent="handleJoin"
-                  class="flex flex-row justify-center"
+                <Input
+                  v-model="joinCode"
+                  id="join-code"
+                  type="text"
+                  placeholder="Enter Event Code"
+                  required
+                  class="w-full text-sm sm:text-base p-2 sm:p-3"
+                />
+                <Button
+                  class="w-28 ml-2 bg-indigo-600 dark:bg-zinc-200 text-white dark:text-black"
                 >
-                  <Input
-                    v-model="joinCode"
-                    id="join-code"
-                    type="text"
-                    placeholder="Enter Event Code"
-                    required
-                    class="w-full text-sm sm:text-base p-2 sm:p-3"
-                  />
-                  <Button
-                    class="w-28 ml-2 bg-indigo-600 dark:bg-zinc-200 text-white dark:text-black"
-                  >
-                    Join Event
-                  </Button>
-                </form>
-                <Button variant="outline" class="w-28 button-fade-in-left">
-                  How it Works
+                  Join Event
                 </Button>
+              </form>
+              <Button variant="outline" class="w-28 button-fade-in-left">
+                How it Works
+              </Button>
+            </div>
+          </div>
+          <div
+            class="-translate-y-20 flex flex-col lg:flex-row w-full lg:h-full gap-4 lg:gap-16 lg:justify-center items-end lg:p-8 order-first lg:order-last"
+          >
+            <div data-scroll data-scroll-speed="6">
+              <div
+                class="relative w-56 md:w-64 lg:w-72 max-h-64 md:max-h-80 lg:max-h-none lg:h-96 border rounded-xl overflow-hidden relative card-far-fade-in-right"
+              >
+                <NuxtImg src="/images/meeting_stock.jpg" class="w-full" />
               </div>
             </div>
-            <div class="flex flex-col lg:flex-row w-full h-full gap-16 justify-center items-end p-8 order-first lg:order-last">
-              <div class="w-72 h-96 border rounded-xl"></div>
-              <div class="w-48 h-80 border rounded-xl"></div>
-              <div class="w-96 h-64 border rounded-xl"></div>
-              <div class="w-48 h-80 border rounded-xl"></div>
-              <div class="w-72 h-96 border rounded-xl"></div>
+            <div data-scroll data-scroll-speed="4">
+              <div
+                class="relative w-full md:w-3/4 lg:w-48 h-20 md:h-24 lg:h-80 border rounded-xl bg-indigo-600 card-near-fade-in-right"
+              ></div>
+            </div>
+            <div data-scroll data-scroll-speed="2">
+              <div
+              class="relative w-96 lg:h-64 border rounded-xl bg-white fade-in-bottom hidden lg:block"
+            ></div>
+            </div>
+            <div data-scroll data-scroll-speed="4">
+              <div
+                class="relative w-48 lg:h-80 border rounded-xl bg-indigo-100 card-near-fade-in-left hidden lg:block"
+              ></div>
+            </div>
+            <div data-scroll data-scroll-speed="6">
+              <div
+                class="relative w-full lg:w-72 mb-8 lg:mb-0 h-1 lg:h-96 border rounded-xl bg-indigo-900 relative overflow-hidden card-far-fade-in-left"
+              >
+                <div
+                  class="absolute w-2/3 h-1/2 -top-[10%] -left-[10%] bg-indigo-600 rounded-full scale-150 opacity-30 flex items-center justify-center"
+                >
+                  <div
+                    class="relative w-[45%] h-[45%] bg-indigo-900 rounded-full scale-150"
+                  ></div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -224,6 +256,11 @@ const isMobile = useMediaQuery("(max-width: 600px)");
 onMounted(async () => {
   await nextTick();
   $initLocomotiveScroll("#scroll-container");
+
+  const elements = document.querySelectorAll(".fade-in-bottom");
+  elements.forEach((el, index) => {
+    el.style.setProperty("--i", index);
+  });
 });
 </script>
 
@@ -284,6 +321,30 @@ onMounted(async () => {
   animation-delay: 1.6s; /* Adjust the delay as needed */
 }
 
+.card-near-fade-in-left {
+  opacity: 0;
+  animation: fadeInLeft 0.8s ease-out forwards;
+  animation-delay: 1.6s; /* Adjust the delay as needed */
+}
+
+.card-far-fade-in-left {
+  opacity: 0;
+  animation: fadeInLeft 0.8s ease-out forwards;
+  animation-delay: 2s; /* Adjust the delay as needed */
+}
+
+.card-near-fade-in-right {
+  opacity: 0;
+  animation: fadeInRight 0.8s ease-out forwards;
+  animation-delay: 1.6s; /* Adjust the delay as needed */
+}
+
+.card-far-fade-in-right {
+  opacity: 0;
+  animation: fadeInRight 0.8s ease-out forwards;
+  animation-delay: 2s; /* Adjust the delay as needed */
+}
+
 .logo-animation {
   @apply size-12 transform transition-all mr-2;
   animation: fadeInBottom 0.5s ease-out forwards;
@@ -305,18 +366,6 @@ onMounted(async () => {
 .fade-in-bottom {
   opacity: 0;
   animation: fadeInBottom 0.8s ease-out forwards;
-  animation-delay: 0.4s;
-}
-.fade-in-bottom:nth-child(1) {
-  animation-delay: 0.6s;
-}
-.fade-in-bottom:nth-child(2) {
-  animation-delay: 0.8s;
-}
-.fade-in-bottom:nth-child(3) {
-  animation-delay: 1s;
-}
-.fade-in-bottom:nth-child(4) {
-  animation-delay: 1.2s;
+  animation-delay: calc(0.4s + var(--i) * 0.2s);
 }
 </style>
