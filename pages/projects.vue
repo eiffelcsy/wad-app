@@ -62,7 +62,7 @@
             </DrawerContent>
           </Drawer>
         </div>
-        <Select v-if="!isMobile">
+        <Select v-if="!isMobile" v-model="selectedSortOption">
           <SelectTrigger class="max-w-36 mr-2">
             <SelectValue placeholder="Sort By..." />
           </SelectTrigger>
@@ -166,7 +166,7 @@ const isOpen = ref(false);
 const selectedSortOption = ref("SortByActivity");
 
 const projects = ref([]);
-
+// fetch projects that a user is in
 const fetchProjects = async () => {
   const { data: associatedProjects, error: associatedError } = await supabase
     .from("project_members")
@@ -178,6 +178,8 @@ const fetchProjects = async () => {
     return;
   }
 
+  // console.log("associated projects: " + associatedProjects)
+// fetch details about a project that the user is in
   const projectIds = associatedProjects?.map((p) => p.project_id);
   const { data: projectDetails, error: projectDetailsError } = await supabase
     .from("projects")
@@ -189,6 +191,8 @@ const fetchProjects = async () => {
     return;
   }
 
+  // console.log("project details: " + projectDetails)
+// get the teams associated with each project the user is part of
   const teamIds = projectDetails.map((project) => project.team_id);
   const { data: teamDetails, error: teamError } = await supabase
     .from("teams")
@@ -209,6 +213,9 @@ const fetchProjects = async () => {
   });
 
   projects.value = projectsWithTeamNames;
+  sortProjects(); 
+  // console.log("projectsWithTeamNames:" + projectsWithTeamNames)
+  // console.log("projects:" + projects.value)
 };
 
 const closeDrawer = () => {
@@ -218,6 +225,23 @@ const closeDrawer = () => {
 onMounted(() => {
   fetchProjects();
 });
+
+// sorting functions
+const sortProjects = () => {
+  console.log("Sorting projects by:", selectedSortOption.value);
+  if (selectedSortOption.value === "SortByName") {
+    projects.value.sort((a, b) => a.title.localeCompare(b.title));
+  } else if (selectedSortOption.value === "SortByActivity") {
+    // Placeholder for another sorting logic based on activity or any other criteria
+  }
+};
+
+// Watch for changes in sort option to trigger sorting immediately
+watch(selectedSortOption, () => {
+  console.log("selectedSortOption changed to:", selectedSortOption.value); // Debugging
+  sortProjects();
+});
+
 </script>
 
 <style></style>

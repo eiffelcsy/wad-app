@@ -121,17 +121,28 @@ onMounted(async () => {
   }
 });
 
-async function handleCreateProject() {
+const ValidateProject = ():Boolean => {
+  let isValid = true;
+  errors.value = {}; // Clear previous errors
+
   if (!title.value) {
-    errors.value.title += "Project title is required";
-    return;
+    errors.value.title = "Project title is required";
+    isValid = false;
   }
 
   if (!selectedTeam.value) {
-    errors.value.title += "You must select a team";
-    return;
+    errors.value.title = "You must select a team";
+    isValid = false;
   }
 
+  return isValid;
+}
+
+async function handleCreateProject() {
+  if (!ValidateProject()) {
+    return;
+  }
+  
   const { data: project, error } = await supabase
     .from("projects")
     .insert({
@@ -163,8 +174,13 @@ async function handleCreateProject() {
       navigateTo(`/project/${projectId}`);
     }
   }
+  
 }
 
 </script>
 
-<style></style>
+<style>
+.error {
+  color: red;
+}
+</style>
