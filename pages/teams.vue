@@ -58,11 +58,11 @@
                       <!-- Owner Actions -->
                       <div v-if="team.role === 'owner'" class="flex space-x-2">
                         <div class="relative group">
-                          <Pencil1Icon class="cursor-pointer" @click="manageTeam(team.id)" />
+                          <EyeOpenIcon class="cursor-pointer" @click="viewTeam(team.code)" />
                           <span
                             class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
                           >
-                            Manage Team
+                            View More
                           </span>
                         </div>
                         <div class="relative group">
@@ -78,7 +78,7 @@
                       <!-- Member Actions -->
                       <div v-else class="flex space-x-2">
                         <div class="relative group">
-                          <EyeOpenIcon class="cursor-pointer" @click="viewTeam(team.id)" />
+                          <EyeOpenIcon class="cursor-pointer" @click="viewTeam(team.code)" />
                           <span
                             class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
                           >
@@ -115,9 +115,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageFooter } from "@/components/custom/page-footer";
 import { navigateTo } from "nuxt/app";
-import { Pencil1Icon, TrashIcon, EyeOpenIcon, ExitIcon } from "@radix-icons/vue";
+import { TrashIcon, EyeOpenIcon, ExitIcon } from "@radix-icons/vue";
 
-// Initialize Supabase client and user
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 
@@ -128,7 +127,6 @@ const searchQuery = ref("");
 const fetchTeams = async () => {
   if (!user.value) return;
 
-  // Step 1: Fetch team memberships where the user is a member
   const { data: teamMemberships, error: membershipError } = await supabase
     .from("team_members")
     .select("team_id, role, user_id")
@@ -141,10 +139,9 @@ const fetchTeams = async () => {
 
   const teamIds = teamMemberships.map((membership) => membership.team_id);
 
-  // Step 2: Fetch team details for the teams the user is in
   const { data: teamDetails, error: teamError } = await supabase
     .from("teams")
-    .select("id, team_name, created_at, creator_user_id")
+    .select("id, team_name, created_at, creator_user_id, code")
     .in("id", teamIds);
 
   if (teamError) {
@@ -152,7 +149,6 @@ const fetchTeams = async () => {
     return;
   }
 
-  // Step 3: Fetch the number of members for each team
   const teamMemberCounts = await Promise.all(
     teamIds.map(async (teamId) => {
       const { count, error: countError } = await supabase
@@ -168,7 +164,6 @@ const fetchTeams = async () => {
     })
   );
 
-  // Step 4: Fetch creator names from participants
   const creatorIds = teamDetails.map((team) => team.creator_user_id);
   const { data: creators, error: creatorsError } = await supabase
     .from("participants")
@@ -180,13 +175,11 @@ const fetchTeams = async () => {
     return;
   }
 
-  // Map creator names to user IDs for easy lookup
   const creatorNames = {};
   creators.forEach((creator) => {
     creatorNames[creator.user_id] = creator.name;
   });
 
-  // Combine all data into the `teams` array
   teams.value = teamDetails.map((team, index) => ({
     ...team,
     membersCount: teamMemberCounts[index],
@@ -195,13 +188,11 @@ const fetchTeams = async () => {
   }));
 };
 
-// Format date function
 const formatDate = (dateString) => {
   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-// Computed property for search filtering
 const filteredTeams = computed(() => {
   if (!searchQuery.value) return teams.value;
   const query = searchQuery.value.toLowerCase();
@@ -210,30 +201,39 @@ const filteredTeams = computed(() => {
   );
 });
 
-// Fetch teams when component mounts
 onMounted(() => {
   fetchTeams();
 });
 
-// Actions
 const manageTeam = (teamId) => {
   console.log("Manage team:", teamId);
-  // Implement manage team functionality here
 };
 
-const deleteTeam = (teamId) => {
-  console.log("Delete team:", teamId);
-  // Implement delete team functionality here
+const deleteTeam = async (teamId) => {
+  try {
+    await supabase.from("team_members").delete().eq("team_id", teamId);
+    await supabase.from("teams").delete().eq("id", teamId);
+    fetchTeams();
+  } catch (error) {
+    console.error("Error deleting team:", error);
+  }
 };
 
-const viewTeam = (teamId) => {
-  console.log("View team:", teamId);
-  // Implement view team functionality here
+const viewTeam = (teamCode) => {
+  navigateTo(`/team/${teamCode}`);
 };
 
-const leaveTeam = (teamId) => {
-  console.log("Leave team:", teamId);
-  // Implement leave team functionality here
+const leaveTeam = async (teamId) => {
+  try {
+    await supabase
+      .from("team_members")
+      .delete()
+      .eq("team_id", teamId)
+      .eq("user_id", user.value.id);
+    fetchTeams();
+  } catch (error) {
+    console.error("Error leaving team:", error);
+  }
 };
 </script>
 
@@ -241,27 +241,25 @@ const leaveTeam = (teamId) => {
 /* Tooltip styling */
 .group .tooltip {
   position: absolute;
-  bottom: 100%;            /* Position above the element */
-  margin-bottom: 4px;      /* Space below the tooltip */
-  left: 50%;               /* Center align horizontally */
+  bottom: 100%;
+  margin-bottom: 4px;
+  left: 50%;
   transform: translateX(-50%);
-  opacity: 0;              /* Initially hidden */
+  opacity: 0;
   transition: opacity 0.2s;
-  font-size: 0.75rem;      /* Equivalent to text-xs */
+  font-size: 0.75rem;
   color: white;
-  background-color: #374151; /* Equivalent to bg-gray-700 */
+  background-color: #374151;
   padding: 4px 8px;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .group:hover .tooltip {
-  opacity: 1; /* Show tooltip on hover */
+  opacity: 1;
 }
 
-/* Adjust spacing for table cells */
 .w-1\/6 {
   width: 16.66%;
 }
 </style>
-
