@@ -450,7 +450,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { List, Trash2 } from "lucide-vue-next";
+import { Trash2 } from "lucide-vue-next";
 import { useMediaQuery } from "@vueuse/core";
 import { EditEvent } from "@/components/custom/edit-event";
 import { GoogleMaps } from "@/components/custom/google-maps";
