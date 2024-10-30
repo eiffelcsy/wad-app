@@ -353,50 +353,49 @@
             <Card class="lg:w-80 xl:w-96">
               <CardHeader>
                 <CardTitle>Recommended Timeslots</CardTitle>
-                <CardDescription>Below are the timeslots with the highest <span class="font-bold text-green-400">availability</span> among everyone.</CardDescription>
+                <CardDescription>Below are the top 10 timeslots with the highest <span class="font-bold text-green-400">availability</span> among everyone.</CardDescription>
               </CardHeader>
               <CardContent>
                 <div class="w-full flex items-center justify-center">
                   <ol>
-                    <li v-for="(count, timeslot) in getSortedAvailability()" :key="timeslot" class="flex items-center space-x-4 mb-2">
-                    <!-- Date portion with box, slight curves, and padding -->
+                    <li v-for="({ count, timeslot }) in getSortedAvailability()" :key="timeslot" class="flex items-center space-x-2 mb-2">
+                      <!-- Date portion with box, slight curves, and padding -->
                       <div class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm">
                         {{ timeslot }}
                       </div>
-                      
-                      <!-- Number of people available in light green color -->
+                      <!-- Availability in green, following format "[count] people available" -->
                       <span class="text-green-500 font-semibold">
                         {{ count }} people available
                       </span>
-                  </li>
+                    </li>
                   </ol>
                 </div>
               </CardContent>
             </Card>
             <div class="ml-auto">
               <div>
-    <!-- Button to trigger overlay -->
-    <button
-      class="bg-blue-500 text-black bg-white rounded px-4 h-[60px]"
-      @click= "toggleOverlay"
-    >
-      Suggest Location
-    </button>
+                <!-- Button to trigger overlay -->
+                <button
+                  class="bg-blue-500 text-black bg-white rounded px-4 h-[60px]"
+                  @click= "toggleOverlay"
+                >
+                  Suggest Location
+                </button>
 
-    <!-- Overlay -->
-    <div v-if="showOverlay" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-white rounded-lg shadow-lg w-4/5 max-w-lg h-4/5 p-4 relative">
-        <button
-          class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-          @click="closeOverlay"
-        >
-        &times;
-      </button>
-      <GoogleMaps/>
-      </div>
-    </div>
-  </div>
-    </div>
+                <!-- Overlay -->
+                <div v-if="showOverlay" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                  <div class="bg-white rounded-lg shadow-lg w-4/5 max-w-lg h-4/5 p-4 relative">
+                    <button
+                      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                      @click="closeOverlay"
+                    >
+                    &times;
+                    </button>
+                    <GoogleMaps/>
+                  </div>
+                </div>
+            </div>
+          </div>
           </div>
           <!-- Existing Dialog and Toast Components -->
           <Dialog :open="showDialog">
@@ -968,13 +967,8 @@ function getSortedAvailability() {
   // Sort the array by availability count from most to least
   availabilityDict.sort((a, b) => b.count - a.count);
 
-  // Convert it back into a dictionary if you prefer a plain object
-  let sortedAvailability = {};
-  availabilityDict.forEach(({ timeslot, count }) => {
-    sortedAvailability[timeslot] = count;
-  });
-
-  return sortedAvailability;
+  // Return only the top 10 timeslots as an array
+  return availabilityDict.slice(0, 10);
 }
 
 
