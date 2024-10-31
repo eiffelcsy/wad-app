@@ -58,22 +58,14 @@ const { toast } = useToast();
 
 const joinCode = ref("");
 
-/**
- * Redirects the user to the home page.
- */
 const backHome = () => {
   navigateTo("/");
 };
 
-/**
- * Placeholder function to handle the form submission for joining an event.
- * This should contain the logic to process the "Join Code" entered by the user.
- */
 const handleJoin = async () => {
   const code = joinCode.value.trim();
 
   if (code.length !== 6) {
-    // Display an error toast if the join code is of invalid length
     toast({
       title: "Invalid Join Code.",
       description: "Please enter a 6-character Join Code.",
@@ -92,7 +84,6 @@ const handleJoin = async () => {
   }
 
   try {
-    // Query the 'events' table in Supabase to check if the code exists
     const { data, error } = await supabase
       .from("events")
       .select("code")
@@ -100,7 +91,6 @@ const handleJoin = async () => {
       .single();
 
     if (error || !data) {
-      // Display an error toast if the code does not exist
       toast({
         title: "Uh oh! Something went wrong.",
         description: "Could not find your event.",
@@ -116,11 +106,9 @@ const handleJoin = async () => {
         ),
       });
     } else {
-      // Navigate to the event page if the code exists
       navigateTo(`/event/${code}`);
     }
   } catch (err) {
-    // Handle any unexpected errors
     toast({
       title: "Uh oh! Something went wrong.",
       description: err.message,
