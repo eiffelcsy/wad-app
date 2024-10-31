@@ -1,6 +1,6 @@
 <!-- GanttChart.vue -->
 <template>
-  <Card class="w-fit">
+  <Card>
     <CardContent class="p-0.5">
       <!-- Wrapper with custom scrollbar class -->
       <div class="flex w-full">
@@ -75,120 +75,122 @@
         </div>
 
         <!-- Scrollable timeline -->
-        <div class="overflow-x-auto flex-1">
-          <!-- Timeline header -->
-          <div
-            class="w-fit flex sticky top-0 bg-background border-b h-14"
-            :style="{ width: timelineWidth }"
-          >
+        <div class="overflow-x-auto w-fit">
+          <div class="w-fit flex-1">
+            <!-- Timeline header -->
             <div
-              v-for="date in timelineDates"
-              :key="date"
-              class="flex-none w-20 p-3 text-center border-r text-sm text-muted-foreground"
+              class="w-fit flex sticky top-0 bg-background border-b h-14"
+              :style="{ width: timelineWidth }"
             >
-              {{ formatDate(date) }}
-            </div>
-          </div>
-
-          <!-- Timeline content -->
-          <div class="relative" :style="{ width: timelineWidth }">
-            <div
-              v-if="isDatelineVisible"
-              class="absolute top-0 bottom-0 w-px bg-red-500 z-20 dateline"
-              :style="datelineStyle"
-            >
-              <!-- Date indicator tooltip -->
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger
-                    class="absolute w-2 h-2 rounded-r-full bg-red-500"
-                  />
-                  <TooltipContent>
-                    <p class="text-sm font-medium">Current Date</p>
-                    <p class="text-xs text-muted-foreground">
-                      {{ formatDateLong(currentDate) }}
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <div
+                v-for="date in timelineDates"
+                :key="date"
+                class="flex-none w-20 p-3 text-center border-r text-sm text-muted-foreground"
+              >
+                {{ formatDate(date) }}
+              </div>
             </div>
 
-            <div v-for="group in taskGroups" :key="group.id">
-              <!-- Group progress bar -->
-              <div class="h-12 border-b bg-muted/30 px-4">
-                <div class="relative h-full">
-                  <Progress
-                    class="absolute h-2 top-1/2 -translate-y-1/2"
-                    v-model="group.progress"
-                  ></Progress>
-                </div>
+            <!-- Timeline content -->
+            <div class="relative border-r" :style="{ width: timelineWidth }">
+              <div
+                v-if="isDatelineVisible"
+                class="absolute top-0 bottom-0 w-px bg-red-500 z-20 dateline"
+                :style="datelineStyle"
+              >
+                <!-- Date indicator tooltip -->
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger
+                      class="absolute w-2 h-2 rounded-r-full bg-red-500"
+                    />
+                    <TooltipContent>
+                      <p class="text-sm font-medium">Current Date</p>
+                      <p class="text-xs text-muted-foreground">
+                        {{ formatDateLong(currentDate) }}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
-              <!-- Group tasks -->
-              <div v-show="expandedGroups[group.id]">
-                <div
-                  v-for="task in group.tasks"
-                  :key="task.id"
-                  class="relative h-12 border-b"
-                >
-                  <div
-                    v-if="!task.isMilestone"
-                    class="absolute h-6 rounded-md"
-                    :class="{
-                      'bg-primary/20': !task.isComplete,
-                      'bg-primary': task.isComplete,
-                    }"
-                    :style="getTaskBarStyle(task)"
-                  >
-                    <TooltipProvider delayDuration="200">
-                      <Tooltip>
-                        <TooltipTrigger class="w-full h-full">
-                          <div
-                            class="h-full rounded-md bg-primary transition-all"
-                            :style="{ width: `${task.progress}%` }"
-                          ></div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div class="space-y-1">
-                            <p class="font-medium">{{ task.title }}</p>
-                            <p class="text-xs text-muted-foreground">
-                              {{ formatDateLong(task.startDate) }} -
-                              {{ formatDateLong(task.endDate) }}
-                            </p>
-                            <p class="text-xs">
-                              Progress: {{ task.progress }}%
-                            </p>
-                            <p class="text-xs">
-                              Assigned to: {{ task.assignee.name }}
-                            </p>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+              <div v-for="group in taskGroups" :key="group.id">
+                <!-- Group progress bar -->
+                <div class="h-12 border-b bg-muted/30 px-4">
+                  <div class="relative h-full">
+                    <Progress
+                      class="absolute h-2 top-1/2 -translate-y-1/2"
+                      v-model="group.progress"
+                    ></Progress>
                   </div>
+                </div>
+
+                <!-- Group tasks -->
+                <div v-show="expandedGroups[group.id]">
                   <div
-                    v-else
-                    class="absolute -translate-y-1.5 rotate-45 transition-transform duration-200 ease-in-out hover:rotate-0 w-3 h-3 bg-amber-300"
-                    :style="getMilestoneStyle(task)"
+                    v-for="task in group.tasks"
+                    :key="task.id"
+                    class="relative h-12 border-b"
                   >
-                    <TooltipProvider delayDuration="200">
-                      <Tooltip>
-                        <TooltipTrigger
-                          class="w-full h-full -translate-y-1.5"
-                        />
-                        <TooltipContent>
-                          <div class="space-y-1">
-                            <p class="font-medium">{{ task.title }}</p>
-                            <p class="text-xs text-muted-foreground">
-                              Due: {{ formatDateLong(task.startDate) }}
-                            </p>
-                            <p class="text-xs">
-                              Assigned to: {{ task.assignee.name }}
-                            </p>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <div
+                      v-if="!task.isMilestone"
+                      class="absolute h-6 rounded-md"
+                      :class="{
+                        'bg-primary/20': !task.isComplete,
+                        'bg-primary': task.isComplete,
+                      }"
+                      :style="getTaskBarStyle(task)"
+                    >
+                      <TooltipProvider delayDuration="200">
+                        <Tooltip>
+                          <TooltipTrigger class="w-full h-full">
+                            <div
+                              class="h-full rounded-md bg-primary transition-all"
+                              :style="{ width: `${task.progress}%` }"
+                            ></div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <div class="space-y-1">
+                              <p class="font-medium">{{ task.title }}</p>
+                              <p class="text-xs text-muted-foreground">
+                                {{ formatDateLong(task.startDate) }} -
+                                {{ formatDateLong(task.endDate) }}
+                              </p>
+                              <p class="text-xs">
+                                Progress: {{ task.progress }}%
+                              </p>
+                              <p class="text-xs">
+                                Assigned to: {{ task.assignee.name }}
+                              </p>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <div
+                      v-else
+                      class="absolute -translate-y-1.5 rotate-45 transition-transform duration-200 ease-in-out hover:rotate-0 w-3 h-3 bg-amber-300"
+                      :style="getMilestoneStyle(task)"
+                    >
+                      <TooltipProvider delayDuration="200">
+                        <Tooltip>
+                          <TooltipTrigger
+                            class="w-full h-full -translate-y-1.5"
+                          />
+                          <TooltipContent>
+                            <div class="space-y-1">
+                              <p class="font-medium">{{ task.title }}</p>
+                              <p class="text-xs text-muted-foreground">
+                                Due: {{ formatDateLong(task.startDate) }}
+                              </p>
+                              <p class="text-xs">
+                                Assigned to: {{ task.assignee.name }}
+                              </p>
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -201,14 +203,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ChevronDown } from "lucide-vue-next";
@@ -221,123 +217,153 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { useMediaQuery } from "@vueuse/core/index.cjs";
 
+const props = defineProps({
+  projectId: {
+    type: String,
+    required: true,
+  },
+});
+
+const supabase = useSupabaseClient();
 const DAY_WIDTH = 5;
 const isMobile = useMediaQuery("(max-width: 600px)");
 const currentDate = ref(new Date());
+const taskGroups = ref([]);
+const expandedGroups = ref({});
+const timelineStartDate = ref(new Date());
+const timelineEndDate = ref(new Date());
 
-// Task groups data structure
-const taskGroups = ref([
-  {
-    id: 1,
-    title: "Task group 1",
-    progress: 87,
-    tasks: [
-      {
-        id: 1,
-        title: "Task 1",
-        startDate: new Date("2024-10-26"),
-        endDate: new Date("2024-10-28"),
-        progress: 60,
-        isComplete: false,
-        isMilestone: false,
-        assignee: {
-          name: "Chloe",
-          avatar: "/avatars/chloe.png",
-        },
-      },
-      {
-        id: 2,
-        title: "Task 2",
-        startDate: new Date("2024-10-28"),
-        endDate: new Date("2024-10-30"),
-        progress: 100,
-        isComplete: true,
-        isMilestone: false,
-        assignee: {
-          name: "Sarah",
-          avatar: "/avatars/sarah.png",
-        },
-      },
-      {
-        id: 3,
-        title: "Milestone A",
-        startDate: new Date("2024-10-30"),
-        endDate: new Date("2024-10-30"),
-        progress: 100,
-        isComplete: true,
-        isMilestone: true,
-        assignee: {
-          name: "Chloe",
-          avatar: "/avatars/chloe.png",
-        },
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: "Task group 2",
-    progress: 40,
-    tasks: [
-      {
-        id: 4,
-        title: "Task 1",
-        startDate: new Date("2024-10-31"),
-        endDate: new Date("2024-11-02"),
-        progress: 100,
-        isComplete: false,
-        isMilestone: false,
-        assignee: {
-          name: "Greg",
-          avatar: "/avatars/greg.png",
-        },
-      },
-      {
-        id: 5,
-        title: "Task 2",
-        startDate: new Date("2024-11-02"),
-        endDate: new Date("2024-11-04"),
-        progress: 30,
-        isComplete: false,
-        isMilestone: false,
-        assignee: {
-          name: "Kiara",
-          avatar: "/avatars/kiara.png",
-        },
-      },
-    ],
-  },
-]);
-
-// Track expanded/collapsed state of groups
-const expandedGroups = ref(
-  taskGroups.value.reduce((acc, group) => {
-    acc[group.id] = true;
-    return acc;
-  }, {})
-);
-
+// Function to toggle group expansion
 const toggleGroup = (groupId) => {
   expandedGroups.value[groupId] = !expandedGroups.value[groupId];
 };
 
-// Timeline configuration
-const timelineStartDate = ref(new Date("2024-10-26"));
-const timelineEndDate = ref(new Date("2024-11-10"));
+// Fetch data when the component is mounted
+onMounted(async () => {
+  await fetchData();
 
-// Generate array of dates for timeline
+  // Initialize expandedGroups state
+  expandedGroups.value = taskGroups.value.reduce((acc, group) => {
+    acc[group.id] = true;
+    return acc;
+  }, {});
+
+  // Update current date every hour
+  const timer = setInterval(() => {
+    currentDate.value = new Date();
+  }, 3600000);
+
+  onUnmounted(() => {
+    clearInterval(timer);
+  });
+});
+
+// Function to fetch data from Supabase
+async function fetchData() {
+  // Fetch all todos from the "todos" table
+  const { data, error } = await supabase
+    .from("todos")
+    .select("*")
+    .eq("project_id", props.projectId);
+
+  if (error) {
+    console.error("Error fetching data:", error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    console.warn("No data fetched from todos table.");
+    return;
+  }
+
+  // Group tasks by "task_group"
+  const groups = {};
+  data.forEach((todo) => {
+    const groupName = todo.task_group;
+
+    if (!groups[groupName]) {
+      groups[groupName] = {
+        id: groupName, // Using groupName as id
+        title: groupName,
+        tasks: [],
+      };
+    }
+
+    // Map the todo to the task structure expected by your UI
+    const task = {
+      id: todo.id,
+      title: todo.title,
+      startDate: todo.start_date ? new Date(todo.start_date) : null,
+      endDate: todo.end_date ? new Date(todo.end_date) : null,
+      progress: todo.progress,
+      isComplete: todo.progress === 100,
+      isMilestone: todo.is_milestone,
+      assignee: {
+        name: todo.assignee_name, // Adjust field names as per your schema
+      },
+    };
+
+    groups[groupName].tasks.push(task);
+  });
+
+  Object.values(groups).forEach((group) => {
+    const totalProgress = group.tasks.reduce(
+      (sum, task) => sum + task.progress,
+      0
+    );
+    const numTasks = group.tasks.length;
+    group.progress = Math.round(totalProgress / numTasks);
+  });
+
+  taskGroups.value = Object.values(groups);
+
+  const allStartDates = data
+    .map((todo) => (todo.start_date ? new Date(todo.start_date) : null))
+    .filter((date) => date !== null && !isNaN(date));
+  const allEndDates = data
+    .map((todo) => (todo.end_date ? new Date(todo.end_date) : null))
+    .filter((date) => date !== null && !isNaN(date));
+
+  if (allStartDates.length > 0) {
+    timelineStartDate.value = new Date(
+      Math.min(...allStartDates.map((date) => date.getTime()))
+    );
+  } else {
+    timelineStartDate.value = new Date();
+  }
+
+  if (allEndDates.length > 0) {
+    timelineEndDate.value = new Date(
+      Math.max(...allEndDates.map((date) => date.getTime()))
+    );
+    timelineEndDate.value.setDate(timelineEndDate.value.getDate() + 1);
+  } else {
+    timelineEndDate.value = new Date();
+  }
+
+  const minEndDate = new Date(timelineStartDate.value);
+  minEndDate.setDate(minEndDate.getDate() + 8); // Add 8 days to make it a 9-day span
+
+  if (timelineEndDate.value < minEndDate) {
+    timelineEndDate.value = minEndDate;
+  }
+
+  timelineEndDate.value.setDate(timelineEndDate.value.getDate() + 1);
+}
+
+// Computed properties and utility functions
 const timelineDates = computed(() => {
   const dates = [];
-  const currentDate = new Date(timelineStartDate.value);
+  const current = new Date(timelineStartDate.value);
 
-  while (currentDate <= timelineEndDate.value) {
-    dates.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
+  while (current <= timelineEndDate.value) {
+    dates.push(new Date(current));
+    current.setDate(current.getDate() + 1);
   }
 
   return dates;
 });
 
-// Utility functions
 const formatDate = (date) => {
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -369,16 +395,6 @@ const datelineStyle = computed(() => {
   return {
     left: `${diffDays * DAY_WIDTH + DAY_WIDTH / 2}rem`,
   };
-});
-
-onMounted(() => {
-  const timer = setInterval(() => {
-    currentDate.value = new Date();
-  }, 3600000);
-
-  onUnmounted(() => {
-    clearInterval(timer);
-  });
 });
 
 const getTaskBarStyle = (task) => {
@@ -420,6 +436,7 @@ const getInitials = (name) => {
     .toUpperCase();
 };
 </script>
+
 <style scoped>
 ::-webkit-scrollbar {
   height: 0.5rem;
@@ -439,9 +456,15 @@ const getInitials = (name) => {
 }
 
 @keyframes dateline-pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
 
 .dateline {

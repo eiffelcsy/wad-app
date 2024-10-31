@@ -11,7 +11,7 @@
       </div>
       <Separator />
         <div class="my-8 mx-auto container xl:w-[1200px]">
-          <SharedTodoList :projectId="projectId" />
+          <SharedTodoList :projectId="projectId"/>
         </div>
       <Separator />
         <div class="my-8 mx-auto container xl:w-[1200px]">
@@ -25,7 +25,7 @@
             A visual timeline of tasks and milestones over time. Hover over task bars to view full details.
           </p>
         </div>
-        <GanttChart class="w-full" />
+        <GanttChart class="w-full" :projectId="projectId"/>
       </div>
     </div>
     <PageFooter />
@@ -50,8 +50,6 @@ const projectInfo = ref({});
 const pendingTasks = ref([]);
 const doingTasks = ref([]);
 const doneTasks = ref([]);
-
-const isPendingVisible = true;
 
 const onDragEnd = async () => {
   console.log("Tasks updated:", {
