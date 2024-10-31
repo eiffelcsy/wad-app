@@ -775,7 +775,9 @@ onMounted(async () => {
     console.error(monthlyEventCountError.message);
   } else {
     // Animate monthlyCount from 0 to monthlyEventCount over 2 seconds
-    animateValue(monthlyCount, 0, monthlyEventCount, 2000);
+    setTimeout(() => {
+      animateValue(monthlyCount, 0, monthlyEventCount, 2000);
+    }, 1000);
   }
 });
 </script>
