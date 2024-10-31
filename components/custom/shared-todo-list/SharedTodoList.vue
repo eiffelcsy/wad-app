@@ -69,11 +69,12 @@
         <!-- Empty Trigger -->
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerHeader>
+        <DrawerHeader class="pb-0">
           <DrawerTitle>Create New Task</DrawerTitle>
         </DrawerHeader>
         <div class="grid gap-4 p-4">
           <div class="grid gap-2">
+            <input autofocus class="hidden"/>
             <Label html-for="new-task-title">Task Title</Label>
             <Input
               id="new-task-title"

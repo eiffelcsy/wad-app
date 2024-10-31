@@ -750,7 +750,7 @@ onMounted(async () => {
     console.error(eventCountError.message);
   } else {
     setTimeout(() => {
-      animateValue(monthlyCount, 0, monthlyEventCount, 1000);
+      animateValue(eventCounter, 0, eventCount, 1000);
     }, 1000);
   }
 
