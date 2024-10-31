@@ -213,7 +213,6 @@
         </Dialog>
       </div>
     </div>
-
     <PageFooter />
   </div>
 </template>

@@ -18,7 +18,7 @@
           <KanbanBoard :projectId="projectId"/>
         </div>
       <Separator />
-      <div class="mt-8 pb-8 mx-auto container xl:w-[1200px]">
+      <div class="mt-8 pb-16 mx-auto container xl:w-[1200px]">
         <div class="mb-4">
           <h1 class="text-xl font-semibold">Project Timeline</h1>
           <p class="text-base text-zinc-400 dark:text-zinc-500">

@@ -632,7 +632,6 @@ const supabase = useSupabaseClient();
 const isMobile = useMediaQuery("(max-width: 600px)");
 
 function animateValue(refVar, start, end, duration) {
-  console.log(`Starting animation from ${start} to ${end}`);
   let startTimestamp = null;
   const step = (timestamp) => {
     if (!startTimestamp) startTimestamp = timestamp;
@@ -776,7 +775,7 @@ onMounted(async () => {
     console.error(monthlyEventCountError.message);
   } else {
     // Animate monthlyCount from 0 to monthlyEventCount over 2 seconds
-    animateValue(monthlyCount, 0, monthlyEventCount, 1500);
+    animateValue(monthlyCount, 0, monthlyEventCount, 2000);
   }
 });
 </script>
