@@ -34,6 +34,7 @@
                 <EnterIcon class="w-4 h-4 mr-2" />Login
               </Button>
               <Button
+                @click="toRegister"
                 class="w-28 button-fade-in-left bg-indigo-600 hover:bg-indigo-700 start-button-animation dark:text-white"
               >
                 Get Started
@@ -84,7 +85,11 @@
                     Join Event
                   </Button>
                 </form>
-                <Button variant="outline" class="w-28 button-fade-in-left" @click="toDesc()">
+                <Button
+                  variant="outline"
+                  class="w-28 button-fade-in-left"
+                  @click="toDesc()"
+                >
                   How it Works
                 </Button>
               </div>
@@ -109,7 +114,7 @@
                 >
                   <div class="p-4 flex flex-col h-full text-white justify-end">
                     <div class="flex-col">
-                        <KanbanSquare size="2rem" stroke-width="1" class="mb-2"/>
+                      <KanbanSquare size="2rem" stroke-width="1" class="mb-2" />
                       <h2 class="text-xl font-medium">
                         Streamlined Project Management
                       </h2>
@@ -128,14 +133,21 @@
                   >
                     <ChartLine size="1.6rem" strokeWidth="1" />
                   </div>
-                  <div class="h-full lg:h-auto flex flex-row lg:flex-col lg:justify-end">
-                    <p class="w-32 lg:w-full text-xl tracking-tight" v-if="!isMobile">
+                  <div
+                    class="h-full lg:h-auto flex flex-row lg:flex-col lg:justify-end"
+                  >
+                    <p
+                      class="w-32 lg:w-full text-xl tracking-tight"
+                      v-if="!isMobile"
+                    >
                       Total Events Scheduled:
                     </p>
                     <h1 class="text-5xl font-semibold lg:my-2 tracking-wide">
                       {{ eventCounter }}
                     </h1>
-                    <div class="ml-2 md:ml-auto lg:ml-0 flex flex-col justify-center">
+                    <div
+                      class="ml-2 md:ml-auto lg:ml-0 flex flex-col justify-center"
+                    >
                       <p class="text-xl tracking-tight" v-if="isMobile">
                         Events Scheduled
                       </p>
@@ -400,6 +412,7 @@
                   data-scroll-class="appear"
                 >
                   <Button
+                    @click="toRegister"
                     class="bg-indigo-600 hover:bg-indigo-700 dark:text-white"
                     >Try Now</Button
                   >
@@ -565,6 +578,7 @@
                   workflows and schedule their events the smart way.
                 </p>
                 <Button
+                  @click="toRegister"
                   size="lg"
                   variant="secondary"
                   class="px-8 bg-indigo-600 hover:bg-indigo-700 text-white opacity-0"
@@ -632,13 +646,23 @@ function animateValue(refVar, start, end, duration) {
 }
 
 const toLogin = () => {
-  navigateTo("/auth");
+  navigateTo({
+    path: "/auth",
+    query: { action: "login" },
+  });
+};
+
+const toRegister = () => {
+  navigateTo({
+    path: "/auth",
+    query: { action: "register" },
+  });
 };
 
 const toDesc = () => {
-  const element = document.getElementById('description');
+  const element = document.getElementById("description");
   if (element) {
-    console.log(scrollInstance.value)
+    console.log(scrollInstance.value);
     if (scrollInstance.value) {
       scrollInstance.value.scrollTo(element);
     }

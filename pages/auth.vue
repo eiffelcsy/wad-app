@@ -132,6 +132,7 @@
  * and custom components for toast notifications and navigation.
  */
 import { h, ref, onMounted, watch } from "vue";
+import { useRoute } from 'vue-router';
 import { ArrowLeftIcon } from "@radix-icons/vue";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { Toaster, ToastAction } from "@/components/ui/toast";
@@ -142,12 +143,13 @@ import { PageFooter } from "@/components/custom/page-footer";
 const supabase = useSupabaseClient();
 // Initializing the toast notification system
 const { toast } = useToast();
+const route = useRoute();
 
 // Reactive variables to store form inputs and states
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
-const authType = ref("login"); // Determines whether the form is for login or registration
+const authType = ref(""); // Determines whether the form is for login or registration
 const passwordMismatch = ref(false); // Tracks if passwords match during registration
 const isDark = ref(false); // Tracks dark mode state
 const googleButton = ref(null); // Reference to the Google Sign-In button container
@@ -346,6 +348,7 @@ async function handleLoginWithGoogle(response) {
  */
 onMounted(() => {
   // Assign the callback function to the global window object
+  authType.value = route.query.action || 'login';
   window.handleLoginWithGoogle = handleLoginWithGoogle;
 
   // Check if the Google Identity script is already loaded
