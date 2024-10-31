@@ -749,7 +749,9 @@ onMounted(async () => {
   if (eventCountError) {
     console.error(eventCountError.message);
   } else {
-    animateValue(eventCounter, 0, eventCount, 1500);
+    setTimeout(() => {
+      animateValue(monthlyCount, 0, monthlyEventCount, 1000);
+    }, 1000);
   }
 
   const now = new Date();
@@ -774,9 +776,9 @@ onMounted(async () => {
   if (monthlyEventCountError) {
     console.error(monthlyEventCountError.message);
   } else {
-    // Animate monthlyCount from 0 to monthlyEventCount over 2 seconds
+    // Animate monthlyCount from 0 to monthlyEventCount over 1.2 seconds
     setTimeout(() => {
-      animateValue(monthlyCount, 0, monthlyEventCount, 2000);
+      animateValue(monthlyCount, 0, monthlyEventCount, 1000);
     }, 1000);
   }
 });
