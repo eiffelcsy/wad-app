@@ -5,9 +5,7 @@
       <!-- Wrapper with custom scrollbar class -->
       <div class="flex w-full">
         <!-- Fixed left column -->
-        <div
-          class="sticky left-0 z-10 md:w-80 lg:w-96 bg-background border-r shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)]"
-        >
+        <div class="sticky left-0 z-10 md:w-80 lg:w-96 bg-background border-r shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)]">
           <!-- Fixed header -->
           <div class="flex h-14 border-b bg-background">
             <div class="flex-1 grid md:grid-cols-[1fr,120px] gap-4 p-3">
@@ -20,18 +18,13 @@
           <div>
             <div v-for="group in taskGroups" :key="group.id">
               <!-- Group Header -->
-              <div
-                class="h-12 flex bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer border-b"
-                @click="toggleGroup(group.id)"
-              >
+              <div class="h-12 flex bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer border-b"
+                @click="toggleGroup(group.id)">
                 <div class="flex-1 grid gap-4 p-3">
                   <div class="flex items-center space-x-2">
-                    <ChevronDown
-                      :class="{
-                        'transform rotate-[-90deg]': !expandedGroups[group.id],
-                      }"
-                      class="h-4 w-4 transition-transform"
-                    />
+                    <ChevronDown :class="{
+                      'transform rotate-[-90deg]': !expandedGroups[group.id],
+                    }" class="h-4 w-4 transition-transform" />
                     <span class="font-medium">{{ group.title }}</span>
                     <Badge variant="secondary">{{ group.progress }}%</Badge>
                   </div>
@@ -40,21 +33,12 @@
 
               <!-- Tasks within group -->
               <div v-show="expandedGroups[group.id]">
-                <div
-                  v-for="task in group.tasks"
-                  :key="task.id"
-                  class="h-12 border-b hover:bg-muted/50 transition-colors"
-                >
-                  <div
-                    class="flex-1 grid md:grid-cols-[1fr,120px] gap-4 p-3 pl-9"
-                  >
+                <div v-for="task in group.tasks" :key="task.id"
+                  class="h-12 border-b hover:bg-muted/50 transition-colors">
+                  <div class="flex-1 grid md:grid-cols-[1fr,120px] gap-4 p-3 pl-9">
                     <div class="flex items-center space-x-2">
                       <span>{{ task.title }}</span>
-                      <Badge
-                        v-if="task.isMilestone && !isMobile"
-                        variant="outline"
-                        class="hidden lg:block"
-                      >
+                      <Badge v-if="task.isMilestone && !isMobile" variant="outline" class="hidden lg:block">
                         Milestone
                       </Badge>
                     </div>
@@ -78,32 +62,21 @@
         <div class="overflow-x-auto w-fit">
           <div class="w-fit flex-1">
             <!-- Timeline header -->
-            <div
-              class="w-fit flex sticky top-0 bg-background border-b h-14"
-              :style="{ width: timelineWidth }"
-            >
-              <div
-                v-for="date in timelineDates"
-                :key="date"
-                class="flex-none w-20 p-3 text-center border-r text-sm text-muted-foreground"
-              >
+            <div class="w-fit flex sticky top-0 bg-background border-b h-14" :style="{ width: timelineWidth }">
+              <div v-for="date in timelineDates" :key="date"
+                class="flex-none w-20 p-3 text-center border-r text-sm text-muted-foreground">
                 {{ formatDate(date) }}
               </div>
             </div>
 
             <!-- Timeline content -->
             <div class="relative border-r" :style="{ width: timelineWidth }">
-              <div
-                v-if="isDatelineVisible"
-                class="absolute top-0 bottom-0 w-px bg-red-500 z-20 dateline"
-                :style="datelineStyle"
-              >
+              <div v-if="isDatelineVisible" class="absolute top-0 bottom-0 w-px bg-red-500 z-20 dateline"
+                :style="datelineStyle">
                 <!-- Date indicator tooltip -->
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger
-                      class="absolute w-2 h-2 rounded-r-full bg-red-500"
-                    />
+                    <TooltipTrigger class="absolute w-2 h-2 rounded-r-full bg-red-500" />
                     <TooltipContent>
                       <p class="text-sm font-medium">Current Date</p>
                       <p class="text-xs text-muted-foreground">
@@ -118,36 +91,22 @@
                 <!-- Group progress bar -->
                 <div class="h-12 border-b bg-muted/30 px-4">
                   <div class="relative h-full">
-                    <Progress
-                      class="absolute h-2 top-1/2 -translate-y-1/2"
-                      v-model="group.progress"
-                    ></Progress>
+                    <Progress class="absolute h-2 top-1/2 -translate-y-1/2" v-model="group.progress"></Progress>
                   </div>
                 </div>
 
                 <!-- Group tasks -->
                 <div v-show="expandedGroups[group.id]">
-                  <div
-                    v-for="task in group.tasks"
-                    :key="task.id"
-                    class="relative h-12 border-b"
-                  >
-                    <div
-                      v-if="!task.isMilestone"
-                      class="absolute h-6 rounded-md"
-                      :class="{
-                        'bg-primary/20': !task.isComplete,
-                        'bg-primary': task.isComplete,
-                      }"
-                      :style="getTaskBarStyle(task)"
-                    >
+                  <div v-for="task in group.tasks" :key="task.id" class="relative h-12 border-b">
+                    <div v-if="!task.isMilestone" class="absolute h-6 rounded-md" :class="{
+                      'bg-primary/20': !task.isComplete,
+                      'bg-primary': task.isComplete,
+                    }" :style="getTaskBarStyle(task)">
                       <TooltipProvider delayDuration="200">
                         <Tooltip>
                           <TooltipTrigger class="w-full h-full">
-                            <div
-                              class="h-full rounded-md bg-primary transition-all"
-                              :style="{ width: `${task.progress}%` }"
-                            ></div>
+                            <div class="h-full rounded-md bg-primary transition-all"
+                              :style="{ width: `${task.progress}%` }"></div>
                           </TooltipTrigger>
                           <TooltipContent>
                             <div class="space-y-1">
@@ -167,16 +126,12 @@
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    <div
-                      v-else
+                    <div v-else
                       class="absolute -translate-y-1.5 rotate-45 transition-transform duration-200 ease-in-out hover:rotate-0 w-3 h-3 bg-amber-300"
-                      :style="getMilestoneStyle(task)"
-                    >
+                      :style="getMilestoneStyle(task)">
                       <TooltipProvider delayDuration="200">
                         <Tooltip>
-                          <TooltipTrigger
-                            class="w-full h-full -translate-y-1.5"
-                          />
+                          <TooltipTrigger class="w-full h-full -translate-y-1.5" />
                           <TooltipContent>
                             <div class="space-y-1">
                               <p class="font-medium">{{ task.title }}</p>
@@ -204,7 +159,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ChevronDown } from "lucide-vue-next";
@@ -227,7 +182,7 @@ const props = defineProps({
 const supabase = useSupabaseClient();
 const DAY_WIDTH = 5;
 const isMobile = useMediaQuery("(max-width: 600px)");
-const currentDate = ref(new Date());
+const currentDate = ref(new Date().setHours(0, 0, 0, 0));
 const taskGroups = ref([]);
 const expandedGroups = ref({});
 const timelineStartDate = ref(new Date());
@@ -326,16 +281,18 @@ async function fetchData() {
 
   if (allStartDates.length > 0) {
     timelineStartDate.value = new Date(
-      Math.min(...allStartDates.map((date) => date.getTime()))
+      new Date(
+        Math.min(...allStartDates.map((date) => date.getTime()))
+      ).setHours(0, 0, 0, 0)
     );
   } else {
     timelineStartDate.value = new Date();
   }
 
   if (allEndDates.length > 0) {
-    timelineEndDate.value = new Date(
+    timelineEndDate.value = new Date(new Date(
       Math.max(...allEndDates.map((date) => date.getTime()))
-    );
+    ).setHours(0, 0, 0, 0));
     timelineEndDate.value.setDate(timelineEndDate.value.getDate() + 1);
   } else {
     timelineEndDate.value = new Date();
@@ -423,7 +380,7 @@ const getMilestoneStyle = (task) => {
   );
 
   return {
-    left: `${startDiff * DAY_WIDTH + DAY_WIDTH / 2}rem`,
+    left: `${(startDiff * DAY_WIDTH + DAY_WIDTH / 2) - 0.375}rem`,
     top: "50%",
   };
 };
@@ -459,9 +416,11 @@ const getInitials = (name) => {
   0% {
     opacity: 0.6;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.6;
   }
