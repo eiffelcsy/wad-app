@@ -113,6 +113,7 @@
                             <th class="py-2 px-4 border-b border-gray-300 text-left">#</th>
                             <th class="py-2 px-4 border-b border-gray-300 text-left">Title</th>
                             <th class="py-2 px-4 border-b border-gray-300 text-left">Status</th>
+                            <th class="py-2 px-4 border-b border-gray-300 text-left">Project</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -120,12 +121,12 @@
                             <td class="py-2 px-4 border-b border-gray-300">{{ index + 1 }}</td>
                             <td class="py-2 px-4 border-b border-gray-300">{{ todo.title }}</td>
                             <td class="py-2 px-4 border-b border-gray-300">{{ todo.status }}</td>
+                            <td class="py-2 px-4 border-b border-gray-300">
+                              {{ getProjectTitle(todo.project_id) }}
+                            </td>
                           </tr>
                         </tbody>
                       </table>
-                      <!-- <li v-for="todo in todos" :key="todo.id">
-                        {{ todo.title }} - {{ todo.status }}
-                      </li> -->
                     </ul>
                   </CardContent>
                   <CardFooter class="flex justify-end">
@@ -276,6 +277,8 @@ const user = useSupabaseUser();
 const upcomingEvents = ref([]);
 const todos = ref([]);
 
+const projects = ref([]);
+
 // Fetch user info and open dialog if display name is missing
 if (user.value) {
   email.value = user.value.email;
@@ -396,4 +399,23 @@ const toCreateTeam = () => {
 const toJoinTeam = () => {
   navigateTo("/join-team");
 };
+
+
+const fetchProjects = async () => {
+  const { data, error } = await supabase.from("projects").select("*");
+  if (error) {
+    console.error("Error fetching projects:", error.message);
+  } else {
+    projects.value = data;
+  }
+};
+
+const getProjectTitle = (project_id) => {
+  const project = projects.value.find((proj) => proj.id === project_id);
+  return project ? project.title : "Unknown Project";
+};
+
+onMounted(() => {
+  fetchProjects();
+});
 </script>
