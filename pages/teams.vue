@@ -65,14 +65,37 @@
                             View More
                           </span>
                         </div>
-                        <div class="relative group">
-                          <TrashIcon class="cursor-pointer text-red-500" @click="deleteTeam(team.id)" />
-                          <span
-                            class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
-                          >
-                            Delete Team
-                          </span>
-                        </div>
+                        <AlertDialog>
+                          <AlertDialogTrigger as-child>
+                            <div class="relative group">
+                              <TrashIcon class="cursor-pointer text-red-500" />
+                              <span
+                                class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
+                              >
+                                Delete Team
+                              </span>
+                            </div>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you sure you want to delete this team?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. Once deleted, the team and all its data will be permanently removed.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                class="bg-red-700 text-white hover:bg-red-900"
+                                @click="confirmDeleteTeam(team.id)"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
 
                       <!-- Member Actions -->
@@ -85,14 +108,37 @@
                             View More
                           </span>
                         </div>
-                        <div class="relative group">
-                          <ExitIcon class="cursor-pointer text-red-500" @click="leaveTeam(team.id)" />
-                          <span
-                            class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
-                          >
-                            Leave Team
-                          </span>
-                        </div>
+                        <AlertDialog>
+                          <AlertDialogTrigger as-child>
+                            <div class="relative group">
+                              <ExitIcon class="cursor-pointer text-red-500" />
+                              <span
+                                class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
+                              >
+                                Leave Team
+                              </span>
+                            </div>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you sure you want to leave this team?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Once you leave, you will no longer be able to access this team unless you join again.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                class="bg-red-700 text-white hover:bg-red-900"
+                                @click="confirmLeaveTeam(team.id)"
+                              >
+                                Leave
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                   </TableCell>
@@ -205,11 +251,11 @@ onMounted(() => {
   fetchTeams();
 });
 
-const manageTeam = (teamId) => {
-  console.log("Manage team:", teamId);
+const viewTeam = (teamCode) => {
+  navigateTo(`/team/${teamCode}`);
 };
 
-const deleteTeam = async (teamId) => {
+const confirmDeleteTeam = async (teamId) => {
   try {
     await supabase.from("team_members").delete().eq("team_id", teamId);
     await supabase.from("teams").delete().eq("id", teamId);
@@ -219,11 +265,7 @@ const deleteTeam = async (teamId) => {
   }
 };
 
-const viewTeam = (teamCode) => {
-  navigateTo(`/team/${teamCode}`);
-};
-
-const leaveTeam = async (teamId) => {
+const confirmLeaveTeam = async (teamId) => {
   try {
     await supabase
       .from("team_members")
