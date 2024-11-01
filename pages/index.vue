@@ -107,9 +107,25 @@
                       No assigned TODOs found.
                     </div>
                     <ul v-else>
-                      <li v-for="todo in todos" :key="todo.id">
+                      <table class="min-w-full">
+                        <thead>
+                          <tr>
+                            <th class="py-2 px-4 border-b border-gray-300 text-left">#</th>
+                            <th class="py-2 px-4 border-b border-gray-300 text-left">Title</th>
+                            <th class="py-2 px-4 border-b border-gray-300 text-left">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(todo, index) in todos" :key="todo.id" >
+                            <td class="py-2 px-4 border-b border-gray-300">{{ index + 1 }}</td>
+                            <td class="py-2 px-4 border-b border-gray-300">{{ todo.title }}</td>
+                            <td class="py-2 px-4 border-b border-gray-300">{{ todo.status }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <!-- <li v-for="todo in todos" :key="todo.id">
                         {{ todo.title }} - {{ todo.status }}
-                      </li>
+                      </li> -->
                     </ul>
                   </CardContent>
                   <CardFooter class="flex justify-end">
