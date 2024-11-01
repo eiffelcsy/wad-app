@@ -11,6 +11,7 @@
           <Input
             id="searchProjects"
             type="text"
+            v-model="searchQuery"
             placeholder="Search Projects..."
             class="pl-10 text-base md:text-sm"
           />
@@ -94,7 +95,7 @@
           class="container w-full grid grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 justify-center"
         >
           <Card
-            v-for="(project, index) in projects"
+            v-for="(project, index) in filteredProjects"
             :key="index"
             class="mt-6 hover:border-zinc-700"
           >
@@ -164,6 +165,8 @@ const isMobile = useMediaQuery("(max-width: 600px)");
 
 const isOpen = ref(false);
 const selectedSortOption = ref("SortByActivity");
+// user searchbar
+const searchQuery = ref("");
 
 const projects = ref([]);
 // fetch projects that a user is in
@@ -191,7 +194,7 @@ const fetchProjects = async () => {
     return;
   }
 
-  // console.log("project details: " + projectDetails)
+
 // get the teams associated with each project the user is part of
   const teamIds = projectDetails.map((project) => project.team_id);
   const { data: teamDetails, error: teamError } = await supabase
@@ -214,8 +217,6 @@ const fetchProjects = async () => {
 
   projects.value = projectsWithTeamNames;
   sortProjects(); 
-  // console.log("projectsWithTeamNames:" + projectsWithTeamNames)
-  // console.log("projects:" + projects.value)
 };
 
 const closeDrawer = () => {
@@ -228,7 +229,6 @@ onMounted(() => {
 
 // sorting functions
 const sortProjects = () => {
-  console.log("Sorting projects by:", selectedSortOption.value);
   if (selectedSortOption.value === "SortByName") {
     projects.value.sort((a, b) => a.title.localeCompare(b.title));
   } else if (selectedSortOption.value === "SortByActivity") {
@@ -238,8 +238,15 @@ const sortProjects = () => {
 
 // Watch for changes in sort option to trigger sorting immediately
 watch(selectedSortOption, () => {
-  console.log("selectedSortOption changed to:", selectedSortOption.value); // Debugging
   sortProjects();
+});
+
+// filter projects based on search query
+const filteredProjects = computed(() => {
+  const query = searchQuery.value.toLowerCase();
+  return projects.value.filter((project) =>
+    project.title.toLowerCase().includes(query)
+  );
 });
 
 </script>
