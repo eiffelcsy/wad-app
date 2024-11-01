@@ -97,8 +97,25 @@
           <Card
             v-for="(project, index) in filteredProjects"
             :key="index"
-            class="mt-6 hover:border-zinc-700"
+            class="mt-6 hover:border-zinc-700 relative"
           >
+
+          <!-- Edit Icon Button -->
+          <button
+            @click="startEditing(project.id, project.title)"
+            class="absolute top-2 right-10 text-blue-500 hover:text-blue-700"
+          >
+            <Edit class="size-4" />
+          </button>
+
+          <!-- Delete Icon Button -->
+          <button
+            @click="deleteProject(project.id)"
+            class="absolute top-2 right-2 text-red-500 hover:text-red-700"
+          >
+            <Trash class="size-4" />
+          </button>
+
             <NuxtLink
               :to="{
                 name: 'project-projectId',
@@ -123,6 +140,27 @@
                 <p>{{ project.description }}</p>
               </CardContent>
             </NuxtLink>
+
+            <!-- Editable Input Field for Project Title -->
+            <div v-if="editingProjectId === project.id" class="p-4">
+              <input
+                v-model="editTitle"
+                placeholder="Edit Project Name"
+                class="w-full p-2 border rounded-md text-black"
+              />
+              <button
+                @click="saveProjectTitle(project.id)"
+                class="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Save
+              </button>
+              <button
+                @click="cancelEditing"
+                class="mt-2 ml-2 bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-500"
+              >
+                Cancel
+              </button>
+            </div>
           </Card>
         </div>
       </div>
@@ -133,6 +171,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { Trash, Edit  } from "lucide-vue-next";
 import { PageHeader } from "@/components/custom/page-header";
 import { Ellipsis, Plus, Search } from "lucide-vue-next";
 import { Badge } from "@/components/ui/badge";
@@ -167,6 +206,11 @@ const isOpen = ref(false);
 const selectedSortOption = ref("SortByActivity");
 // user searchbar
 const searchQuery = ref("");
+
+const editingProjectId = ref(null); // Holds the ID of the project currently being edited
+const editTitle = ref(""); // Holds the edited title for the project
+const isEditing = ref({});
+
 
 const projects = ref([]);
 // fetch projects that a user is in
@@ -218,6 +262,88 @@ const fetchProjects = async () => {
   projects.value = projectsWithTeamNames;
   sortProjects(); 
 };
+
+// toggle edit
+const startEditing = (projectId, currentTitle) => {
+  editingProjectId.value = projectId;
+  editTitle.value = currentTitle; // Initialize the input with the current title
+};
+
+
+// Cancel edit mode without saving
+const cancelEditMode = (projectId) => {
+  isEditing.value[projectId] = false;
+  editTitle.value = ""; // Clear edit title
+};
+
+// Save the edited project title to Supabase and update the local state
+const saveProjectTitle = async (projectId) => {
+  try {
+    // Update the project title in Supabase
+    const { error: updateError } = await supabase
+      .from("projects")
+      .update({ title: editTitle.value })
+      .eq("id", projectId);
+
+    if (updateError) {
+      console.error("Error updating project title:", updateError);
+      return;
+    }
+
+    // Update the local project title in the projects array
+    const project = projects.value.find((p) => p.id === projectId);
+    if (project) project.title = editTitle.value;
+
+    // Exit edit mode and clear the editTitle
+    editingProjectId.value = null;
+    editTitle.value = "";
+    console.log("Project title updated successfully.");
+  } catch (err) {
+    console.error("Unexpected error updating project title:", err);
+  }
+};
+
+
+
+// delete projects
+const deleteProject = async (projectId) => {
+  const confirmed = window.confirm("Are you sure you want to delete this project? This action cannot be undone.");
+  
+  if (!confirmed) {
+    return; // If user cancels, exit the function
+  }
+  try {
+    // Step 1: Delete associated records in the "project_members" table
+    const { error: deleteMembersError } = await supabase
+      .from("project_members")
+      .delete()
+      .eq("project_id", projectId);
+
+    if (deleteMembersError) {
+      console.error("Error deleting associated project members:", deleteMembersError);
+      return;
+    }
+
+    // Step 2: Delete the project from the "projects" table
+    const { error: deleteProjectError } = await supabase
+      .from("projects")
+      .delete()
+      .eq("id", projectId);
+
+    if (deleteProjectError) {
+      console.error("Error deleting project:", deleteProjectError);
+      return;
+    }
+
+    // Step 3: Update the local `projects` array to remove the deleted project
+    projects.value = projects.value.filter((project) => project.id !== projectId);
+
+    console.log("Project and associated members deleted successfully.");
+  } catch (err) {
+    console.error("Unexpected error deleting project:", err);
+  }
+};
+
 
 const closeDrawer = () => {
   isOpen.value = false;
