@@ -22,7 +22,7 @@
                 v-if="!isMobile"
                 class="text-xl font-bold tracking-wider title-fade-in-left"
               >
-                Meet<span class="text-indigo-600">L</span>ah
+                Meet<span class="text-indigo-600 dark:text-indigo-500">L</span>ah
               </h1>
             </div>
             <div class="flex flex-row items-center">
@@ -129,7 +129,7 @@
                   class="relative w-full md:w-3/4 lg:w-96 h-20 md:h-24 lg:h-64 py-4 px-6 lg:py-8 lg:px-10 border border-indigo-100 rounded-xl bg-white dark:bg-zinc-950 fade-in-bottom flex flex-col justify-between"
                 >
                   <div
-                    class="size-10 bg-indigo-100 rounded-lg items-center justify-center hidden lg:flex"
+                    class="size-10 bg-indigo-100 dark:bg-indigo-800 rounded-lg items-center justify-center hidden lg:flex"
                   >
                     <ChartLine size="1.6rem" strokeWidth="1" />
                   </div>
@@ -158,7 +158,7 @@
                       </p>
                     </div>
                     <div
-                      class="size-10 bg-indigo-100 rounded-lg flex items-center justify-center self-center ml-auto"
+                      class="size-10 bg-indigo-100 dark:bg-indigo-900 rounded-lg flex items-center justify-center self-center ml-auto"
                       v-if="isMobile"
                     >
                       <ChartLine size="1.6rem" strokeWidth="1" />
@@ -776,7 +776,6 @@ onMounted(async () => {
   if (monthlyEventCountError) {
     console.error(monthlyEventCountError.message);
   } else {
-    // Animate monthlyCount from 0 to monthlyEventCount over 1.2 seconds
     setTimeout(() => {
       animateValue(monthlyCount, 0, monthlyEventCount, 1000);
     }, 1000);
