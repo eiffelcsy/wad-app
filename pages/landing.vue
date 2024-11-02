@@ -783,7 +783,7 @@ onMounted(async () => {
 });
 </script>
 
-<style>
+<style scoped>
 @keyframes fadeInTop {
   0% {
     opacity: 0;

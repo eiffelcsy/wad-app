@@ -106,28 +106,38 @@
                     >
                       No assigned TODOs found.
                     </div>
-                    <ul v-else>
-                      <table class="min-w-full">
-                        <thead>
-                          <tr>
-                            <th class="py-2 px-4 border-b border-gray-300 text-left">#</th>
-                            <th class="py-2 px-4 border-b border-gray-300 text-left">Title</th>
-                            <th class="py-2 px-4 border-b border-gray-300 text-left">Status</th>
-                            <th class="py-2 px-4 border-b border-gray-300 text-left">Project</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(todo, index) in todos" :key="todo.id" >
-                            <td class="py-2 px-4 border-b border-gray-300">{{ index + 1 }}</td>
-                            <td class="py-2 px-4 border-b border-gray-300">{{ todo.title }}</td>
-                            <td class="py-2 px-4 border-b border-gray-300">{{ todo.status }}</td>
-                            <td class="py-2 px-4 border-b border-gray-300">
-                              {{ getProjectTitle(todo.project_id) }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </ul>
+                    <Table class="min-w-full">
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead class="py-2 px-4 text-left">#</TableHead>
+                          <TableHead class="py-2 px-4 text-left"
+                            >Title</TableHead
+                          >
+                          <TableHead class="py-2 px-4 text-left"
+                            >Status</TableHead
+                          >
+                          <TableHead class="py-2 px-4 text-left"
+                            >Project</TableHead
+                          >
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow v-for="(todo, index) in todos" :key="todo.id">
+                          <TableCell class="py-2 px-4">{{
+                            index + 1
+                          }}</TableCell>
+                          <TableCell class="py-2 px-4">{{
+                            todo.title
+                          }}</TableCell>
+                          <TableCell class="py-2 px-4">{{
+                            todo.status
+                          }}</TableCell>
+                          <TableCell class="py-2 px-4">
+                            {{ getProjectTitle(todo.project_id) }}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
                   </CardContent>
                   <CardFooter class="flex justify-end">
                     <Button
@@ -399,7 +409,6 @@ const toCreateTeam = () => {
 const toJoinTeam = () => {
   navigateTo("/join-team");
 };
-
 
 const fetchProjects = async () => {
   const { data, error } = await supabase.from("projects").select("*");

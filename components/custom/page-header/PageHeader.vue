@@ -2,10 +2,20 @@
   <div
     class="flex flex-row justify-between py-4 px-8 md:px-12 lg:px-16 border-b"
   >
-    <div class="flex items-center">
+    <div class="flex flex-row items-center">
+      <NuxtImg
+        src="/images/logo_light.png"
+        class="size-12 mr-2"
+        v-if="$colorMode.value === 'light'"
+      />
+      <NuxtImg
+        src="/images/logo_dark.png"
+        class="size-12 mr-2"
+        v-if="$colorMode.value === 'dark'"
+      />
       <NuxtLink to="/"
         ><p class="text-xl font-bold tracking-wider hover:opacity-80">
-          MeetLah
+          Meet<span class="text-indigo-600 dark:text-indigo-500">L</span>ah
         </p></NuxtLink
       >
     </div>
@@ -143,7 +153,10 @@ const displayName = ref(user.value.user_metadata.name);
 const email = ref(user.value.email);
 const profilePictureUrl = ref("");
 
-if (user.value.app_metadata.provider == "email" && !user.value.app_metadata.providers.includes('google')) {
+if (
+  user.value.app_metadata.provider == "email" &&
+  !user.value.app_metadata.providers.includes("google")
+) {
   const { data: profilePicData, error: profilePicError } = supabase.storage
     .from("profile-pictures")
     .getPublicUrl(`pics/default-${user.value.id}.png`);
