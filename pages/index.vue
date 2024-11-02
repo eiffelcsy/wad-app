@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageHeader class="dark:bg-zinc-950" />
-    <div class="bg-zinc-50 dark:bg-black">
+    <div class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20">
       <div class="container min-h-screen">
         <div class="w-full pt-8 md:pt-10 lg:pt-14">
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold">
@@ -70,14 +70,14 @@
                       class="w-full md:w-auto flex justify-start gap-4 md:gap-0"
                     >
                       <Button
-                        class="mt-2 md:mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
+                        class="mt-2 md:mr-2 bg-indigo-600 text-white dark:hover:bg-indigo-700"
                         @click="toCreate"
                       >
                         <CalendarIcon class="mr-2" />Create Event
                       </Button>
                       <Button
                         variant="outline"
-                        class="mt-2 md:ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                        class="mt-2 md:ml-2 border-indigo-300 dark:border-indigo-900 text-black dark:text-white"
                         @click="toJoin"
                       >
                         <PlusCircledIcon class="mr-2" />Join Event
@@ -85,7 +85,7 @@
                     </div>
                     <Button
                       variant="link"
-                      class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8 mt-4"
+                      class="text-black dark:text-white p-0 h-8 mt-4"
                       @click="navigateTo('/events')"
                     >
                       View all Events
@@ -142,7 +142,7 @@
                   <CardFooter class="flex justify-end">
                     <Button
                       variant="link"
-                      class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8 mt-2"
+                      class="text-black dark:text-white p-0 h-8 mt-2"
                       @click="navigateTo('/projects')"
                     >
                       View all Projects
@@ -165,14 +165,14 @@
                     class="w-full md:w-auto flex justify-start gap-4 md:gap-0"
                   >
                     <Button
-                      class="mt-2 md:mr-2 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black dark:hover:bg-zinc-400"
+                      class="mt-2 md:mr-2 bg-indigo-600 text-white hover:bg-indigo-700"
                       @click="toCreateTeam"
                     >
                       <PersonIcon class="mr-2" />Create Team
                     </Button>
                     <Button
                       variant="outline"
-                      class="mt-2 md:ml-2 border-zinc-300 dark:border-zinc-600 text-black dark:text-white"
+                      class="mt-2 md:ml-2 border-indigo-300 dark:border-indigo-900 text-black dark:text-white"
                       @click="toJoinTeam"
                     >
                       <PlusCircledIcon class="mr-2" />Join Team
@@ -219,7 +219,7 @@
         <!-- Dialog for updating display name -->
         <Dialog :open="showDialog">
           <DialogOverlay />
-          <DialogContent class="w-5/6 rounded-md">
+          <DialogContent class="w-5/6 rounded-md border-indigo-600">
             <DialogTitle>Update Display Name</DialogTitle>
             <DialogDescription>
               Please enter your display name to continue.
@@ -232,7 +232,7 @@
             <div class="flex justify-end">
               <Button
                 @click="saveDisplayName"
-                class="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white"
                 >Save</Button
               >
             </div>

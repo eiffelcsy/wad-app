@@ -1,7 +1,7 @@
 <template>
     <Dialog>
         <DialogTrigger as-child>
-            <Button variant="outline" v-if="!isMobile">
+            <Button variant="outline" v-if="!isMobile" class="border-indigo-300 dark:border-indigo-900">
                 Edit Event
             </Button>
             <Button variant="outline" size="icon" v-if="isMobile">

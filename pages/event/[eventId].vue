@@ -6,18 +6,39 @@
       v-else
       class="flex flex-row justify-between py-4 px-8 md:px-12 lg:px-16 bg-zinc-50 dark:bg-zinc-950 border-b"
     >
-      <div class="flex items-center">
-        <NuxtLink to="/" class=""
-          ><p class="text-xl font-bold tracking-wider">MeetLah</p></NuxtLink
+      <div class="flex flex-row items-center">
+        <NuxtImg
+          src="/images/logo_light.png"
+          class="logo-animation"
+          v-if="$colorMode.value === 'light'"
+        />
+        <NuxtImg
+          src="/images/logo_dark.png"
+          class="logo-animation"
+          v-if="$colorMode.value === 'dark'"
+        />
+        <h1
+          v-if="!isMobile"
+          class="text-xl font-bold tracking-wider title-fade-in-left"
         >
+          Meet<span class="text-indigo-600 dark:text-indigo-500">L</span>ah
+        </h1>
       </div>
-      <Button
-        @click="toLogin"
-        variant="outline"
-        class="lg:right-12 border-zinc-300 dark:border-zinc-600"
-      >
-        <EnterIcon class="w-4 h-4 mr-2" />Login
-      </Button>
+      <div class="flex flex-row items-center">
+        <Button
+          @click="toLogin"
+          variant="outline"
+          class="border-zinc-300 dark:border-zinc-600 login-button-animation mr-2"
+        >
+          <EnterIcon class="w-4 h-4 mr-2" />Login
+        </Button>
+        <Button
+          @click="toRegister"
+          class="w-28 button-fade-in-left bg-indigo-600 hover:bg-indigo-700 start-button-animation text-white"
+        >
+          Get Started
+        </Button>
+      </div>
     </div>
     <div class="min-h-screen bg-zinc-50 dark:bg-black">
       <div
@@ -215,8 +236,10 @@
               <Card class="lg:w-80 xl:w-96">
                 <CardHeader>
                   <CardTitle>Recommended Timeslots</CardTitle>
-                  <CardDescription
-                    > Below are timeslots with the highest <span class="font-bold text-green-400">availability</span> among everyone.
+                  <CardDescription>
+                    Below are timeslots with the highest
+                    <span class="font-bold text-green-400">availability</span>
+                    among everyone.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -353,14 +376,24 @@
             <Card class="lg:w-80 xl:w-96">
               <CardHeader>
                 <CardTitle>Recommended Timeslots</CardTitle>
-                <CardDescription>Below are the top 10 timeslots with the highest <span class="font-bold text-green-400">availability</span> among everyone.</CardDescription>
+                <CardDescription
+                  >Below are the top 10 timeslots with the highest
+                  <span class="font-bold text-green-400">availability</span>
+                  among everyone.</CardDescription
+                >
               </CardHeader>
               <CardContent>
                 <div class="w-full flex items-center justify-center">
                   <ol>
-                    <li v-for="({ count, timeslot }) in getSortedAvailability()" :key="timeslot" class="flex items-center space-x-2 mb-2">
+                    <li
+                      v-for="{ count, timeslot } in getSortedAvailability()"
+                      :key="timeslot"
+                      class="flex items-center space-x-2 mb-2"
+                    >
                       <!-- Date portion with box, slight curves, and padding -->
-                      <div class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm">
+                      <div
+                        class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
+                      >
                         {{ timeslot }}
                       </div>
                       <!-- Availability in green, following format "[count] people available" -->
@@ -377,25 +410,30 @@
                 <!-- Button to trigger overlay -->
                 <button
                   class="bg-blue-500 text-black bg-white rounded px-4 h-[60px]"
-                  @click= "toggleOverlay"
+                  @click="toggleOverlay"
                 >
                   Suggest Location
                 </button>
 
                 <!-- Overlay -->
-                <div v-if="showOverlay" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                  <div class="bg-white rounded-lg shadow-lg w-4/5 max-w-lg h-4/5 p-4 relative">
+                <div
+                  v-if="showOverlay"
+                  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+                >
+                  <div
+                    class="bg-white rounded-lg shadow-lg w-4/5 max-w-lg h-4/5 p-4 relative"
+                  >
                     <button
                       class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
                       @click="closeOverlay"
                     >
-                    &times;
+                      &times;
                     </button>
-                    <GoogleMaps/>
+                    <GoogleMaps />
                   </div>
                 </div>
+              </div>
             </div>
-          </div>
           </div>
           <!-- Existing Dialog and Toast Components -->
           <Dialog :open="showDialog">
@@ -971,7 +1009,6 @@ function getSortedAvailability() {
   return availabilityDict.slice(0, 10);
 }
 
-
 const isDragging = ref(false); // Track if dragging is active
 const selectionMode = ref(true); // Track if we're selecting or deselecting
 const startCell = ref(null); // Track the start cell for tap selection
@@ -1101,7 +1138,6 @@ function closeOverlay() {
   showOverlay.value = false;
   console.log("Overlay toggled to false"); // Debug message
 }
-
 </script>
 
 <style scoped>

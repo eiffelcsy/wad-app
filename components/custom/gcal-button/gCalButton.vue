@@ -1,11 +1,12 @@
 <template>
   <div>
     <Button
-      class="w-full transition-all duration-300 ease-in-out bg-green-600 hover:bg-red-600 text-white"
+      class="w-full transition-all duration-300 ease-in-out border-indigo-300 dark:border-indigo-900 hover:border-none hover:bg-red-600 text-white"
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
       @click="disconnectGoogleCalendar"
       v-if="gCalConnected"
+      variant="outline"
     >
       <template v-if="isHovered">
         <XCircle class="mr-2 size-4" /> Disconnect from Google Calendar
@@ -14,7 +15,7 @@
         <CircleCheckBig class="mr-2 size-4" /> Google Calendar is Connected
       </template>
     </Button>
-    <Button class="w-full" v-else @click="connectGoogleCalendar" variant="outline">
+    <Button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white" v-else @click="connectGoogleCalendar">
       <img
         src="/icons/google.svg"
         alt="gIcon"

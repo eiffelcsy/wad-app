@@ -2,7 +2,7 @@
   <div>
     <PageHeader />
     <div
-      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-zinc-50 dark:bg-black"
+      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20"
     >
       <div class="mx-auto w-full lg:w-1/2">
         <h1
@@ -89,7 +89,7 @@
               </CardContent>
             </Card>
           </div>
-          <Button @click="nextView" class="mt-6 md:mt-8 lg:mt-10 w-full"
+          <Button @click="nextView" class="mt-6 md:mt-8 lg:mt-10 w-full bg-indigo-600 hover:bg-indigo-700 text-white"
             >Next</Button
           >
         </div>
@@ -226,10 +226,10 @@
           <div
             class="w-full grid grid-cols-1 lg:grid-cols-2 mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-8"
           >
-            <Button @click="prevView" variant="outline" class="w-full"
+            <Button @click="prevView" variant="outline" class="w-full border-indigo-300 dark:border-indigo-900"
               >Back</Button
             >
-            <Button @click="nextView" class="w-full">Next</Button>
+            <Button @click="nextView" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white">Next</Button>
           </div>
         </div>
 
@@ -293,12 +293,12 @@
             <Button
               @click="prevView"
               variant="outline"
-              class="w-full"
+              class="w-full border-indigo-300 dark:border-indigo-900"
               >Back</Button
             >
             <Button
               @click="submitEvent"
-              class="w-full bg-green-600 text-white"
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
               >Create Event</Button
             >
           </div>

@@ -16,8 +16,7 @@
         </template>
       </Button>
   
-      <!-- Display Connect button if not connected -->
-      <Button class="w-full" v-else @click="connectMicrosoftCalendar" variant="outline">
+      <Button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white" v-else @click="connectMicrosoftCalendar" >
         <img
           src="/icons/microsoft.svg"
           alt="mIcon"

@@ -2,7 +2,7 @@
 <template>
   <div>
     <PageHeader />
-    <div class="bg-zinc-50 dark:bg-black">
+    <div class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20">
       <div class="container w-full pt-8 md:pt-10 lg:pt-14">
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Your Projects</h1>
       </div>
@@ -85,7 +85,7 @@
         <Button
           @click="navigateTo('/create-project')"
           v-else
-          class="text-zinc-100 dark:text-zinc-900"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white"
         >
           New Project<Plus class="size-4 ml-2" />
         </Button>

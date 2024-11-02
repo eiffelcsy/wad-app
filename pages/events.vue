@@ -2,7 +2,7 @@
 <template>
   <div>
     <PageHeader />
-    <div class="bg-zinc-50 dark:bg-black min-h-screen">
+    <div class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20 min-h-screen">
       <div class="container w-full pt-8 md:pt-10 lg:pt-14">
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">
           Your Events
@@ -92,7 +92,7 @@
         <Button
           @click="navigateTo('/create-event')"
           v-else
-          class="text-zinc-100 dark:text-zinc-900"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white"
         >
           New Event
           <Plus class="size-4 ml-2" />
@@ -128,7 +128,9 @@
                   </TableHeader>
                   <TableBody>
                     <TableRow v-if="allEvents.length == 0">
-                      <TableCell colspan="6" class="text-center">No Events Found.</TableCell>
+                      <TableCell colspan="6" class="text-center"
+                        >No Events Found.</TableCell
+                      >
                     </TableRow>
                     <TableRow v-for="event in allEvents" :key="event.id">
                       <TableCell>{{ event.title }}</TableCell>
@@ -142,8 +144,15 @@
                         {{ event.end_time }}</TableCell
                       >
                       <TableCell>{{ event.code }}</TableCell>
-                      <TableCell></TableCell>
-                      <!-- Placeholder for actions -->
+                      <TableCell>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          @click="navigateTo(`/event/${event.code}`)"
+                        >
+                          <ArrowUpRight />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -173,7 +182,9 @@
                   </TableHeader>
                   <TableBody>
                     <TableRow v-if="pastEvents.length == 0">
-                      <TableCell colspan="6" class="text-center">No Events Found.</TableCell>
+                      <TableCell colspan="6" class="text-center"
+                        >No Events Found.</TableCell
+                      >
                     </TableRow>
                     <TableRow v-for="event in pastEvents" :key="event.id">
                       <TableCell>{{ event.title }}</TableCell>
@@ -217,7 +228,9 @@
                   </TableHeader>
                   <TableBody>
                     <TableRow v-if="upcomingEvents.length == 0">
-                      <TableCell colspan="6" class="text-center">No Events Found.</TableCell>
+                      <TableCell colspan="6" class="text-center"
+                        >No Events Found.</TableCell
+                      >
                     </TableRow>
                     <TableRow v-for="event in upcomingEvents" :key="event.id">
                       <TableCell>{{ event.title }}</TableCell>
@@ -248,7 +261,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { PageHeader } from "@/components/custom/page-header";
-import { Ellipsis, Plus, Search } from "lucide-vue-next";
+import { ArrowUpRight, Ellipsis, Plus, Search } from "lucide-vue-next";
 import {
   Card,
   CardContent,
@@ -328,7 +341,7 @@ onMounted(() => {
 const currentDate = new Date();
 currentDate.setHours(0, 0, 0, 0);
 
-const searchQuery = ref(""); 
+const searchQuery = ref("");
 
 const sortedAndFilteredEvents = computed(() => {
   let filteredEvents = events.value;

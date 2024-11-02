@@ -2,7 +2,7 @@
   <div>
     <PageHeader />
     <div
-      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-zinc-50 dark:bg-black"
+      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20"
     >
       <div class="mx-auto w-full lg:w-1/2">
         <h1
@@ -76,7 +76,7 @@
         </Card>
         <Button
           @click="handleCreateProject"
-          class="mt-6 md:mt-8 lg:mt-10 w-full bg-green-600 text-white"
+          class="mt-6 md:mt-8 lg:mt-10 w-full bg-indigo-600 hover:bg-indigo-700 text-white"
           >Create Project</Button
         >
       </div>

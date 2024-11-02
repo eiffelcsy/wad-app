@@ -35,7 +35,7 @@
               </Button>
               <Button
                 @click="toRegister"
-                class="w-28 button-fade-in-left bg-indigo-600 hover:bg-indigo-700 start-button-animation dark:text-white"
+                class="w-28 button-fade-in-left bg-indigo-600 hover:bg-indigo-700 start-button-animation text-white"
               >
                 Get Started
               </Button>
