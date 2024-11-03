@@ -664,7 +664,7 @@
 
 <script setup>
 import { EnterIcon } from "@radix-icons/vue";
-import { useMediaQuery } from "@vueuse/core";
+import { useColorMode, useMediaQuery } from "@vueuse/core";
 import {
   Calendar,
   CalendarArrowUp,
@@ -952,7 +952,73 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
+<style>
+@keyframes moveInCircle {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes moveVertical {
+  0% {
+    transform: translateY(-50%);
+  }
+  50% {
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes moveHorizontal {
+  0% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+  50% {
+    transform: translateX(50%) translateY(10%);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+}
+
+@keyframes moveDiagonal {
+  0% {
+    transform: translate(-30%, -30%);
+  }
+  50% {
+    transform: translate(30%, 30%);
+  }
+  100% {
+    transform: translate(-30%, -30%);
+  }
+}
+
+@keyframes moveFigureEight {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20%, 20%) scale(0.9);
+  }
+  50% {
+    transform: translate(0, 40%) scale(1);
+  }
+  75% {
+    transform: translate(-20%, 20%) scale(0.9);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
 @keyframes fadeInTop {
   0% {
     opacity: 0;
@@ -1022,72 +1088,6 @@ onMounted(async () => {
   100% {
     opacity: 1;
     transform: scale(100%);
-  }
-}
-
-@keyframes moveInCircle {
-  0% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(180deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes moveVertical {
-  0% {
-    transform: translateY(-50%);
-  }
-  50% {
-    transform: translateY(50%);
-  }
-  100% {
-    transform: translateY(-50%);
-  }
-}
-
-@keyframes moveHorizontal {
-  0% {
-    transform: translateX(-50%) translateY(-10%);
-  }
-  50% {
-    transform: translateX(50%) translateY(10%);
-  }
-  100% {
-    transform: translateX(-50%) translateY(-10%);
-  }
-}
-
-@keyframes moveDiagonal {
-  0% {
-    transform: translate(-30%, -30%);
-  }
-  50% {
-    transform: translate(30%, 30%);
-  }
-  100% {
-    transform: translate(-30%, -30%);
-  }
-}
-
-@keyframes moveFigureEight {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  25% {
-    transform: translate(20%, 20%) scale(0.9);
-  }
-  50% {
-    transform: translate(0, 40%) scale(1);
-  }
-  75% {
-    transform: translate(-20%, 20%) scale(0.9);
-  }
-  100% {
-    transform: translate(0, 0) scale(1);
   }
 }
 
