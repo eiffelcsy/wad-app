@@ -226,7 +226,7 @@
           <div
             class="w-full grid grid-cols-1 lg:grid-cols-2 mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-8"
           >
-            <Button @click="prevView" variant="outline" class="w-full border-indigo-300 dark:border-indigo-900"
+            <Button @click="prevView" variant="outline" class="w-full"
               >Back</Button
             >
             <Button @click="nextView" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white">Next</Button>
@@ -293,7 +293,7 @@
             <Button
               @click="prevView"
               variant="outline"
-              class="w-full border-indigo-300 dark:border-indigo-900"
+              class="w-full"
               >Back</Button
             >
             <Button
@@ -320,14 +320,14 @@
             <div class="grid flex-1 gap-2">
               <Input readonly :default-value="shareableLink" />
             </div>
-            <Button type="submit" size="sm" class="px-3" @click="copyLink">
+            <Button type="submit" size="sm" class="px-3 bg-indigo-600 hover:bg-indigo-700 text-white" @click="copyLink">
               <span class="sr-only">Copy</span>
               <Copy class="w-4 h-4" />
             </Button>
           </div>
           <DialogFooter class="sm:justify-start">
             <DialogClose as-child>
-              <Button type="button" variant="secondary" @click="closeDialog">
+              <Button @click="closeDialog" class="bg-indigo-600 hover:bg-indigo-700 hover:text-white">
                 Go to Event
               </Button>
             </DialogClose>

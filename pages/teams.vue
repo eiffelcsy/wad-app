@@ -21,7 +21,7 @@
         </div>
         <Button
           @click="navigateTo('/create-team')"
-          class="text-zinc-100 dark:text-zinc-900"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white"
         >
           New Team
           <Plus class="size-4 ml-2" />

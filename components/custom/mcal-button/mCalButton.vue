@@ -2,7 +2,7 @@
     <div>
       <!-- Display button for Microsoft Calendar connection -->
       <Button
-        class="w-full transition-all duration-300 ease-in-out bg-green-600 hover:bg-red-600 text-white"
+        class="w-full transition-all duration-300 ease-in-out hover:bg-red-600 hover:text-white"
         @mouseenter="isHovered = true"
         @mouseleave="isHovered = false"
         @click="disconnectMicrosoftCalendar"

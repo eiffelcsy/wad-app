@@ -1,11 +1,11 @@
 <template>
     <Dialog>
         <DialogTrigger as-child>
-            <Button variant="outline" v-if="!isMobile" class="border-indigo-300 dark:border-indigo-900">
+            <Button variant="outline" v-if="!isMobile">
                 Edit Event
             </Button>
             <Button variant="outline" size="icon" v-if="isMobile">
-                <List class="size-5"></list>
+                <Pencil class="size-5"></Pencil>
             </Button>
         </DialogTrigger>
         <DialogContent class="dialog-content w-full max-w-[600px] overflow-hidden">
@@ -261,27 +261,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-
-// idk js import first
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router"; 
-import { navigateTo } from "nuxt/app";
 import { useMediaQuery } from "@vueuse/core";
-import debounce from "lodash.debounce";
 import { RangeCalendar } from "@/components/ui/range-calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { List, Trash2 } from "lucide-vue-next";
+import { Pencil } from "lucide-vue-next";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(customParseFormat);
-
-// toast alert
-import { useToast } from "@/components/ui/toast/use-toast";
-import { Toaster } from "@/components/ui/toast";
-
 
 // Setup reactive variables
 const supabase = useSupabaseClient();

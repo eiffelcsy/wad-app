@@ -99,13 +99,13 @@
                 <div v-show="expandedGroups[group.id]">
                   <div v-for="task in group.tasks" :key="task.id" class="relative h-12 border-b">
                     <div v-if="!task.isMilestone" class="absolute h-6 rounded-md" :class="{
-                      'bg-primary/20': !task.isComplete,
-                      'bg-primary': task.isComplete,
+                      'bg-indigo-600/20': !task.isComplete,
+                      'bg-indigo-600': task.isComplete,
                     }" :style="getTaskBarStyle(task)">
                       <TooltipProvider delayDuration="200">
                         <Tooltip>
                           <TooltipTrigger class="w-full h-full">
-                            <div class="h-full rounded-md bg-primary transition-all"
+                            <div class="h-full rounded-md bg-indigo-600 transition-all"
                               :style="{ width: `${task.progress}%` }"></div>
                           </TooltipTrigger>
                           <TooltipContent>

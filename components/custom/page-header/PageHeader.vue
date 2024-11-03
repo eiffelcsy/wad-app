@@ -13,7 +13,7 @@
         class="size-12 mr-2"
         v-if="$colorMode.value === 'dark'"
       />
-      <NuxtLink to="/"
+      <NuxtLink v-if="!isMobile" to="/"
         ><p class="text-xl font-bold tracking-wider hover:opacity-80">
           Meet<span class="text-indigo-600 dark:text-indigo-500">L</span>ah
         </p></NuxtLink
@@ -133,6 +133,7 @@
 </template>
 
 <script setup>
+import { useMediaQuery } from "@vueuse/core";
 import {
   UserRoundIcon,
   UsersRoundIcon,
@@ -152,6 +153,7 @@ const user = useSupabaseUser();
 const displayName = ref(user.value.user_metadata.name);
 const email = ref(user.value.email);
 const profilePictureUrl = ref("");
+const isMobile = useMediaQuery("(max-width: 600px)");
 
 if (
   user.value.app_metadata.provider == "email" &&

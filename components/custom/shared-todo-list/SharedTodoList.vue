@@ -8,7 +8,7 @@
         </p>
       </div>
       <div class="flex items-center">
-        <Button @click="isOpen = true"
+        <Button @click="isOpen = true" class="bg-indigo-600 hover:bg-indigo-700 text-white"
           >New Task<PlusIcon class="size-4 ml-2"
         /></Button>
       </div>
@@ -235,7 +235,7 @@ async function createNewTask() {
     title: newTaskTitle.value,
     project_id: props.projectId,
     assigned_to: selectedMember.value.id,
-    name: selectedMember.value.name, // Add the selected member as assignee
+    assignee_name: selectedMember.value.name, // Add the selected member as assignee
     status: "pending", // Default status for a new task
   });
 

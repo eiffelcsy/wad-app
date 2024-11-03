@@ -40,7 +40,7 @@
         </Button>
       </div>
     </div>
-    <div class="min-h-screen bg-zinc-50 dark:bg-black">
+    <div class="min-h-screen bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20">
       <div
         class="py-6 md:py-8 mx-auto container xl:w-[1200px] flex flex-row justify-between"
       >

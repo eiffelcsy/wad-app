@@ -1,7 +1,7 @@
 <template>
   <div>
     <Button
-      class="w-full transition-all duration-300 ease-in-out border-indigo-300 dark:border-indigo-900 hover:border-none hover:bg-red-600 text-white"
+      class="w-full transition-all duration-300 ease-in-out hover:border-none hover:bg-red-600 hover:text-white"
       @mouseenter="isHovered = true"
       @mouseleave="isHovered = false"
       @click="disconnectGoogleCalendar"

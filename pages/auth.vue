@@ -9,9 +9,12 @@
         <h1
           class="text-4xl md:text-5xl font-bold text-zinc-800 dark:text-zinc-100"
         >
-          {{
-            authType === "login" ? "Log in to MeetLah" : "Register an account"
-          }}
+          <template v-if="authType === 'login'">
+            Log in to Meet<span class="text-indigo-500">L</span>ah
+          </template>
+          <template v-if="authType === 'register'">
+            Register an account
+          </template>
         </h1>
 
         <!-- Google Sign-In button container -->
@@ -90,7 +93,7 @@
           <!-- Submit button with dynamic text based on auth type -->
           <Button
             type="submit"
-            class="w-full text-sm sm:text-base py-2 sm:py-3 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black mt-4"
+            class="w-full text-sm sm:text-base py-2 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white mt-4"
           >
             {{ authType === "login" ? "Sign In" : "Sign Up" }}
           </Button>

@@ -1,7 +1,9 @@
 <template>
   <div>
     <PageHeader class="dark:bg-zinc-950" />
-    <div class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20">
+    <div
+      class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20"
+    >
       <div class="container min-h-screen">
         <div class="w-full pt-8 md:pt-10 lg:pt-14">
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold">
@@ -50,13 +52,15 @@
                               }}
                             </TableCell>
                             <TableCell>
-                              <NuxtLink
-                                :to="{
-                                  name: 'event-eventId',
-                                  params: { eventId: event.code },
-                                }"
-                                ><ArrowUpRight class="size-4 hover:opacity-70"
-                              /></NuxtLink>
+                              <Button size="icon" variant="ghost" aschild
+                                ><NuxtLink
+                                  :to="{
+                                    name: 'event-eventId',
+                                    params: { eventId: event.code },
+                                  }"
+                                  ><ArrowUpRight
+                                    class="size-4 hover:opacity-70" /></NuxtLink
+                              ></Button>
                             </TableCell>
                           </TableRow>
                         </TableBody>
@@ -77,7 +81,7 @@
                       </Button>
                       <Button
                         variant="outline"
-                        class="mt-2 md:ml-2 border-indigo-300 dark:border-indigo-900 text-black dark:text-white"
+                        class="mt-2 md:ml-2"
                         @click="toJoin"
                       >
                         <PlusCircledIcon class="mr-2" />Join Event
@@ -109,7 +113,6 @@
                     <Table class="min-w-full">
                       <TableHeader>
                         <TableRow>
-                          <TableHead class="py-2 px-4 text-left">#</TableHead>
                           <TableHead class="py-2 px-4 text-left"
                             >Title</TableHead
                           >
@@ -124,16 +127,20 @@
                       <TableBody>
                         <TableRow v-for="(todo, index) in todos" :key="todo.id">
                           <TableCell class="py-2 px-4">{{
-                            index + 1
-                          }}</TableCell>
-                          <TableCell class="py-2 px-4">{{
                             todo.title
                           }}</TableCell>
                           <TableCell class="py-2 px-4">{{
                             todo.status
                           }}</TableCell>
                           <TableCell class="py-2 px-4">
-                            {{ getProjectTitle(todo.project_id) }}
+                            <NuxtLink
+                              :to="{
+                                name: 'project-projectId',
+                                params: { projectId: todo.project_id },
+                              }"
+                              class="relative hover:before:w-full before:absolute before:left-0 before:-bottom-0.5 before:h-[1px] before:bg-primary"
+                              >{{ getProjectTitle(todo.project_id) }}</NuxtLink
+                            >
                           </TableCell>
                         </TableRow>
                       </TableBody>
@@ -172,7 +179,7 @@
                     </Button>
                     <Button
                       variant="outline"
-                      class="mt-2 md:ml-2 border-indigo-300 dark:border-indigo-900 text-black dark:text-white"
+                      class="mt-2 md:ml-2"
                       @click="toJoinTeam"
                     >
                       <PlusCircledIcon class="mr-2" />Join Team

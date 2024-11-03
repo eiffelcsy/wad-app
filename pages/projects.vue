@@ -2,9 +2,13 @@
 <template>
   <div>
     <PageHeader />
-    <div class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20">
+    <div
+      class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20"
+    >
       <div class="container w-full pt-8 md:pt-10 lg:pt-14">
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Your Projects</h1>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">
+          Your Projects
+        </h1>
       </div>
       <div class="container w-full flex flex-row justify-between pt-8">
         <div class="relative w-full max-h-10 pr-2 items-center">
@@ -97,25 +101,29 @@
           <Card
             v-for="(project, index) in filteredProjects"
             :key="index"
-            class="mt-6 hover:border-zinc-700 relative"
+            class="mt-6 hover:border-indigo-600 relative"
           >
+            <div class="absolute top-2 right-2 flex gap-2">
+              <!-- Edit Icon Button -->
+              <Button
+                @click="startEditing(project.id, project.title)"
+                class="text-blue-500 hover:text-blue-700"
+                variant="ghost"
+                size="icon"
+              >
+                <Edit class="size-5" />
+              </Button>
 
-          <!-- Edit Icon Button -->
-          <button
-            @click="startEditing(project.id, project.title)"
-            class="absolute top-2 right-10 text-blue-500 hover:text-blue-700"
-          >
-            <Edit class="size-4" />
-          </button>
-
-          <!-- Delete Icon Button -->
-          <button
-            @click="deleteProject(project.id)"
-            class="absolute top-2 right-2 text-red-500 hover:text-red-700"
-          >
-            <Trash class="size-4" />
-          </button>
-
+              <!-- Delete Icon Button -->
+              <Button
+                @click="deleteProject(project.id)"
+                class="text-red-500 hover:text-red-700"
+                variant="ghost"
+                size="icon"
+              >
+                <Trash class="size-5" />
+              </Button>
+            </div>
             <NuxtLink
               :to="{
                 name: 'project-projectId',
@@ -171,7 +179,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { Trash, Edit  } from "lucide-vue-next";
+import { Trash, Edit } from "lucide-vue-next";
 import { PageHeader } from "@/components/custom/page-header";
 import { Ellipsis, Plus, Search } from "lucide-vue-next";
 import { Badge } from "@/components/ui/badge";
@@ -211,14 +219,13 @@ const editingProjectId = ref(null); // Holds the ID of the project currently bei
 const editTitle = ref(""); // Holds the edited title for the project
 const isEditing = ref({});
 
-
 const projects = ref([]);
 // fetch projects that a user is in
 const fetchProjects = async () => {
   const { data: associatedProjects, error: associatedError } = await supabase
     .from("project_members")
     .select("project_id")
-    .eq("user_id", user.value.id); 
+    .eq("user_id", user.value.id);
 
   if (associatedError) {
     console.error("Error fetching projects: ", associatedError);
@@ -226,7 +233,7 @@ const fetchProjects = async () => {
   }
 
   // console.log("associated projects: " + associatedProjects)
-// fetch details about a project that the user is in
+  // fetch details about a project that the user is in
   const projectIds = associatedProjects?.map((p) => p.project_id);
   const { data: projectDetails, error: projectDetailsError } = await supabase
     .from("projects")
@@ -238,8 +245,7 @@ const fetchProjects = async () => {
     return;
   }
 
-
-// get the teams associated with each project the user is part of
+  // get the teams associated with each project the user is part of
   const teamIds = projectDetails.map((project) => project.team_id);
   const { data: teamDetails, error: teamError } = await supabase
     .from("teams")
@@ -260,7 +266,7 @@ const fetchProjects = async () => {
   });
 
   projects.value = projectsWithTeamNames;
-  sortProjects(); 
+  sortProjects();
 };
 
 // toggle edit
@@ -268,7 +274,6 @@ const startEditing = (projectId, currentTitle) => {
   editingProjectId.value = projectId;
   editTitle.value = currentTitle; // Initialize the input with the current title
 };
-
 
 // Cancel edit mode without saving
 const cancelEditMode = (projectId) => {
@@ -303,12 +308,12 @@ const saveProjectTitle = async (projectId) => {
   }
 };
 
-
-
 // delete projects
 const deleteProject = async (projectId) => {
-  const confirmed = window.confirm("Are you sure you want to delete this project? This action cannot be undone.");
-  
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this project? This action cannot be undone."
+  );
+
   if (!confirmed) {
     return; // If user cancels, exit the function
   }
@@ -320,7 +325,10 @@ const deleteProject = async (projectId) => {
       .eq("project_id", projectId);
 
     if (deleteMembersError) {
-      console.error("Error deleting associated project members:", deleteMembersError);
+      console.error(
+        "Error deleting associated project members:",
+        deleteMembersError
+      );
       return;
     }
 
@@ -336,14 +344,15 @@ const deleteProject = async (projectId) => {
     }
 
     // Step 3: Update the local `projects` array to remove the deleted project
-    projects.value = projects.value.filter((project) => project.id !== projectId);
+    projects.value = projects.value.filter(
+      (project) => project.id !== projectId
+    );
 
     console.log("Project and associated members deleted successfully.");
   } catch (err) {
     console.error("Unexpected error deleting project:", err);
   }
 };
-
 
 const closeDrawer = () => {
   isOpen.value = false;
@@ -374,7 +383,6 @@ const filteredProjects = computed(() => {
     project.title.toLowerCase().includes(query)
   );
 });
-
 </script>
 
 <style></style>
