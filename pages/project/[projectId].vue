@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageHeader />
-    <div class="min-h-screen bg-zinc-50 dark:bg-black">
+    <div class="min-h-screen bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20">
       <div class="py-6 md:py-8 mx-auto container xl:w-[1200px]">
         <h1
           class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"

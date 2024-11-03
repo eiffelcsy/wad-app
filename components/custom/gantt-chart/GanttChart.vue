@@ -5,7 +5,9 @@
       <!-- Wrapper with custom scrollbar class -->
       <div class="flex w-full">
         <!-- Fixed left column -->
-        <div class="sticky left-0 z-10 md:w-80 lg:w-96 bg-background border-r shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)]">
+        <div
+          class="sticky left-0 z-10 md:w-80 lg:w-96 bg-background border-r shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)]"
+        >
           <!-- Fixed header -->
           <div class="flex h-14 border-b bg-background">
             <div class="flex-1 grid md:grid-cols-[1fr,120px] gap-4 p-3">
@@ -18,14 +20,22 @@
           <div>
             <div v-for="group in taskGroups" :key="group.id">
               <!-- Group Header -->
-              <div class="h-12 flex bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer border-b"
-                @click="toggleGroup(group.id)">
+              <div
+                class="h-12 flex bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer border-b"
+                @click="toggleGroup(group.id)"
+              >
                 <div class="flex-1 grid gap-4 p-3">
                   <div class="flex items-center space-x-2">
-                    <ChevronDown :class="{
-                      'transform rotate-[-90deg]': !expandedGroups[group.id],
-                    }" class="h-4 w-4 transition-transform" />
-                    <span class="font-medium">{{ group.title }}</span>
+                    <ChevronDown
+                      :class="{
+                        'transform rotate-[-90deg]': !expandedGroups[group.id],
+                      }"
+                      class="h-4 w-4 transition-transform"
+                    />
+                    <span
+                      class="font-medium max-w-32 text-nowrap overflow-hidden"
+                      >{{ group.title }}</span
+                    >
                     <Badge variant="secondary">{{ group.progress }}%</Badge>
                   </div>
                 </div>
@@ -33,12 +43,21 @@
 
               <!-- Tasks within group -->
               <div v-show="expandedGroups[group.id]">
-                <div v-for="task in group.tasks" :key="task.id"
-                  class="h-12 border-b hover:bg-muted/50 transition-colors">
-                  <div class="flex-1 grid md:grid-cols-[1fr,120px] gap-4 p-3 pl-9">
+                <div
+                  v-for="task in group.tasks"
+                  :key="task.id"
+                  class="h-12 border-b hover:bg-muted/50 transition-colors"
+                >
+                  <div
+                    class="flex-1 grid md:grid-cols-[1fr,120px] gap-4 p-3 pl-9"
+                  >
                     <div class="flex items-center space-x-2">
                       <span>{{ task.title }}</span>
-                      <Badge v-if="task.isMilestone && !isMobile" variant="outline" class="hidden lg:block">
+                      <Badge
+                        v-if="task.isMilestone && !isMobile"
+                        variant="outline"
+                        class="hidden lg:block"
+                      >
                         Milestone
                       </Badge>
                     </div>
@@ -62,21 +81,32 @@
         <div class="overflow-x-auto w-fit">
           <div class="w-fit flex-1">
             <!-- Timeline header -->
-            <div class="w-fit flex sticky top-0 bg-background border-b h-14" :style="{ width: timelineWidth }">
-              <div v-for="date in timelineDates" :key="date"
-                class="flex-none w-20 p-3 text-center border-r text-sm text-muted-foreground">
+            <div
+              class="w-fit flex sticky top-0 bg-background border-b h-14"
+              :style="{ width: timelineWidth }"
+            >
+              <div
+                v-for="date in timelineDates"
+                :key="date"
+                class="flex-none w-20 p-3 text-center border-r text-sm text-muted-foreground"
+              >
                 {{ formatDate(date) }}
               </div>
             </div>
 
             <!-- Timeline content -->
             <div class="relative border-r" :style="{ width: timelineWidth }">
-              <div v-if="isDatelineVisible" class="absolute top-0 bottom-0 w-px bg-red-500 z-20 dateline"
-                :style="datelineStyle">
+              <div
+                v-if="isDatelineVisible"
+                class="absolute top-0 bottom-0 w-px bg-red-500 z-20 dateline"
+                :style="datelineStyle"
+              >
                 <!-- Date indicator tooltip -->
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger class="absolute w-2 h-2 rounded-r-full bg-red-500" />
+                    <TooltipTrigger
+                      class="absolute w-2 h-2 rounded-r-full bg-red-500"
+                    />
                     <TooltipContent>
                       <p class="text-sm font-medium">Current Date</p>
                       <p class="text-xs text-muted-foreground">
@@ -91,22 +121,58 @@
                 <!-- Group progress bar -->
                 <div class="h-12 border-b bg-muted/30 px-4">
                   <div class="relative h-full">
-                    <Progress class="absolute h-2 top-1/2 -translate-y-1/2" v-model="group.progress"></Progress>
+                    <Progress
+                      class="absolute h-2 top-1/2 -translate-y-1/2"
+                      v-model="group.progress"
+                    ></Progress>
                   </div>
                 </div>
 
                 <!-- Group tasks -->
                 <div v-show="expandedGroups[group.id]">
-                  <div v-for="task in group.tasks" :key="task.id" class="relative h-12 border-b">
-                    <div v-if="!task.isMilestone" class="absolute h-6 rounded-md" :class="{
-                      'bg-indigo-600/20': !task.isComplete,
-                      'bg-indigo-600': task.isComplete,
-                    }" :style="getTaskBarStyle(task)">
+                  <div
+                    v-for="task in group.tasks"
+                    :key="task.id"
+                    class="relative h-12 border-b"
+                  >
+                    <div
+                      v-if="!task.isMilestone"
+                      class="absolute h-6 rounded-md"
+                      :class="{
+                        'bg-indigo-600/20': !task.isComplete,
+                        'bg-indigo-600': task.isComplete,
+                      }"
+                      :style="getTaskBarStyle(task)"
+                    >
                       <TooltipProvider delayDuration="200">
                         <Tooltip>
                           <TooltipTrigger class="w-full h-full">
-                            <div class="h-full rounded-md bg-indigo-600 transition-all"
-                              :style="{ width: `${task.progress}%` }"></div>
+                            <Popover>
+                              <PopoverTrigger class="w-full h-full">
+                                <div
+                                  class="h-full rounded-md bg-indigo-600 transition-all"
+                                  :style="{ width: `${task.progress}%` }"
+                                ></div>
+                              </PopoverTrigger>
+                              <PopoverContent>
+                                <div>
+                                  <NumberField id="progress" v-model="task.progress">
+                                    <Label for="progress">Progress</Label>
+                                    <NumberFieldContent>
+                                      <NumberFieldDecrement />
+                                      <NumberFieldInput />
+                                      <NumberFieldIncrement />
+                                    </NumberFieldContent>
+                                  </NumberField>
+                                  <Button
+                                    @click="updateTaskProgress(task.id, task.progress)"
+                                    class="text-white bg-indigo-600 hover:bg-indigo-700 mt-4 rounded w-full"
+                                  >
+                                    Save
+                                  </Button>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
                           </TooltipTrigger>
                           <TooltipContent>
                             <div class="space-y-1">
@@ -126,12 +192,16 @@
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                    <div v-else
+                    <div
+                      v-else
                       class="absolute -translate-y-1.5 rotate-45 transition-transform duration-200 ease-in-out hover:rotate-0 w-3 h-3 bg-amber-300"
-                      :style="getMilestoneStyle(task)">
+                      :style="getMilestoneStyle(task)"
+                    >
                       <TooltipProvider delayDuration="200">
                         <Tooltip>
-                          <TooltipTrigger class="w-full h-full -translate-y-1.5" />
+                          <TooltipTrigger
+                            class="w-full h-full -translate-y-1.5"
+                          />
                           <TooltipContent>
                             <div class="space-y-1">
                               <p class="font-medium">{{ task.title }}</p>
@@ -171,6 +241,18 @@ import {
 } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { useMediaQuery } from "@vueuse/core/index.cjs";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "@/components/ui/number-field";
 
 const props = defineProps({
   projectId: {
@@ -187,10 +269,26 @@ const taskGroups = ref([]);
 const expandedGroups = ref({});
 const timelineStartDate = ref(new Date());
 const timelineEndDate = ref(new Date());
+const channels = ref(null);
 
 // Function to toggle group expansion
 const toggleGroup = (groupId) => {
   expandedGroups.value[groupId] = !expandedGroups.value[groupId];
+};
+
+const setupRealTimeSubscription = () => {
+  channels.value = supabase.channel('custom-all-channel')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'todos' },
+      async (payload) => {
+        console.log('Change received!', payload);
+        
+        // Re-fetch the data to update the Gantt chart upon change
+        await fetchData();
+      }
+    )
+    .subscribe();
 };
 
 // Fetch data when the component is mounted
@@ -203,6 +301,8 @@ onMounted(async () => {
     return acc;
   }, {});
 
+  setupRealTimeSubscription();
+
   // Update current date every hour
   const timer = setInterval(() => {
     currentDate.value = new Date();
@@ -210,6 +310,9 @@ onMounted(async () => {
 
   onUnmounted(() => {
     clearInterval(timer);
+    if (channels.value) {
+      channels.value.unsubscribe();
+    }
   });
 });
 
@@ -290,9 +393,14 @@ async function fetchData() {
   }
 
   if (allEndDates.length > 0) {
-    timelineEndDate.value = new Date(new Date(
-      Math.max(...allEndDates.map((date) => date.getTime()))
-    ).setHours(0, 0, 0, 0));
+    timelineEndDate.value = new Date(
+      new Date(Math.max(...allEndDates.map((date) => date.getTime()))).setHours(
+        0,
+        0,
+        0,
+        0
+      )
+    );
     timelineEndDate.value.setDate(timelineEndDate.value.getDate() + 1);
   } else {
     timelineEndDate.value = new Date();
@@ -354,6 +462,7 @@ const datelineStyle = computed(() => {
   };
 });
 
+
 const getTaskBarStyle = (task) => {
   const startDiff = Math.floor(
     (task.startDate - timelineStartDate.value) / (1000 * 60 * 60 * 24)
@@ -380,7 +489,7 @@ const getMilestoneStyle = (task) => {
   );
 
   return {
-    left: `${(startDiff * DAY_WIDTH + DAY_WIDTH / 2) - 0.375}rem`,
+    left: `${startDiff * DAY_WIDTH + DAY_WIDTH / 2 - 0.375}rem`,
     top: "50%",
   };
 };
@@ -392,6 +501,25 @@ const getInitials = (name) => {
     .join("")
     .toUpperCase();
 };
+
+async function updateTaskProgress(taskId, newProgress) {
+  try {
+    const { data, error } = await supabase
+      .from('todos')
+      .update({ progress: newProgress })
+      .eq('id', taskId)
+      .select();
+    
+    if (error) {
+      console.error('Error updating progress:', error);
+    } else {
+      console.log('Progress updated successfully:', data, newProgress);
+    }
+  } catch (error) {
+    console.error('Unexpected error:', error);
+  }
+}
+
 </script>
 
 <style scoped>
