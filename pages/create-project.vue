@@ -44,14 +44,8 @@
                 placeholder="Enter Description"
                 v-model="description"
               />
-              <div
-                v-if="errors.description"
-                class="error absolute text-xs mt-1"
-              >
-                {{ errors.description }}
-              </div>
             </div>
-            <div class="pt-6 lg:pt-8">
+            <div class="pt-6 pb-4 lg:pt-8">
               <Select id="team" v-model="selectedTeam">
                 <SelectTrigger>
                   <SelectValue
@@ -71,6 +65,12 @@
                   </SelectGroup>
                 </SelectContent>
               </Select>
+              <div
+                v-if="errors.team"
+                class="error absolute text-xs mt-1"
+              >
+                {{ errors.team }}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -94,7 +94,7 @@ import { PageFooter } from "@/components/custom/page-footer";
 
 interface Errors {
   title?: string;
-  description?: string;
+  team?: string; 
 }
 
 const title = ref<string>(""); // Title is a string
@@ -131,7 +131,7 @@ const ValidateProject = ():Boolean => {
   }
 
   if (!selectedTeam.value) {
-    errors.value.title = "You must select a team";
+    errors.value.team = "You must select a team";
     isValid = false;
   }
 

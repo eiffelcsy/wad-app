@@ -8,7 +8,9 @@
         </p>
       </div>
       <div class="flex items-center">
-        <Button @click="isOpen = true" class="bg-indigo-600 hover:bg-indigo-700 text-white"
+        <Button
+          @click="isOpen = true"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white"
           >New Task<PlusIcon class="size-4 ml-2"
         /></Button>
       </div>
@@ -24,7 +26,7 @@
         <DialogHeader>
           <DialogTitle>Create New Task</DialogTitle>
         </DialogHeader>
-        <div class="grid gap-4 p-4">
+        <div class="grid gap-6 p-4">
           <div class="grid gap-2">
             <Label html-for="new-task-title">Task Title</Label>
             <Input
@@ -33,12 +35,32 @@
               placeholder="Enter task title"
             />
           </div>
-          <div class="grid gap-2">
-            <Label html-for="assignee">Assign to</Label>
-            <Select v-model="selectedMember">
+          <RadioGroup default-value="task" v-model="taskType">
+            <div class="flex items-center space-x-2">
+              <RadioGroupItem id="task" value="task" />
+              <Label for="task">Task</Label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <RadioGroupItem id="milestone" value="milestone" />
+              <Label for="milestone">Milestone</Label>
+            </div>
+          </RadioGroup>
+          <div v-if="taskType === 'task'">
+            <Label for="dateRange">Task Date Range</Label>
+            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">*Optional</p>
+            <RangeCalendar v-model="dateValue" :weekday-format="'short'" class="rounded-md grid items-center justify-center border w-full mx-auto" />
+          </div>
+          <div v-if="taskType === 'milestone'">
+            <Label for="dateRange">Milestone Due Date</Label>
+            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">*Optional</p>
+            <Calendar v-model="dateValue.start" :weekday-format="'short'" class="rounded-md grid items-center justify-center border w-full mx-auto" />
+          </div>
+          <div>
+            <Label for="taskGroup">Task Group</Label>
+            <Select v-model="selectedTaskGroup">
               <SelectTrigger>
-                <span v-if="selectedMember.name">
-                  {{ selectedMember.name }}
+                <span v-if="selectedTaskGroup">
+                  {{ selectedTaskGroup }}
                 </span>
                 <span v-else class="text-zinc-500 dark:text-zinc-400">
                   Select a member
@@ -46,7 +68,6 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Members</SelectLabel>
                   <SelectItem
                     v-for="member in members"
                     :key="member.name"
@@ -58,7 +79,31 @@
               </SelectContent>
             </Select>
           </div>
-          <Button @click="createNewTask"> Save Task </Button>
+          <div class="grid gap-2">
+            <Label for="assignee">Assign to</Label>
+            <Select v-model="selectedMember">
+              <SelectTrigger>
+                <span v-if="selectedMember.name">
+                  {{ selectedMember.name }}
+                </span>
+                <span v-else class="text-zinc-500 dark:text-zinc-400">
+                  Select a member
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="member in members"
+                    :key="member.name"
+                    :value="{ name: member.name, id: member.user_id }"
+                  >
+                    {{ member.name }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button @click="createNewTask" class="bg-indigo-600 hover:bg-indigo-700 text-white"> Save Task </Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -72,15 +117,35 @@
         <DrawerHeader class="pb-0">
           <DrawerTitle>Create New Task</DrawerTitle>
         </DrawerHeader>
-        <div class="grid gap-4 p-4">
+        <div class="grid gap-6 p-8 pb-12">
           <div class="grid gap-2">
-            <input autofocus class="hidden"/>
+            <input autofocus class="hidden" />
             <Label html-for="new-task-title">Task Title</Label>
             <Input
               id="new-task-title"
               v-model="newTaskTitle"
               placeholder="Enter task title"
             />
+          </div>
+          <RadioGroup default-value="task" v-model="taskType">
+            <div class="flex items-center space-x-5">
+              <RadioGroupItem id="task" value="task" />
+              <Label for="task">Task</Label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <RadioGroupItem id="milestone" value="milestone" />
+              <Label for="milestone">Milestone</Label>
+            </div>
+          </RadioGroup>
+          <div v-if="taskType === 'task'">
+            <Label for="dateRange">Task Date Range</Label>
+            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">*Optional</p>
+            <RangeCalendar v-model="dateValue" :weekday-format="'short'" class="rounded-md grid items-center justify-center border w-full mx-auto" />
+          </div>
+          <div v-if="taskType === 'milestone'">
+            <Label for="dateRange">Milestone Due Date</Label>
+            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">*Optional</p>
+            <Calendar v-model="dateValue.start" :weekday-format="'short'" class="rounded-md grid items-center justify-center border w-full mx-auto" />
           </div>
           <div class="grid gap-2">
             <Label html-for="assignee">Assign to</Label>
@@ -107,7 +172,7 @@
               </SelectContent>
             </Select>
           </div>
-          <Button @click="createNewTask"> Save Task </Button>
+          <Button @click="createNewTask" class="bg-indigo-600 hover:bg-indigo-700 text-white"> Save Task </Button>
         </div>
       </DrawerContent>
     </Drawer>
@@ -115,7 +180,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import type { DateRange } from "radix-vue";
+import { type Ref, ref, onMounted, onBeforeUnmount } from "vue";
 import { columns } from "@/components/custom/todos/columns.ts";
 import type { Todo } from "@components/custom/todos/columns.ts";
 import { DataTable } from "@/components/custom/todos/";
@@ -147,6 +213,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RangeCalendar } from "@/components/ui/range-calendar";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import { Calendar } from '@/components/ui/calendar'
+
 
 const supabase = useSupabaseClient();
 const data = ref<Todo[]>([]);
@@ -154,7 +225,16 @@ const isOpen = ref(false);
 const isDesktop = useMediaQuery("(min-width: 768px)");
 const newTaskTitle = ref("");
 const selectedMember = ref({ name: "", id: "" });
+const selectedTaskGroup = ref("");
 const members = ref([]);
+const taskType = ref("task");
+const start = today(getLocalTimeZone());
+const end = start.add({ days: 7 });
+
+const dateValue = ref({
+  start,
+  end,
+}) as Ref<DateRange>;
 
 const props = defineProps({
   projectId: {
@@ -189,6 +269,19 @@ async function getProjectMembers() {
     return [];
   }
   members.value = projectMembers || [];
+}
+
+async function getProjectTaskGroups() {
+  const { data: projectTaskGroups, error: projectTaskGroupsError } = await supabase
+    .from("todos")
+    .select("task_group")
+    .eq("project_id", props.projectId);
+
+  if (projectTaskGroupsError) {
+    console.error("Error fetching task groups:", projectTaskGroupsError);
+    return [];
+  }
+  members.value = projectTaskGroups || [];
 }
 
 const handleRealTimeChange = (payload) => {
@@ -254,6 +347,9 @@ onMounted(async () => {
 
   // Fetch project members
   await getProjectMembers();
+  
+  // Fetch task groups
+  await getProjectTaskGroups();
 
   // Set up real-time subscription to the todos table
   const subscription = supabase

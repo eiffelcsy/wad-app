@@ -185,7 +185,7 @@
                   class="w-full md:w-3/4 lg:w-96 h-20 md:h-24 lg:h-64 lg:hover:-translate-y-10 transition duration-300 ease-in-out"
                 >
                   <div
-                    class="relative w-full md:w-3/4 lg:w-96 h-20 md:h-24 lg:h-64 py-4 px-6 lg:py-8 lg:px-10 border border-indigo-100 dark:border-indigo-900 rounded-xl bg-white dark:bg-zinc-950 fade-in-bottom flex flex-col justify-between"
+                    class="relative w-full md:w-3/4 lg:w-96 h-20 md:h-24 lg:h-64 py-4 px-6 lg:py-8 lg:px-10 border border-indigo-100 dark:border-indigo-900 rounded-xl bg-white/60 dark:bg-zinc-950/60 fade-in-bottom flex flex-col justify-between"
                   >
                     <div
                       class="size-10 bg-indigo-100 dark:bg-indigo-700 rounded-lg items-center justify-center hidden lg:flex"
@@ -438,7 +438,7 @@
           <!-- Description Section -->
           <section
             id="description"
-            class="min-h-screen px-4 py-20 overflow-hidden"
+            class="min-h-screen px-4 py-20 overflow-hidden bg-white dark:bg-black"
             data-scroll-section
           >
             <div
@@ -616,7 +616,7 @@
           </section>
 
           <!-- CTA Section -->
-          <section class="relative px-4 my-20" data-scroll-section>
+          <section class="relative px-4 py-20 bg-white dark:bg-black" data-scroll-section>
             <div
               class="relative w-[90%] h-[50vh] bg-black border rounded-lg overflow-hidden flex items-center justify-start mx-auto px-8 lg:px-24 opacity-0"
               data-scroll
@@ -654,7 +654,7 @@
               ></div>
             </div>
           </section>
-          <PageFooter data-scroll-section />
+          <PageFooter data-scroll-section class="bg-white dark:bg-zinc-950" />
           <Toaster />
         </main>
       </div>
