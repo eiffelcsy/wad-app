@@ -68,14 +68,17 @@
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem
-                    v-for="member in members"
-                    :key="member.name"
-                    :value="{ name: member.name, id: member.user_id }"
-                  >
-                    {{ member.name }}
+                  <span v-for="group in taskGroups">
+                    <SelectItem
+                    v-if="group.task_group"
+                    :key="group.task_group"
+                    :value="group.task_group"
+                    >
+                    {{ group.task_group }}
                   </SelectItem>
+                  </span>
                 </SelectGroup>
+                <Input/>
               </SelectContent>
             </Select>
           </div>
@@ -227,6 +230,7 @@ const newTaskTitle = ref("");
 const selectedMember = ref({ name: "", id: "" });
 const selectedTaskGroup = ref("");
 const members = ref([]);
+const taskGroups = ref([]);
 const taskType = ref("task");
 const start = today(getLocalTimeZone());
 const end = start.add({ days: 7 });
@@ -281,7 +285,7 @@ async function getProjectTaskGroups() {
     console.error("Error fetching task groups:", projectTaskGroupsError);
     return [];
   }
-  members.value = projectTaskGroups || [];
+  taskGroups.value = projectTaskGroups || [];
 }
 
 const handleRealTimeChange = (payload) => {
