@@ -20,25 +20,7 @@
       >
     </div>
     <div class="flex gap-1">
-      <div class="relative block">
-        <Button variant="ghost" size="icon" class="hover:bg-transparent">
-          <Avatar class="w-8 h-8 border bg-zinc-50 dark:bg-zinc-900">
-            <BellIcon
-              size="20px"
-              strokeWidth="{1}"
-              class="opacity-70 hover:opacity-100"
-            />
-          </Avatar>
-        </Button>
-        <span class="absolute right-0.5 top-0.5 flex h-2.5 w-2.5">
-          <span
-            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"
-          ></span>
-          <span
-            class="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-500"
-          ></span>
-        </span>
-      </div>
+      <Notifications />
       <Sheet>
         <SheetTrigger as-child>
           <Button
@@ -135,7 +117,6 @@
 <script setup>
 import { useMediaQuery } from "@vueuse/core";
 import {
-  UserRoundIcon,
   UsersRoundIcon,
   CalendarDaysIcon,
   BoxesIcon,
@@ -143,9 +124,9 @@ import {
   HouseIcon,
   CalendarPlusIcon,
   PackagePlusIcon,
-  BellIcon,
   UserRoundPlusIcon,
 } from "lucide-vue-next";
+import { Notifications } from "@/components/custom/notifications";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
