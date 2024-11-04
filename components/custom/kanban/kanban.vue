@@ -29,7 +29,7 @@
             v-model="pendingTasks"
             item-key="id"
             @end="onDragEnd"
-            class="w-auto min-h-40 md:min-h-96 max-w-md dark:bg-zinc-950 rounded-lg p-4"
+            class="w-auto min-h-40 md:min-h-96 max-w-md bg-white/50 dark:bg-zinc-900/50 rounded-lg p-4"
             :animation="200"
             ghost-class="moving-card"
             filter=".action-button"
@@ -66,7 +66,7 @@
             v-model="doingTasks"
             item-key="id"
             @end="onDragEnd"
-            class="w-auto min-h-40 md:min-h-96 max-w-md dark:bg-zinc-950 rounded-lg p-4"
+            class="w-auto min-h-40 md:min-h-96 max-w-md bg-white/50 dark:bg-zinc-900/50 rounded-lg p-4"
             :animation="200"
             ghost-class="moving-card"
             filter=".action-button"
@@ -103,7 +103,7 @@
             v-model="doneTasks"
             item-key="id"
             @end="onDragEnd"
-            class="w-auto min-h-40 md:min-h-96 max-w-md dark:bg-zinc-950 rounded-lg p-4"
+            class="w-auto min-h-40 md:min-h-96 max-w-md bg-white/50 dark:bg-zinc-900/50 rounded-lg p-4"
             ghost-class="moving-card"
             :animation="200"
             :empty-insert-threshold="100"
@@ -125,7 +125,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { useMediaQuery } from "@vueuse/core";
+import { ref, onMounted, onUnmounted } from "vue";
 import draggable from "vuedraggable";
 
 const supabase = useSupabaseClient();
@@ -137,8 +138,8 @@ const doneTasks = ref([]);
 const isPendingVisible = ref(true);
 const isDoingVisible = ref(true);
 const isDoneVisible = ref(true);
-const isMobile = ref(false);
-//const isMobile = ref(window.innerWidth < 481)
+const channels = ref(null);
+const isMobile = useMediaQuery("max-width: 600px;");
 
 const props = defineProps({
   projectId: {
@@ -146,6 +147,21 @@ const props = defineProps({
     required: true,
   },
 });
+
+const setupRealTimeSubscription = () => {
+  channels.value = supabase.channel('kanban-channel')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'todos' },
+      async (payload) => {
+        console.log('Change received!', payload);
+        
+        await fetchTasks();
+      }
+    )
+    .subscribe();
+};
+
 
 const onDragEnd = async () => {
   console.log("Tasks updated:", {
@@ -162,7 +178,6 @@ const onDragEnd = async () => {
 
   await Promise.all(
     allTasks.map((task) => {
-      // Determine new status based on which list the task is in
       if (pendingTasks.value.includes(task)) {
         task.status = "pending";
       } else if (doingTasks.value.includes(task)) {
@@ -175,8 +190,8 @@ const onDragEnd = async () => {
   );
 };
 
-//get tasks from Supabase to populate pendingTasks, doingTasks, doneTasks arrays for kanban
-const fetchTasks = async () => {
+async function fetchTasks() {
+  console.log("Fetching tasks for kanban...");
   try {
     const { data: todos, error: todosError } = await supabase
       .from("todos")
@@ -188,12 +203,10 @@ const fetchTasks = async () => {
       throw new Error(todosError.message);
     }
 
-    // populate pendingTasks array
     pendingTasks.value = Array.isArray(todos) ? todos : [];
-    console.log(pendingTasks);
   } catch (error) {
     console.error("Error fetching todos:", error);
-    pendingTasks.value = []; // Fallback to empty array on error
+    pendingTasks.value = [];
   }
 
   try {
@@ -207,12 +220,10 @@ const fetchTasks = async () => {
       throw new Error(todosError.message);
     }
 
-    // populate doingTasks array
     doingTasks.value = Array.isArray(todos) ? todos : [];
-    console.log(doingTasks);
   } catch (error) {
     console.error("Error fetching todos:", error);
-    doingTasks.value = []; // Fallback to empty array on error
+    doingTasks.value = [];
   }
 
   try {
@@ -226,16 +237,13 @@ const fetchTasks = async () => {
       throw new Error(todosError.message);
     }
 
-    // populate doneTasks array
     doneTasks.value = Array.isArray(todos) ? todos : [];
-    console.log(doneTasks);
   } catch (error) {
     console.error("Error fetching todos:", error);
-    doneTasks.value = []; // Fallback to empty array on error
+    doneTasks.value = [];
   }
 };
 
-// update status of tasks after drag-drop
 const updateTaskStatus = async (task) => {
   const { error } = await supabase
     .from("todos")
@@ -259,38 +267,14 @@ const toggleDone = () => {
   isDoneVisible.value = !isDoneVisible.value;
 };
 
-const checkIfMobile = () => {
-  if (window.innerWidth < 482) {
-    isMobile.value = true;
-  } else {
-    isMobile.value = false;
-  }
-};
-
-const handleRealTimeChange = (payload) => {
-  fetchTasks();
-};
-
-onMounted(() => {
-  fetchTasks();
-  checkIfMobile();
-  window.addEventListener("resize", checkIfMobile); // Update mobile state on resize
-  const subscription = supabase
-    .channel(`public:todos`)
-    .on(
-      "postgres_changes",
-      {
-        event: "*",
-        schema: "public",
-        table: "todos",
-        filter: `project_id=eq.${props.projectId}`,
-      },
-      handleRealTimeChange
-    )
-    .subscribe();
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", checkIfMobile); // Clean up listener
+onMounted(async () => {
+  await fetchTasks();
+  setupRealTimeSubscription();
+  onUnmounted(() => {
+    clearInterval(timer);
+    if (channels.value) {
+      channels.value.unsubscribe();
+    }
+  });
 });
 </script>

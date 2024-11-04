@@ -1,6 +1,6 @@
 <!-- GanttChart.vue -->
 <template>
-  <Card>
+  <Card >
     <CardContent class="p-0.5">
       <!-- Wrapper with custom scrollbar class -->
       <div class="flex w-full">
@@ -144,7 +144,7 @@
                       }"
                       :style="getTaskBarStyle(task)"
                     >
-                      <TooltipProvider delayDuration="200">
+                      <TooltipProvider :delayDuration=200>
                         <Tooltip>
                           <TooltipTrigger class="w-full h-full">
                             <Popover>
@@ -155,9 +155,9 @@
                                 ></div>
                               </PopoverTrigger>
                               <PopoverContent>
-                                <div>
+                                <Label for="progress">Progress</Label>
+                                <div class="flex gap-2 items-center">
                                   <NumberField id="progress" v-model="task.progress">
-                                    <Label for="progress">Progress</Label>
                                     <NumberFieldContent>
                                       <NumberFieldDecrement />
                                       <NumberFieldInput />
@@ -166,7 +166,7 @@
                                   </NumberField>
                                   <Button
                                     @click="updateTaskProgress(task.id, task.progress)"
-                                    class="text-white bg-indigo-600 hover:bg-indigo-700 mt-4 rounded w-full"
+                                    class="text-white bg-indigo-600 hover:bg-indigo-700"
                                   >
                                     Save
                                   </Button>
@@ -197,7 +197,7 @@
                       class="absolute -translate-y-1.5 rotate-45 transition-transform duration-200 ease-in-out hover:rotate-0 w-3 h-3 bg-amber-300"
                       :style="getMilestoneStyle(task)"
                     >
-                      <TooltipProvider delayDuration="200">
+                      <TooltipProvider :delayDuration="200">
                         <Tooltip>
                           <TooltipTrigger
                             class="w-full h-full -translate-y-1.5"
@@ -277,14 +277,13 @@ const toggleGroup = (groupId) => {
 };
 
 const setupRealTimeSubscription = () => {
-  channels.value = supabase.channel('custom-all-channel')
+  channels.value = supabase.channel('gantt-channel')
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'todos' },
       async (payload) => {
         console.log('Change received!', payload);
         
-        // Re-fetch the data to update the Gantt chart upon change
         await fetchData();
       }
     )

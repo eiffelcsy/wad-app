@@ -47,13 +47,25 @@
           </RadioGroup>
           <div v-if="taskType === 'task'">
             <Label for="dateRange">Task Date Range</Label>
-            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">*Optional</p>
-            <RangeCalendar v-model="dateValue" :weekday-format="'short'" class="rounded-md grid items-center justify-center border w-full mx-auto" />
+            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">
+              *Optional
+            </p>
+            <RangeCalendar
+              v-model="dateValue"
+              :weekday-format="'short'"
+              class="rounded-md grid items-center justify-center border w-full mx-auto"
+            />
           </div>
           <div v-if="taskType === 'milestone'">
             <Label for="dateRange">Milestone Due Date</Label>
-            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">*Optional</p>
-            <Calendar v-model="dateValue.start" :weekday-format="'short'" class="rounded-md grid items-center justify-center border w-full mx-auto" />
+            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">
+              *Optional
+            </p>
+            <Calendar
+              v-model="dateValue.start"
+              :weekday-format="'short'"
+              class="rounded-md grid items-center justify-center border w-full mx-auto"
+            />
           </div>
           <div>
             <Label for="taskGroup">Task Group</Label>
@@ -70,15 +82,24 @@
                 <SelectGroup>
                   <span v-for="group in taskGroups">
                     <SelectItem
-                    v-if="group.task_group"
-                    :key="group.task_group"
-                    :value="group.task_group"
+                      v-if="group.task_group"
+                      :key="group.task_group"
+                      :value="group.task_group"
                     >
-                    {{ group.task_group }}
-                  </SelectItem>
+                      {{ group.task_group }}
+                    </SelectItem>
                   </span>
                 </SelectGroup>
-                <Input/>
+                <Separator class="my-4" label="Or" />
+                <div class="flex w-full items-center gap-2 px-2 pb-2">
+                  <Input
+                    v-model="newTaskGroup"
+                    placeholder="Add new task group..."
+                  />
+                  <Button @click="addNewTaskGroup" size="icon" variant="outline"
+                    ><PlusIcon class="w-4 h-4"
+                  /></Button>
+                </div>
               </SelectContent>
             </Select>
           </div>
@@ -106,7 +127,12 @@
               </SelectContent>
             </Select>
           </div>
-          <Button @click="createNewTask" class="bg-indigo-600 hover:bg-indigo-700 text-white"> Save Task </Button>
+          <Button
+            @click="createNewTask"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white"
+          >
+            Save Task
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -142,13 +168,25 @@
           </RadioGroup>
           <div v-if="taskType === 'task'">
             <Label for="dateRange">Task Date Range</Label>
-            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">*Optional</p>
-            <RangeCalendar v-model="dateValue" :weekday-format="'short'" class="rounded-md grid items-center justify-center border w-full mx-auto" />
+            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">
+              *Optional
+            </p>
+            <RangeCalendar
+              v-model="dateValue"
+              :weekday-format="'short'"
+              class="rounded-md grid items-center justify-center border w-full mx-auto"
+            />
           </div>
           <div v-if="taskType === 'milestone'">
             <Label for="dateRange">Milestone Due Date</Label>
-            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">*Optional</p>
-            <Calendar v-model="dateValue.start" :weekday-format="'short'" class="rounded-md grid items-center justify-center border w-full mx-auto" />
+            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">
+              *Optional
+            </p>
+            <Calendar
+              v-model="dateValue.start"
+              :weekday-format="'short'"
+              class="rounded-md grid items-center justify-center border w-full mx-auto"
+            />
           </div>
           <div class="grid gap-2">
             <Label html-for="assignee">Assign to</Label>
@@ -175,7 +213,12 @@
               </SelectContent>
             </Select>
           </div>
-          <Button @click="createNewTask" class="bg-indigo-600 hover:bg-indigo-700 text-white"> Save Task </Button>
+          <Button
+            @click="createNewTask"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white"
+          >
+            Save Task
+          </Button>
         </div>
       </DrawerContent>
     </Drawer>
@@ -183,13 +226,15 @@
 </template>
 
 <script setup lang="ts">
-import type { DateRange } from "radix-vue";
+import { type DateRange } from "radix-vue";
+import dayjs from "dayjs";
 import { type Ref, ref, onMounted, onBeforeUnmount } from "vue";
 import { columns } from "@/components/custom/todos/columns.ts";
 import type { Todo } from "@components/custom/todos/columns.ts";
 import { DataTable } from "@/components/custom/todos/";
 import { PlusIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -219,8 +264,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { RangeCalendar } from "@/components/ui/range-calendar";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { Calendar } from '@/components/ui/calendar'
-
+import { Calendar } from "@/components/ui/calendar";
 
 const supabase = useSupabaseClient();
 const data = ref<Todo[]>([]);
@@ -234,6 +278,7 @@ const taskGroups = ref([]);
 const taskType = ref("task");
 const start = today(getLocalTimeZone());
 const end = start.add({ days: 7 });
+const newTaskGroup = ref("");
 
 const dateValue = ref({
   start,
@@ -276,10 +321,11 @@ async function getProjectMembers() {
 }
 
 async function getProjectTaskGroups() {
-  const { data: projectTaskGroups, error: projectTaskGroupsError } = await supabase
-    .from("todos")
-    .select("task_group")
-    .eq("project_id", props.projectId);
+  const { data: projectTaskGroups, error: projectTaskGroupsError } =
+    await supabase
+      .from("todos")
+      .select("task_group")
+      .eq("project_id", props.projectId);
 
   if (projectTaskGroupsError) {
     console.error("Error fetching task groups:", projectTaskGroupsError);
@@ -322,6 +368,13 @@ const handleRealTimeChange = (payload) => {
   }
 };
 
+const addNewTaskGroup = () => {
+  if (newTaskGroup.value) {
+    taskGroups.value.push({ task_group: newTaskGroup.value });
+    newTaskGroup.value = "";
+  }
+};
+
 async function createNewTask() {
   if (!newTaskTitle.value || !selectedMember.value) {
     console.error("Task title or assignee is missing");
@@ -332,8 +385,12 @@ async function createNewTask() {
     title: newTaskTitle.value,
     project_id: props.projectId,
     assigned_to: selectedMember.value.id,
-    assignee_name: selectedMember.value.name, // Add the selected member as assignee
-    status: "pending", // Default status for a new task
+    assignee_name: selectedMember.value.name,
+    status: "pending",
+    start_date: dayjs(dateValue.value.start).format("YYYY-MM-DD"),
+    end_date: dayjs(dateValue.value.end).format("YYYY-MM-DD"),
+    is_milestone: taskType.value === "milestone",
+    task_group: selectedTaskGroup.value,
   });
 
   if (error) {
@@ -351,7 +408,7 @@ onMounted(async () => {
 
   // Fetch project members
   await getProjectMembers();
-  
+
   // Fetch task groups
   await getProjectTaskGroups();
 
