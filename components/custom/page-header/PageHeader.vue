@@ -13,7 +13,7 @@
         class="size-12 mr-2"
         v-if="$colorMode.value === 'dark'"
       />
-      <NuxtLink v-if="!isMobile" to="/"
+      <NuxtLink v-if="!isMobile" to="/" prefetch="true" 
         ><p class="text-xl font-bold tracking-wider hover:opacity-80">
           Meet<span class="text-indigo-600 dark:text-indigo-500">L</span>ah
         </p></NuxtLink
@@ -162,6 +162,11 @@ if (
   const { data: profilePicData, error: profilePicError } = supabase.storage
     .from("profile-pictures")
     .getPublicUrl(`pics/default-${user.value.id}.png`);
+
+  if (profilePicError) {
+    console.error("Could not fetch profile picture");
+  }
+  
   profilePictureUrl.value = profilePicData.publicUrl;
 } else {
   profilePictureUrl.value = user.value.user_metadata.avatar_url;

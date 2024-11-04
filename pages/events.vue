@@ -1,4 +1,3 @@
-<!-- TODO: Events homepage, include create, edit and delete buttons for each event , maybe in a table -->
 <template>
   <div>
     <PageHeader />
@@ -82,7 +81,7 @@
           </SelectContent>
         </Select>
         <Button
-          @click="navigateTo('/create-event')"
+          @click="() => navigateTo('/create-event')"
           v-if="isMobile"
           size="icon"
           class="min-w-[40px] text-zinc-100 dark:text-zinc-900"
@@ -90,7 +89,7 @@
           <Plus class="size-4" />
         </Button>
         <Button
-          @click="navigateTo('/create-event')"
+          @click="() => navigateTo('/create-event')"
           v-else
           class="bg-indigo-600 hover:bg-indigo-700 text-white"
         >
@@ -98,7 +97,7 @@
           <Plus class="size-4 ml-2" />
         </Button>
       </div>
-      <div class="container w-full py-8">
+      <div class="container w-full pt-8 pb-8 md:pb-10 lg:pb-14">
         <Tabs default-value="all" class="w-full">
           <TabsList class="w-full">
             <TabsTrigger value="all" class="w-full"> All Events </TabsTrigger>
@@ -148,7 +147,7 @@
                         <Button
                           size="icon"
                           variant="ghost"
-                          @click="navigateTo(`/event/${event.code}`)"
+                          @click="goToEvent(event.code)"
                         >
                           <ArrowUpRight />
                         </Button>
@@ -254,8 +253,8 @@
         </Tabs>
       </div>
     </div>
+    <PageFooter />
   </div>
-  <PageFooter />
 </template>
 
 <script setup>
@@ -292,7 +291,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useMediaQuery } from "@vueuse/core";
 import { PageFooter } from "@/components/custom/page-footer";
-import { navigateTo } from "nuxt/app";
+import { navigateTo } from "#app";
 
 const isMobile = useMediaQuery("(max-width: 600px)");
 const supabase = useSupabaseClient();
@@ -302,9 +301,6 @@ const events = ref([]);
 const selectedSortOption = ref("sortByDate");
 
 const fetchEvents = async () => {
-  if (!user.value) return;
-
-  // Step 1: Fetch event IDs from participants table where user is a participant
   const { data: participantUserData, error: participantUserError } =
     await supabase
       .from("participants")
@@ -320,7 +316,6 @@ const fetchEvents = async () => {
     (participant) => participant.event_id
   );
 
-  // Step 2: Fetch event details from events table using event IDs
   const { data: eventData, error: eventError } = await supabase
     .from("events")
     .select("*")
@@ -329,7 +324,7 @@ const fetchEvents = async () => {
   if (eventError) {
     console.error("Error fetching event data:", eventError);
   } else {
-    console.log("Fetched Events Data:", eventData); // Debugging log
+    console.log("Fetched Events Data:", eventData);
     events.value = eventData;
   }
 };
@@ -376,4 +371,8 @@ const upcomingEvents = computed(() =>
     (event) => new Date(event.start_date) >= currentDate
   )
 );
+
+const goToEvent = async (event_code) => {
+  await navigateTo({ name: 'event-eventId', params: {eventId: event_code}})
+};
 </script>

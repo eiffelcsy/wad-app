@@ -1,4 +1,3 @@
-<!-- TODO: Projects homepage, include create, edit and delete buttons for each project, maybe in a table -->
 <template>
   <div>
     <PageHeader />
@@ -212,7 +211,6 @@ const isMobile = useMediaQuery("(max-width: 600px)");
 
 const isOpen = ref(false);
 const selectedSortOption = ref("SortByActivity");
-// user searchbar
 const searchQuery = ref("");
 
 const editingProjectId = ref(null); // Holds the ID of the project currently being edited
@@ -220,7 +218,6 @@ const editTitle = ref(""); // Holds the edited title for the project
 const isEditing = ref({});
 
 const projects = ref([]);
-// fetch projects that a user is in
 const fetchProjects = async () => {
   const { data: associatedProjects, error: associatedError } = await supabase
     .from("project_members")

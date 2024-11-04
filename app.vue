@@ -1,12 +1,14 @@
 <template>
   <div>
+    <NuxtLoadingIndicator />
     <NuxtRouteAnnouncer />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </div>
-  <NuxtPage />
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
 <style>
 .fade-enter-active,

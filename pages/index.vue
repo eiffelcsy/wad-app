@@ -90,7 +90,7 @@
                     <Button
                       variant="link"
                       class="text-black dark:text-white p-0 h-8 mt-4"
-                      @click="navigateTo('/events')"
+                      @click="() => navigateTo('/events')"
                     >
                       View all Events
                       <ArrowRight class="size-4 ml-2" />
@@ -150,7 +150,7 @@
                     <Button
                       variant="link"
                       class="text-black dark:text-white p-0 h-8 mt-2"
-                      @click="navigateTo('/projects')"
+                      @click="() => navigateTo('/projects')"
                     >
                       View all Projects
                       <ArrowRight class="size-4 ml-2" />
@@ -188,7 +188,7 @@
                   <Button
                     variant="link"
                     class="border-zinc-300 dark:border-zinc-600 text-black dark:text-white p-0 h-8 mt-4"
-                    @click="navigateTo('/teams')"
+                    @click="() => navigateTo('/teams')"
                   >
                     View all Teams
                     <ArrowRight class="size-4 ml-2" />
@@ -253,7 +253,7 @@
 
 <script setup>
 import { CalendarIcon, PlusCircledIcon, PersonIcon } from "@radix-icons/vue";
-import { navigateTo } from "nuxt/app";
+import { navigateTo } from "#app";
 import { PageHeader } from "@/components/custom/page-header";
 import {
   Card,
