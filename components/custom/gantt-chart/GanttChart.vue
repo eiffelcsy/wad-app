@@ -11,7 +11,7 @@
           <!-- Fixed header -->
           <div class="w-full flex h-14 border-b bg-background">
             <div
-              class="flex-1 grid grid-cols-[1fr,0px] md:grid-cols-[1fr,70px] lg:grid-cols-[1fr,100px] gap-4 p-3"
+              class="flex-1 grid grid-cols-[14rem,0px] md:grid-cols-[1fr,70px] lg:grid-cols-[1fr,100px] gap-4 p-3"
             >
               <div class="font-medium">Task Name</div>
               <div class="font-medium hidden md:block" v-if="!isMobile">Assigned</div>

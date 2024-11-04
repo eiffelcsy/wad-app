@@ -6,7 +6,7 @@
         <h1
           class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
         >
-          {{ projectInfo.title }}
+          {{ projectTitle }}
         </h1>
       </div>
       <Separator />
@@ -33,16 +33,37 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { SharedTodoList } from "@/components/custom/shared-todo-list";
 import { Separator } from "@/components/ui/separator";
 import { PageHeader } from "@/components/custom/page-header";
 import { PageFooter } from "@/components/custom/page-footer";
-import GanttChart from "../../components/custom/gantt-chart/GanttChart.vue";
-import { KanbanBoard } from "../../components/custom/kanban";
+import { GanttChart } from "@/components/custom/gantt-chart";
+import { KanbanBoard } from "@/components/custom/kanban";
 
 const route = useRoute();
 const projectId = route.params["projectId"];
-const projectInfo = ref({});
+const projectTitle = ref("");
+const supabase = useSupabaseClient();
+
+const fetchProjectDetails = async () => {
+  const { data: projectDetails, error: projectDetailsError } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("id", projectId)
+    .single();
+
+  if (projectDetailsError) {
+    console.error("Error fetching project details:", projectDetailsError);
+    return;
+  }
+  projectTitle.value = projectDetails.title;
+  console.log(projectDetails);
+};
+
+onMounted(async () => {
+  await nextTick();
+  fetchProjectDetails();
+});
 </script>

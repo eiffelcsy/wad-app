@@ -39,8 +39,8 @@
               <li
                 class="task-item p-2 mb-2 flex justify-between items-center bg-indigo-600 hover:bg-indigo-700 text-white shadow rounded-lg cursor-move transition-shadow duration-300 hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300"
               >
-                <div class="w-1/2 flex flex-row items-center gap-2">
-                  <div class="w-2/3 overflow-hidden">
+                <div class="w-2/5 flex flex-row items-center gap-2">
+                  <div class="w-fit overflow-hidden">
                     <h1 class="text-nowrap">{{ task.title }}</h1>
                   </div>
                   <div
@@ -137,7 +137,6 @@
             ghost-class="moving-card"
             :animation="200"
             :empty-insert-threshold="100"
-            :hover
             filter=".action-button"
           >
             <template #item="{ element: task }">
@@ -208,12 +207,6 @@ const setupRealTimeSubscription = () => {
 };
 
 const onDragEnd = async () => {
-  console.log("Tasks updated:", {
-    pendingTasks: pendingTasks.value,
-    doingTasks: doingTasks.value,
-    doneTasks: doneTasks.value,
-  });
-
   const allTasks = [
     ...pendingTasks.value,
     ...doingTasks.value,
@@ -235,7 +228,6 @@ const onDragEnd = async () => {
 };
 
 async function fetchTasks() {
-  console.log("Fetching tasks for kanban...");
   try {
     const { data: todos, error: todosError } = await supabase
       .from("todos")
