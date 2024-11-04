@@ -149,8 +149,8 @@
         </Card>
       </div>
     </div>
-    <PageFooter />
   </div>
+  <PageFooter />
 </template>
 
 <script setup>
