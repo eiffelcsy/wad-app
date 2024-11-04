@@ -37,9 +37,24 @@
           >
             <template #item="{ element: task }">
               <li
-                class="task-item p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move transition-shadow duration-300 hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300"
+                class="task-item p-2 mb-2 flex justify-between items-center bg-indigo-600 hover:bg-indigo-700 text-white shadow rounded-lg cursor-move transition-shadow duration-300 hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300"
               >
-                {{ task.title }} - {{ task.status }}
+                <div class="w-1/2 flex flex-row items-center gap-2">
+                  <div class="w-2/3 overflow-hidden">
+                    <h1 class="text-nowrap">{{ task.title }}</h1>
+                  </div>
+                  <div
+                    class="size-2 bg-amber-300 transform rotate-45"
+                    v-if="task.is_milestone"
+                  ></div>
+                </div>
+                <Badge
+                  class="bg-red-600 hover:bg-red-700 text-white md:hidden lg:block"
+                  >{{ task.status == "pending" ? "Pending" : "" }}</Badge
+                >
+                <div
+                  class="size-4 mr-1 rounded-full bg-red-600 hover:bg-red-700 hidden md:block lg:hidden"
+                ></div>
               </li>
             </template>
           </draggable>
@@ -74,9 +89,24 @@
           >
             <template #item="{ element: task }">
               <li
-                class="p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-shadow duration-300"
+                class="p-2 mb-2 flex justify-between items-center bg-indigo-600 hover:bg-indigo-700 text-white shadow rounded-lg cursor-move hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-shadow duration-300"
               >
-                {{ task.title }} - {{ task.status }}
+                <div class="flex flex-row items-center gap-2">
+                  <h1>{{ task.title }}</h1>
+                  <div
+                    class="mx-auto size-2 bg-amber-300 transform rotate-45"
+                    v-if="task.is_milestone"
+                  ></div>
+                </div>
+                <Badge
+                  class="bg-amber-600 hover:bg-amber-700 text-white md:hidden lg:block"
+                  >{{
+                    task.status == "in_progress" ? "In Progress" : ""
+                  }}</Badge
+                >
+                <div
+                  class="size-4 mr-1 rounded-full bg-amber-600 hover:bg-amber-700 hidden md:block lg:hidden"
+                ></div>
               </li>
             </template>
           </draggable>
@@ -112,9 +142,22 @@
           >
             <template #item="{ element: task }">
               <li
-                class="p-2 mb-2 flex justify-between items-center bg-zinc-700 text-white shadow rounded-lg cursor-move transition-shadow duration-300 hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300"
+                class="p-2 mb-2 flex justify-between items-center bg-indigo-600 hover:bg-indigo-700 text-white shadow rounded-lg cursor-move transition-shadow duration-300 hover:shadow-[0_4px_15px_rgba(0,0,0,0.5)] transition-all duration-300"
               >
-                {{ task.title }} - {{ task.status }}
+                <div class="flex flex-row items-center gap-2">
+                  <h1>{{ task.title }}</h1>
+                  <div
+                    class="mx-auto size-2 bg-amber-300 transform rotate-45"
+                    v-if="task.is_milestone"
+                  ></div>
+                </div>
+                <Badge
+                  class="bg-green-600 hover:bg-green-700 text-white md:hidden lg:block"
+                  >{{ task.status == "completed" ? "Completed" : "" }}</Badge
+                >
+                <div
+                  class="size-4 mr-1 rounded-full bg-green-600 hover:bg-green-700 hidden md:block lg:hidden"
+                ></div>
               </li>
             </template>
           </draggable>
@@ -128,6 +171,7 @@
 import { useMediaQuery } from "@vueuse/core";
 import { ref, onMounted, onUnmounted } from "vue";
 import draggable from "vuedraggable";
+import { Badge } from "@/components/ui/badge";
 
 const supabase = useSupabaseClient();
 
@@ -139,7 +183,7 @@ const isPendingVisible = ref(true);
 const isDoingVisible = ref(true);
 const isDoneVisible = ref(true);
 const channels = ref(null);
-const isMobile = useMediaQuery("max-width: 600px;");
+const isMobile = useMediaQuery("(max-width: 600px)");
 
 const props = defineProps({
   projectId: {
@@ -149,19 +193,19 @@ const props = defineProps({
 });
 
 const setupRealTimeSubscription = () => {
-  channels.value = supabase.channel('kanban-channel')
+  channels.value = supabase
+    .channel("kanban-channel")
     .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'todos' },
+      "postgres_changes",
+      { event: "*", schema: "public", table: "todos" },
       async (payload) => {
-        console.log('Change received!', payload);
-        
+        console.log("Change received!", payload);
+
         await fetchTasks();
       }
     )
     .subscribe();
 };
-
 
 const onDragEnd = async () => {
   console.log("Tasks updated:", {
@@ -242,7 +286,7 @@ async function fetchTasks() {
     console.error("Error fetching todos:", error);
     doneTasks.value = [];
   }
-};
+}
 
 const updateTaskStatus = async (task) => {
   const { error } = await supabase

@@ -9,7 +9,7 @@ export const columns: ColumnDef<Todo>[] = [
     header: () => h("div", { class: "text-left" }, "Title"),
     cell: ({ row }) => {
       const title = row.getValue("title");
-      return h("div", { class: "text-left w-20" }, title);
+      return h("div", { class: "text-left w-32 overflow-hidden" }, title);
     },
   },
   {

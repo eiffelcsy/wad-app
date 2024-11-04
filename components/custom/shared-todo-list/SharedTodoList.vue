@@ -82,11 +82,11 @@
                 <SelectGroup>
                   <span v-for="group in taskGroups">
                     <SelectItem
-                      v-if="group.task_group"
-                      :key="group.task_group"
-                      :value="group.task_group"
+                      v-if="group"
+                      :key="group"
+                      :value="group"
                     >
-                      {{ group.task_group }}
+                      {{ group }}
                     </SelectItem>
                   </span>
                 </SelectGroup>
@@ -325,13 +325,18 @@ async function getProjectTaskGroups() {
     await supabase
       .from("todos")
       .select("task_group")
-      .eq("project_id", props.projectId);
+      .eq("project_id", props.projectId)
+      .neq("task_group", null);
 
   if (projectTaskGroupsError) {
     console.error("Error fetching task groups:", projectTaskGroupsError);
     return [];
   }
-  taskGroups.value = projectTaskGroups || [];
+
+  const projectTaskGroupsUnique = [
+    ...new Set(projectTaskGroups.map((todo) => todo.task_group)),
+  ];
+  taskGroups.value = projectTaskGroupsUnique || [];
 }
 
 const handleRealTimeChange = (payload) => {
@@ -388,7 +393,10 @@ async function createNewTask() {
     assignee_name: selectedMember.value.name,
     status: "pending",
     start_date: dayjs(dateValue.value.start).format("YYYY-MM-DD"),
-    end_date: dayjs(dateValue.value.end).format("YYYY-MM-DD"),
+    end_date:
+      taskType.value === "milestone"
+        ? null
+        : dayjs(dateValue.value.end).format("YYYY-MM-DD"),
     is_milestone: taskType.value === "milestone",
     task_group: selectedTaskGroup.value,
   });

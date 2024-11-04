@@ -1,23 +1,25 @@
 <!-- GanttChart.vue -->
 <template>
-  <Card >
+  <Card>
     <CardContent class="p-0.5">
       <!-- Wrapper with custom scrollbar class -->
       <div class="flex w-full">
         <!-- Fixed left column -->
         <div
-          class="sticky left-0 z-10 md:w-80 lg:w-96 bg-background border-r shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)]"
+          class="sticky left-0 z-10 w-[14rem] md:w-[40rem] lg:w-[32rem] bg-background border-r shadow-[4px_0_6px_-1px_rgba(0,0,0,0.1)]"
         >
           <!-- Fixed header -->
-          <div class="flex h-14 border-b bg-background">
-            <div class="flex-1 grid md:grid-cols-[1fr,120px] gap-4 p-3">
+          <div class="w-full flex h-14 border-b bg-background">
+            <div
+              class="flex-1 grid grid-cols-[1fr,0px] md:grid-cols-[1fr,70px] lg:grid-cols-[1fr,100px] gap-4 p-3"
+            >
               <div class="font-medium">Task Name</div>
-              <div class="font-medium" v-if="!isMobile">Assigned</div>
+              <div class="font-medium hidden md:block" v-if="!isMobile">Assigned</div>
             </div>
           </div>
 
           <!-- Fixed task list -->
-          <div>
+          <div class="w-full">
             <div v-for="group in taskGroups" :key="group.id">
               <!-- Group Header -->
               <div
@@ -25,17 +27,16 @@
                 @click="toggleGroup(group.id)"
               >
                 <div class="flex-1 grid gap-4 p-3">
-                  <div class="flex items-center space-x-2">
+                  <div class="flex items-center space-x-2 overflow-hidden">
                     <ChevronDown
                       :class="{
                         'transform rotate-[-90deg]': !expandedGroups[group.id],
                       }"
                       class="h-4 w-4 transition-transform"
                     />
-                    <span
-                      class="font-medium max-w-32 text-nowrap overflow-hidden"
-                      >{{ group.title }}</span
-                    >
+                    <span class="font-medium max-w-32 text-nowrap">{{
+                      group.title
+                    }}</span>
                     <Badge variant="secondary">{{ group.progress }}%</Badge>
                   </div>
                 </div>
@@ -49,10 +50,12 @@
                   class="h-12 border-b hover:bg-muted/50 transition-colors"
                 >
                   <div
-                    class="flex-1 grid md:grid-cols-[1fr,120px] gap-4 p-3 pl-9"
+                    class="flex-1 grid grid-cols-[1fr,0px] md:grid-cols-[1fr,70px] lg:grid-cols-[1fr,100px] gap-4 p-3 lg:pl-9"
                   >
-                    <div class="flex items-center space-x-2">
-                      <span>{{ task.title }}</span>
+                    <div
+                      class="flex items-center space-x-2 overflow-x-scroll hidden-scrollbar noselect [::-webkit-scrollbar]:hidden"
+                    >
+                      <span class="text-nowrap">{{ task.title }}</span>
                       <Badge
                         v-if="task.isMilestone && !isMobile"
                         variant="outline"
@@ -144,7 +147,7 @@
                       }"
                       :style="getTaskBarStyle(task)"
                     >
-                      <TooltipProvider :delayDuration=200>
+                      <TooltipProvider :delayDuration="200">
                         <Tooltip>
                           <TooltipTrigger class="w-full h-full">
                             <Popover>
@@ -157,7 +160,10 @@
                               <PopoverContent>
                                 <Label for="progress">Progress</Label>
                                 <div class="flex gap-2 items-center">
-                                  <NumberField id="progress" v-model="task.progress">
+                                  <NumberField
+                                    id="progress"
+                                    v-model="task.progress"
+                                  >
                                     <NumberFieldContent>
                                       <NumberFieldDecrement />
                                       <NumberFieldInput />
@@ -165,7 +171,9 @@
                                     </NumberFieldContent>
                                   </NumberField>
                                   <Button
-                                    @click="updateTaskProgress(task.id, task.progress)"
+                                    @click="
+                                      updateTaskProgress(task.id, task.progress)
+                                    "
                                     class="text-white bg-indigo-600 hover:bg-indigo-700"
                                   >
                                     Save
@@ -277,13 +285,14 @@ const toggleGroup = (groupId) => {
 };
 
 const setupRealTimeSubscription = () => {
-  channels.value = supabase.channel('gantt-channel')
+  channels.value = supabase
+    .channel("gantt-channel")
     .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'todos' },
+      "postgres_changes",
+      { event: "*", schema: "public", table: "todos" },
       async (payload) => {
-        console.log('Change received!', payload);
-        
+        console.log("Change received!", payload);
+
         await fetchData();
       }
     )
@@ -461,7 +470,6 @@ const datelineStyle = computed(() => {
   };
 });
 
-
 const getTaskBarStyle = (task) => {
   const startDiff = Math.floor(
     (task.startDate - timelineStartDate.value) / (1000 * 60 * 60 * 24)
@@ -504,21 +512,20 @@ const getInitials = (name) => {
 async function updateTaskProgress(taskId, newProgress) {
   try {
     const { data, error } = await supabase
-      .from('todos')
+      .from("todos")
       .update({ progress: newProgress })
-      .eq('id', taskId)
+      .eq("id", taskId)
       .select();
-    
+
     if (error) {
-      console.error('Error updating progress:', error);
+      console.error("Error updating progress:", error);
     } else {
-      console.log('Progress updated successfully:', data, newProgress);
+      console.log("Progress updated successfully:", data, newProgress);
     }
   } catch (error) {
-    console.error('Unexpected error:', error);
+    console.error("Unexpected error:", error);
   }
 }
-
 </script>
 
 <style scoped>
@@ -537,6 +544,19 @@ async function updateTaskProgress(taskId, newProgress) {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently */
 }
 
 @keyframes dateline-pulse {
