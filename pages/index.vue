@@ -2,7 +2,7 @@
   <div>
     <PageHeader class="dark:bg-zinc-950" />
     <div
-      class="bg-white dark:bg-black"
+      class="bg-zinc-50 dark:bg-black"
     >
       <div class="container min-h-screen">
         <div class="w-full pt-8 md:pt-10 lg:pt-14">
@@ -101,7 +101,7 @@
               <div class="mt-4 md:mt-6 lg:mt-8">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Project TODOs</CardTitle>
+                    <CardTitle>Project Tasks</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div
@@ -132,14 +132,14 @@
                           <TableCell class="py-2 px-4">{{
                             todo.status
                           }}</TableCell>
-                          <TableCell class="py-2 px-4">
+                          <TableCell class="py-2 px-4 flex flex-row">
                             <NuxtLink
                               :to="{
                                 name: 'project-projectId',
                                 params: { projectId: todo.project_id },
                               }"
-                              class="relative hover:before:w-full before:absolute before:left-0 before:-bottom-0.5 before:h-[1px] before:bg-primary"
-                              >{{ getProjectTitle(todo.project_id) }}</NuxtLink
+                              class="relative hover:before:w-full after:content-['_↗'] before:absolute before:left-0 before:-bottom-0.5 before:h-[1px] before:bg-primary"
+                              >{{ getProjectTitle(todo.project_id) }}  </NuxtLink
                             >
                           </TableCell>
                         </TableRow>

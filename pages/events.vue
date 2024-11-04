@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageHeader />
-    <div class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20 min-h-screen">
+    <div class="bg-zinc-50 dark:bg-black min-h-screen">
       <div class="container w-full pt-8 md:pt-10 lg:pt-14">
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">
           Your Events
@@ -118,7 +118,6 @@
                   <TableHeader>
                     <TableRow>
                       <TableHead>Title</TableHead>
-                      <TableHead>Description</TableHead>
                       <TableHead>Date Range</TableHead>
                       <TableHead>Time Range</TableHead>
                       <TableHead>Event Code</TableHead>
@@ -133,7 +132,6 @@
                     </TableRow>
                     <TableRow v-for="event in allEvents" :key="event.id">
                       <TableCell>{{ event.title }}</TableCell>
-                      <TableCell>{{ event.description }}</TableCell>
                       <TableCell
                         >{{ event.start_date }} to
                         {{ event.end_date }}</TableCell
@@ -172,7 +170,6 @@
                   <TableHeader>
                     <TableRow>
                       <TableHead>Title</TableHead>
-                      <TableHead>Description</TableHead>
                       <TableHead>Date Range</TableHead>
                       <TableHead>Time Range</TableHead>
                       <TableHead>Event Code</TableHead>
@@ -187,7 +184,6 @@
                     </TableRow>
                     <TableRow v-for="event in pastEvents" :key="event.id">
                       <TableCell>{{ event.title }}</TableCell>
-                      <TableCell>{{ event.description }}</TableCell>
                       <TableCell
                         >{{ event.start_date }} to
                         {{ event.end_date }}</TableCell
@@ -197,7 +193,13 @@
                         {{ event.end_time }}</TableCell
                       >
                       <TableCell>{{ event.code }}</TableCell>
-                      <TableCell></TableCell>
+                      <TableCell><Button
+                          size="icon"
+                          variant="ghost"
+                          @click="goToEvent(event.code)"
+                        >
+                          <ArrowUpRight />
+                        </Button></TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -218,7 +220,6 @@
                   <TableHeader>
                     <TableRow>
                       <TableHead>Title</TableHead>
-                      <TableHead>Description</TableHead>
                       <TableHead>Date Range</TableHead>
                       <TableHead>Time Range</TableHead>
                       <TableHead>Event Code</TableHead>
@@ -233,7 +234,6 @@
                     </TableRow>
                     <TableRow v-for="event in upcomingEvents" :key="event.id">
                       <TableCell>{{ event.title }}</TableCell>
-                      <TableCell>{{ event.description }}</TableCell>
                       <TableCell
                         >{{ event.start_date }} to
                         {{ event.end_date }}</TableCell
@@ -243,7 +243,13 @@
                         {{ event.end_time }}</TableCell
                       >
                       <TableCell>{{ event.code }}</TableCell>
-                      <TableCell></TableCell>
+                      <TableCell><Button
+                          size="icon"
+                          variant="ghost"
+                          @click="goToEvent(event.code)"
+                        >
+                          <ArrowUpRight />
+                        </Button></TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>

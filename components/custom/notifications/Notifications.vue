@@ -18,22 +18,65 @@
           </Avatar>
         </Button>
       </PopoverTrigger>
-      <PopoverContent class="w-96 mr-[6.5rem] bg-black">
-        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-          <li
-            v-for="notification in notifications"
-            :key="notification.id"
-            class="px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700"
-            @click="markAsRead(notification.id)"
-          >
-            <p class="text-sm text-gray-900 dark:text-gray-100">
-              {{ notification.message }}
-            </p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
-              {{ formatDate(notification.created_at) }}
-            </p>
-          </li>
-        </ul>
+      <PopoverContent
+        class="w-96 mr-[6.5rem] bg-zinc-50 dark:bg-black px-0 pt-0"
+      >
+        <Tabs default-value="inbox" class="w-full">
+          <TabsList class="w-full rounded-none bg-transparent border-b p-0">
+            <TabsTrigger value="inbox" class="w-full"> Inbox </TabsTrigger>
+            <TabsTrigger value="archive" class="w-full"> Archive </TabsTrigger>
+          </TabsList>
+          <!-- Inbox Notifications -->
+          <TabsContent value="inbox" class="mt-0">
+            <ScrollArea class="w-full h-[32rem]">
+              <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                <li
+                  v-for="notification in inboxNotifications"
+                  :key="notification.id"
+                  class="px-4 py-4 hover:bg-gray-100 dark:hover:bg-zinc-900"
+                  @click="markAsRead(notification.id)"
+                >
+                  <div class="flex flex-row justify-between">
+                    <div>
+                      <p
+                        class="text-sm text-zinc-900 dark:text-zinc-100 font-medium"
+                      >
+                        {{ notification.message }}
+                      </p>
+                      <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                        {{ formatDate(notification.created_at) }}
+                      </p>
+                    </div>
+                    <div>
+                      <Button size="icon" variant="ghost" class="rounded-full" @click="archiveNotification(notification.id)"><Archive class="size-4"/></Button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </ScrollArea>
+          </TabsContent>
+          <!-- Archived Notifications -->
+          <TabsContent value="archive" class="mt-0">
+            <ScrollArea class="w-full h-[32rem]">
+              <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                <li
+                  v-for="notification in archivedNotifications"
+                  :key="notification.id"
+                  class="px-4 py-4 hover:bg-gray-100 dark:hover:bg-zinc-900"
+                >
+                  <p
+                    class="text-sm text-zinc-900 dark:text-zinc-100 font-medium"
+                  >
+                    {{ notification.message }}
+                  </p>
+                  <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                    {{ formatDate(notification.created_at) }}
+                  </p>
+                </li>
+              </ul>
+            </ScrollArea>
+          </TabsContent>
+        </Tabs>
         <div
           v-if="notifications.length === 0"
           class="p-4 text-center text-gray-500 dark:text-gray-400"
@@ -58,24 +101,30 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
-import { BellIcon } from "lucide-vue-next";
+import { ref, onMounted, computed } from "vue";
+import { Archive, BellIcon } from "lucide-vue-next";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer'
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
 const notifications = ref([]);
 const unreadCount = ref(0);
-const showDropdown = ref(false);
-
-function toggleDropdown() {
-  showDropdown.value = !showDropdown.value;
-  if (showDropdown.value) markAllAsRead();
-}
 
 async function fetchNotifications() {
   const { data, error } = await supabase
@@ -87,8 +136,7 @@ async function fetchNotifications() {
   if (error) console.error("Error fetching notifications:", error);
   else {
     notifications.value = data || [];
-    unreadCount.value =
-      data?.filter((notification) => !notification.read).length || 0;
+    unreadCount.value = notifications.value.filter((n) => !n.read).length;
   }
 }
 
@@ -97,6 +145,23 @@ function markAllAsRead() {
   unreadNotifications.forEach(async (notification) => {
     await markAsRead(notification.id);
   });
+}
+
+async function archiveNotification(notificationId) {
+  const { error } = await supabase
+    .from("notifications")
+    .update({ is_archived: true })
+    .eq("id", notificationId);
+
+  if (error) {
+    console.error("Error archiving notification:", error);
+    return;
+  }
+
+  const notification = notifications.value.find((n) => n.id === notificationId);
+  if (notification) {
+    notification.is_archived = true;
+  }
 }
 
 async function markAsRead(notificationId) {
@@ -113,6 +178,14 @@ function formatDate(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleDateString() + " " + date.toLocaleTimeString();
 }
+
+// Computed properties for inbox and archived notifications
+const inboxNotifications = computed(() =>
+  notifications.value.filter((n) => !n.is_archived)
+);
+const archivedNotifications = computed(() =>
+  notifications.value.filter((n) => n.is_archived)
+);
 
 onMounted(() => {
   fetchNotifications();
