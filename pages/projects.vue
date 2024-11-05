@@ -2,7 +2,7 @@
   <div>
     <PageHeader />
     <div
-      class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20"
+      class="bg-zinc-50 dark:bg-black"
     >
       <div class="container w-full pt-8 md:pt-10 lg:pt-14">
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">

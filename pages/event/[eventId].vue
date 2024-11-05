@@ -40,7 +40,7 @@
         </Button>
       </div>
     </div>
-    <div class="min-h-screen bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20">
+    <div class="min-h-screen bg-zinc-50 dark:bg-black">
       <div
         class="py-6 md:py-8 mx-auto container xl:w-[1200px] flex flex-row justify-between"
       >
@@ -56,8 +56,7 @@
         </div>
         <div class="flex flex-row items-center space-x-2">
           <EditEvent />
-
-          <AlertDialog>
+          <AlertDialog v-if="isCreator">
             <AlertDialogTrigger as-child>
               <Button
                 class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
@@ -89,6 +88,42 @@
                   class="bg-red-700 text-white hover:bg-red-900"
                   @click="confirmDelete"
                   >Delete</AlertDialogAction
+                >
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <AlertDialog v-else>
+            <AlertDialogTrigger as-child>
+              <Button
+                class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+                v-if="!isMobile"
+              >
+                Leave Event
+              </Button>
+              <Button
+                size="icon"
+                class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+                v-if="isMobile"
+              >
+                <Trash2 class="size-5" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle
+                  >Are you sure you want to leave this event?</AlertDialogTitle
+                >
+                <AlertDialogDescription>
+                  This action cannot be undone. Once you leave the event, you
+                  will have to rejoin and indicate availability again.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  class="bg-red-700 text-white hover:bg-red-900"
+                  @click="confirmLeave"
+                  >Leave</AlertDialogAction
                 >
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -505,6 +540,7 @@ const newDisplayName = ref("");
 const displayName = ref("");
 const event_title = ref("");
 const event_participants = ref([]);
+const isCreator = ref(false);
 
 // Variables for the interval grid
 const startDate = ref("");
@@ -546,6 +582,7 @@ onMounted(async () => {
     endDate.value = findEvent.end_date;
     startTime.value = findEvent.start_time;
     endTime.value = findEvent.end_time;
+    isCreator.value = findEvent.creator_user_id == user.value.id;
 
     // Generate intervals
     generateIntervals();
@@ -1093,7 +1130,6 @@ function getMergedClass(dateIndex, timeIndex) {
 }
 
 async function deleteEventFromDB(eventId) {
-  // Placeholder for actual deletion logic
   try {
     const { error } = await supabase.from("events").delete().eq("id", eventId);
 
@@ -1123,6 +1159,42 @@ async function confirmDelete() {
     toast({
       title: "Deletion Failed",
       description: "There was an error deleting the event.",
+      variant: "destructive",
+      duration: 1000,
+    });
+  }
+}
+
+async function leaveEvent(userId, eventId) {
+  try {
+    const { error } = await supabase.from("participants").delete().eq("event_id", eventId).eq("user_id", userId);
+
+    if (error) {
+      throw error;
+    }
+    return true;
+  } catch (err) {
+    console.error("Error deleting event:", err.message);
+    return false;
+  }
+}
+
+async function confirmLeave() {
+  const success = await leaveEvent(user.value.id, event_id.value);
+  if (success) {
+    toast({
+      title: "Event Left",
+      description: "You have successfully left this event.",
+      variant: "success",
+      duration: 1000,
+    });
+    setTimeout(() => {
+      navigateTo("/");
+    }, 1000);
+  } else {
+    toast({
+      title: "Leave Event Failed",
+      description: "There was an error leaving the event.",
       variant: "destructive",
       duration: 1000,
     });
