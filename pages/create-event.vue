@@ -1,6 +1,45 @@
 <template>
   <div>
-    <PageHeader />
+    <PageHeader v-if="user" />
+    <div
+      v-else
+      data-scroll-section
+      class="h-[4.5rem] px-8 md:px-12 lg:px-16 flex flex-row items-center justify-between bg-transparent"
+    >
+      <div class="flex flex-row items-center">
+        <NuxtImg
+          src="/images/logo_light.png"
+          class="logo-animation"
+          v-if="$colorMode.value === 'light'"
+        />
+        <NuxtImg
+          src="/images/logo_dark.png"
+          class="logo-animation"
+          v-if="$colorMode.value === 'dark'"
+        />
+        <h1
+          v-if="!isMobile"
+          class="text-xl font-bold tracking-wider title-fade-in-left"
+        >
+          Meet<span class="text-indigo-600 dark:text-indigo-500">L</span>ah
+        </h1>
+      </div>
+      <div class="flex flex-row items-center">
+        <Button
+          @click="toLogin"
+          variant="outline"
+          class="border-zinc-300 dark:border-zinc-600 login-button-animation mr-2"
+        >
+          <EnterIcon class="w-4 h-4 mr-2" />Login
+        </Button>
+        <Button
+          @click="toRegister"
+          class="w-28 button-fade-in-left bg-indigo-600 hover:bg-indigo-700 start-button-animation text-white"
+        >
+          Get Started
+        </Button>
+      </div>
+    </div>
     <div
       class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-zinc-50 dark:bg-black"
     >
@@ -24,7 +63,9 @@
           <div
             class="w-full flex flex-col mt-4 md:flex-row md:justify-center gap-4 md:gap-6 lg:gap-8"
           >
-            <Card class="w-full hover:border-indigo-600 transition duration-500">
+            <Card
+              class="w-full hover:border-indigo-600 transition duration-500"
+            >
               <CardContent class="pt-4">
                 <div>
                   <h1
@@ -89,7 +130,9 @@
               </CardContent>
             </Card>
           </div>
-          <Button @click="nextView" class="mt-6 md:mt-8 lg:mt-10 w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+          <Button
+            @click="nextView"
+            class="mt-6 md:mt-8 lg:mt-10 w-full bg-indigo-600 hover:bg-indigo-700 text-white"
             >Next</Button
           >
         </div>
@@ -102,7 +145,9 @@
           <div
             class="w-full flex flex-col mt-4 md:flex-row md:justify-center gap-4 md:gap-6 lg:gap-8"
           >
-            <Card class="w-full hover:border-indigo-600 transition duration-500">
+            <Card
+              class="w-full hover:border-indigo-600 transition duration-500"
+            >
               <CardContent>
                 <div>
                   <h1
@@ -110,7 +155,9 @@
                   >
                     Select Time Range
                   </h1>
-                  <div class="mt-4 lg:mt-8 flex flex-col md:flex-row justify-center gap-4 xl:gap-8">
+                  <div
+                    class="mt-4 lg:mt-8 flex flex-col md:flex-row justify-center gap-4 xl:gap-8"
+                  >
                     <div>
                       <label
                         class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
@@ -124,8 +171,20 @@
                           <SelectContent>
                             <SelectGroup>
                               <template v-for="hour in 12" :key="hour">
-                                <SelectItem :value="`${hour.toString().padStart(2, '0')}:00`"> {{ `${hour.toString().padStart(2, '0')}:00` }} </SelectItem>
-                                <SelectItem :value="`${hour.toString().padStart(2, '0')}:30`"> {{ `${hour.toString().padStart(2, '0')}:30` }} </SelectItem>
+                                <SelectItem
+                                  :value="`${hour
+                                    .toString()
+                                    .padStart(2, '0')}:00`"
+                                >
+                                  {{ `${hour.toString().padStart(2, "0")}:00` }}
+                                </SelectItem>
+                                <SelectItem
+                                  :value="`${hour
+                                    .toString()
+                                    .padStart(2, '0')}:30`"
+                                >
+                                  {{ `${hour.toString().padStart(2, "0")}:30` }}
+                                </SelectItem>
                               </template>
                             </SelectGroup>
                           </SelectContent>
@@ -162,8 +221,20 @@
                           <SelectContent>
                             <SelectGroup>
                               <template v-for="hour in 12" :key="hour">
-                                <SelectItem :value="`${hour.toString().padStart(2, '0')}:00`"> {{ `${hour.toString().padStart(2, '0')}:00` }} </SelectItem>
-                                <SelectItem :value="`${hour.toString().padStart(2, '0')}:30`"> {{ `${hour.toString().padStart(2, '0')}:30` }} </SelectItem>
+                                <SelectItem
+                                  :value="`${hour
+                                    .toString()
+                                    .padStart(2, '0')}:00`"
+                                >
+                                  {{ `${hour.toString().padStart(2, "0")}:00` }}
+                                </SelectItem>
+                                <SelectItem
+                                  :value="`${hour
+                                    .toString()
+                                    .padStart(2, '0')}:30`"
+                                >
+                                  {{ `${hour.toString().padStart(2, "0")}:30` }}
+                                </SelectItem>
                               </template>
                             </SelectGroup>
                           </SelectContent>
@@ -229,7 +300,11 @@
             <Button @click="prevView" variant="outline" class="w-full"
               >Back</Button
             >
-            <Button @click="nextView" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white">Next</Button>
+            <Button
+              @click="nextView"
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+              >Next</Button
+            >
           </div>
         </div>
 
@@ -248,7 +323,7 @@
               >
             </CardHeader>
             <CardContent class="flex flex-col items-center">
-              <div class="w-80 lg:w-96 flex flex-row justify-between">
+              <div class="lg:text-lg w-full flex flex-row justify-between">
                 <strong class="text-zinc-800 dark:text-zinc-100"
                   >Title:
                 </strong>
@@ -256,7 +331,10 @@
                   title
                 }}</span>
               </div>
-              <div v-if="description" class="md:w-80 lg:w-96 flex flex-row justify-between">
+              <div
+                v-if="description"
+                class="lg:text-lg w-full flex flex-row justify-between"
+              >
                 <strong class="text-zinc-800 dark:text-zinc-100"
                   >Description:
                 </strong>
@@ -264,7 +342,7 @@
                   description
                 }}</span>
               </div>
-              <div class="w-80 lg:w-96 flex flex-row justify-between">
+              <div class="lg:text-lg w-full flex flex-row justify-between">
                 <strong class="text-zinc-800 dark:text-zinc-100"
                   >Date Range:
                 </strong>
@@ -273,13 +351,14 @@
                   {{ formatDate(dateRange.end) }}</span
                 >
               </div>
-              <div class="w-80 lg:w-96 flex flex-row justify-between">
+              <div class="lg:text-lg w-full flex flex-row justify-between">
                 <strong class="text-zinc-800 dark:text-zinc-100">Time: </strong>
                 <span class="text-zinc-700 dark:text-zinc-300"
-                  >{{ startTime }}{{ startTimeMeridiem }} to {{ endTime }}{{ endTimeMeridiem }}</span
+                  >{{ startTime }}{{ startTimeMeridiem }} to {{ endTime
+                  }}{{ endTimeMeridiem }}</span
                 >
               </div>
-              <div class="w-80 lg:w-96 flex flex-row justify-between">
+              <div class="lg:text-lg w-full flex flex-row justify-between">
                 <strong class="text-zinc-800 dark:text-zinc-100"
                   >Number of Participants:
                 </strong>
@@ -289,11 +368,10 @@
               </div>
             </CardContent>
           </Card>
-          <div class="w-full grid grid-cols-1 lg:grid-cols-2 mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-8">
-            <Button
-              @click="prevView"
-              variant="outline"
-              class="w-full"
+          <div
+            class="w-full grid grid-cols-1 lg:grid-cols-2 mt-6 md:mt-8 lg:mt-10 gap-4 md:gap-6 lg:gap-8"
+          >
+            <Button @click="prevView" variant="outline" class="w-full"
               >Back</Button
             >
             <Button
@@ -309,25 +387,38 @@
       <Dialog :open="showDialog" v-else>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle class="tw-text-xl"
+            <DialogTitle
               >Event Code: <strong>{{ eventCode }}</strong></DialogTitle
             >
           </DialogHeader>
           <DialogDescription>
-            Share this code or link below.
+            Share this code or link below. <br/>
+            <span v-if="!user" class="text-red-700">
+              Warning: As you are currently not logged in, if you do not save the
+              link, it will be lost forever.</span
+            >
           </DialogDescription>
           <div class="flex items-center space-x-2">
             <div class="grid flex-1 gap-2">
               <Input readonly :default-value="shareableLink" />
             </div>
-            <Button type="submit" size="sm" class="px-3 bg-indigo-600 hover:bg-indigo-700 text-white" @click="copyLink">
+            <Button
+              type="submit"
+              variant="outline"
+              size="icon"
+              class="px-3"
+              @click="copyLink"
+            >
               <span class="sr-only">Copy</span>
               <Copy class="w-4 h-4" />
             </Button>
           </div>
           <DialogFooter class="sm:justify-start">
             <DialogClose as-child>
-              <Button @click="closeDialog" class="bg-indigo-600 hover:bg-indigo-700 hover:text-white">
+              <Button
+                @click="closeDialog"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white"
+              >
                 Go to Event
               </Button>
             </DialogClose>
@@ -335,6 +426,7 @@
         </DialogContent>
       </Dialog>
     </div>
+    <Toaster />
     <PageFooter />
   </div>
 </template>
@@ -377,8 +469,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { EnterIcon } from "@radix-icons/vue";
+import { useMediaQuery } from "@vueuse/core";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { Toaster } from "@/components/ui/toast";
 
 const supabase = useSupabaseClient();
+const isMobile = useMediaQuery("(max-width: 600px)");
+const { toast } = useToast();
 
 // Define types
 interface Errors {
@@ -525,7 +623,7 @@ const submitEvent = async () => {
   const eventData = {
     title: title.value,
     description: description.value,
-    creator_user_id: user.id,
+    creator_user_id: user ? user.id : null,
     start_date: dayjs(dateRange.value.start).format("YYYY-MM-DD"),
     end_date: dayjs(dateRange.value.end).format("YYYY-MM-DD"),
     start_time: adjustedStartTime,
@@ -554,10 +652,6 @@ const submitEvent = async () => {
   }
 };
 
-const backHome = () => {
-  navigateTo("/");
-};
-
 // Utility function to format date
 const formatDate = (date: Date) => {
   return dayjs(date).format("DD MMM YYYY");
@@ -575,7 +669,11 @@ const fun = ref(false);
 // Copy link to clipboard
 const copyLink = () => {
   navigator.clipboard.writeText(shareableLink.value);
-  alert("Link copied to clipboard!");
+  toast({
+    title: "Copy Link Successful!",
+    description: "Event link successfully copied to clipboard.",
+    variant: "success",
+  });
 };
 </script>
 

@@ -132,15 +132,17 @@
                       required
                       class="w-full text-sm sm:text-base p-2 sm:p-3"
                     />
-                    <Button
-                      class="w-28 ml-2 bg-indigo-600 text-white hover:bg-indigo-700"
-                    >
-                      Join Event
-                    </Button>
+                    <Button class="w-28 ml-2"> Join Event </Button>
                   </form>
                   <Button
+                    class="button-near-fade-in-left bg-indigo-600 text-white hover:bg-indigo-700"
+                    @click="toCreate()"
+                  >
+                    Create Event
+                  </Button>
+                  <Button
                     variant="outline"
-                    class="w-28 button-fade-in-left"
+                    class="w-28 button-far-fade-in-left"
                     @click="toDesc()"
                   >
                     How it Works
@@ -616,7 +618,10 @@
           </section>
 
           <!-- CTA Section -->
-          <section class="relative px-4 py-20 bg-white dark:bg-black" data-scroll-section>
+          <section
+            class="relative px-4 py-20 bg-white dark:bg-black"
+            data-scroll-section
+          >
             <div
               class="relative w-[90%] h-[50vh] bg-black border rounded-lg overflow-hidden flex items-center justify-start mx-auto px-8 lg:px-24 opacity-0"
               data-scroll
@@ -825,6 +830,10 @@ const toRegister = () => {
     path: "/auth",
     query: { action: "register" },
   });
+};
+
+const toCreate = () => {
+  navigateTo("/create-event");
 };
 
 const toDesc = () => {
@@ -1114,7 +1123,14 @@ onMounted(async () => {
   /* Adjust the delay as needed */
 }
 
-.button-fade-in-left {
+.button-near-fade-in-left {
+  opacity: 0;
+  animation: fadeInLeft 0.4s ease-out forwards;
+  animation-delay: 1.2s;
+  /* Adjust the delay as needed */
+}
+
+.button-far-fade-in-left {
   opacity: 0;
   animation: fadeInLeft 0.4s ease-out forwards;
   animation-delay: 1.6s;

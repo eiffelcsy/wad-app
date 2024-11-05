@@ -54,7 +54,7 @@
             Event Code: <span class="font-bold">{{ event_code }}</span>
           </p>
           <p class="text-base mt-1">
-            Confirmed Timeslot:
+            Confirmed Timeslot: <br v-if="isMobile" />
             <span class="font-bold text-indigo-500 text-lg animate-pulse">{{
               confirmedTimeslotString
             }}</span>
@@ -143,7 +143,6 @@
             <TabsList class="grid w-full grid-cols-2">
               <TabsTrigger value="your"> Your Availability </TabsTrigger>
               <TabsTrigger value="overall"> Overall Availability </TabsTrigger>
-              <TabsTrigger value="result"> Recommeded Timeslots </TabsTrigger>
             </TabsList>
             <TabsContent value="your">
               <Card class="lg:w-80 xl:w-96">
@@ -291,21 +290,6 @@
                       </table>
                     </div>
                   </TooltipProvider>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="result">
-              <Card class="lg:w-80 xl:w-96">
-                <CardHeader>
-                  <CardTitle>Recommended Timeslots</CardTitle>
-                  <CardDescription>
-                    Below are timeslots with the highest
-                    <span class="font-bold text-green-400">availability</span>
-                    among everyone.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <h1>blablabla</h1>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -663,9 +647,11 @@
           <Dialog :open="showNameDialog">
             <DialogContent class="w-5/6 rounded-md">
               <DialogHeader>
-                <DialogTitle>Update Display Name</DialogTitle>
-                <DialogDescription>
-                  Please enter your display name to continue.
+                <DialogTitle>Enter Display Name</DialogTitle>
+                <DialogDescription class="text-left">
+                  Please enter your display name to continue. If you have joined this event previously, enter your previous display name.<br/> <span v-if="!user" class="text-red-600">Remember your
+                  display name <span class="font-bold">(case-sensitive)</span>, you will need it to log back
+                  into this event.</span>
                 </DialogDescription>
               </DialogHeader>
               <Input
@@ -1522,7 +1508,7 @@ async function confirmSelectedTimeslot() {
           {
             user_id: id,
             message: `Timeslot confirmed in event ${event_title.value}: ${confirmedTimeslotString.value}`,
-            target_path: `/event/${event_code}`
+            target_path: `/event/${event_code}`,
           },
         ])
         .select();
@@ -1558,6 +1544,20 @@ function getConfirmMergedClass(dateIndex, timeIndex) {
 
   return classes;
 }
+
+const toLogin = () => {
+  navigateTo({
+    path: "/auth",
+    query: { action: "login" },
+  });
+};
+
+const toRegister = () => {
+  navigateTo({
+    path: "/auth",
+    query: { action: "register" },
+  });
+};
 </script>
 
 <style scoped>

@@ -51,7 +51,7 @@ export default defineNuxtConfig({
       login: "/auth",
       callback: "/",
       include: undefined,
-      exclude: ["/", "/landing", "/event/*", "/join"],
+      exclude: ["/", "/landing", "/event/*", "/join", "/create-event"],
       cookieRedirect: false,
     },
   },
