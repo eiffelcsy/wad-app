@@ -164,7 +164,6 @@ import { useRoute } from 'vue-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-// Supabase setup
 const supabase = useSupabaseClient();
 const allMembers = ref([]);
 const ownerMembers = ref([]);
@@ -175,9 +174,61 @@ const memberMembers = ref([]);
 const route = useRoute();
 const teamCode = route.params.teamId;
 
+const user = useSupabaseUser().value;
+
 // Function to capitalize the first letter of the role
 const capitalizeRole = (role) => {
   return role.charAt(0).toUpperCase() + role.slice(1);
+};
+
+// Function to ensure the logged-in user's name and email are stored in the team_members table
+const ensureUserInTeam = async (teamId) => {
+  if (user) {
+    const name = user.user_metadata.name;
+    const email = user.email;
+
+    // Check if the user already exists in team_members
+    const { data: existingMember, error } = await supabase
+      .from('team_members')
+      .select('*')
+      .eq('team_id', teamId)
+      .eq('user_id', user.id)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      console.error("Error fetching team member:", error.message);
+      return;
+    }
+
+    if (!existingMember) {
+      // Insert the user if they are not already in the team_members table
+      const { error: insertError } = await supabase
+        .from('team_members')
+        .insert({
+          team_id: teamId,
+          user_id: user.id,
+          name: name,
+          email: email,
+          role: 'member', // Default role; adjust as needed
+          added_at: new Date().toISOString(),
+        });
+
+      if (insertError) {
+        console.error("Error inserting team member:", insertError.message);
+      }
+    } else if (!existingMember.name || !existingMember.email) {
+      // Update the user’s name and email if they are missing
+      const { error: updateError } = await supabase
+        .from('team_members')
+        .update({ name, email })
+        .eq('team_id', teamId)
+        .eq('user_id', user.id);
+
+      if (updateError) {
+        console.error("Error updating team member:", updateError.message);
+      }
+    }
+  }
 };
 
 // Function to fetch team members based on team code
@@ -196,42 +247,26 @@ const fetchTeamMembers = async () => {
 
     const teamId = teamData.id;
 
+    // Ensure the logged-in user's display name and email are saved in the team_members table
+    await ensureUserInTeam(teamId);
+
     // Step 2: Fetch team members from the 'team_members' table using the team ID
     const { data: teamMembers, error: membersError } = await supabase
       .from('team_members')
-      .select('user_id, role')
+      .select('user_id, name, email, role')
       .eq('team_id', teamId);
     if (membersError) {
       console.error('Error fetching team members:', membersError);
       return;
     }
 
-    // Step 3: Fetch user details from the 'participants' table using user IDs
-    const userIds = teamMembers.map((member) => member.user_id);
-    const { data: users, error: usersError } = await supabase
-      .from('participants')
-      .select('user_id, name, email')
-      .in('user_id', userIds);
-    if (usersError) {
-      console.error('Error fetching user details:', usersError);
-      return;
-    }
-
-    // Step 4: Map user details with their roles
-    allMembers.value = teamMembers.map((member) => {
-      const user = users.find((user) => user.user_id === member.user_id);
-      return {
-        user_id: member.user_id,
-        name: user ? user.name : 'Unknown',
-        email: user ? user.email : 'N/A',
-        role: member.role,
-      };
-    });
+    // Step 3: Map the fetched data to relevant member roles
+    allMembers.value = teamMembers;
 
     // Filter users into different role-based arrays
-    ownerMembers.value = allMembers.value.filter((member) => member.role === 'owner');
-    adminMembers.value = allMembers.value.filter((member) => member.role === 'admin');
-    memberMembers.value = allMembers.value.filter((member) => member.role === 'member');
+    ownerMembers.value = teamMembers.filter((member) => member.role === 'owner');
+    adminMembers.value = teamMembers.filter((member) => member.role === 'admin');
+    memberMembers.value = teamMembers.filter((member) => member.role === 'member');
   } catch (error) {
     console.error('Unexpected error fetching team members:', error);
   }
