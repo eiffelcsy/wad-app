@@ -126,6 +126,18 @@ import {
   PackagePlusIcon,
   UserRoundPlusIcon,
 } from "lucide-vue-next";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import { Avatar } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { Notifications } from "@/components/custom/notifications";
 
 const supabase = useSupabaseClient();

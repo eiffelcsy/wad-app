@@ -30,7 +30,7 @@
 
               <!-- Gradients Container -->
               <div
-                class="w-full h-full"
+                class="w-full h-full z-0"
                 :style="{ filter: 'url(#goo) blur(40px)' }"
               >
                 <!-- Gradient Circles -->
@@ -57,7 +57,7 @@
             </div>
             <div
               data-scroll-section
-              class="h-[4.5rem] px-8 md:px-12 lg:px-16 flex flex-row items-center justify-between bg-transparent"
+              class="h-[4.5rem] px-8 md:px-12 lg:px-16 flex flex-row items-center justify-between bg-transparent z-10"
             >
               <div class="flex flex-row items-center">
                 <NuxtImg
@@ -78,7 +78,7 @@
                   >ah
                 </h1>
               </div>
-              <div class="flex flex-row items-center">
+              <div class="flex flex-row items-center" v-if="!user">
                 <Button
                   @click="toLogin"
                   variant="outline"
@@ -92,6 +92,130 @@
                 >
                   Get Started
                 </Button>
+              </div>
+              <div v-else>
+                <Sheet>
+                  <SheetTrigger as-child>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      class="font-semibold border-zinc-200 dark:border-zinc-700 hover:bg-transparent"
+                    >
+                      <Avatar
+                        class="w-8 h-8 border bg-zinc-50 dark:bg-zinc-900"
+                      >
+                        <img :src="profilePictureUrl" />
+                      </Avatar>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent class="flex flex-col">
+                    <SheetHeader class="flex flex-row items-center">
+                      <Avatar class="w-10 h-10 mr-2">
+                        <img :src="profilePictureUrl" />
+                      </Avatar>
+                      <div>
+                        <SheetTitle class="text-left">
+                          {{ displayName }}
+                        </SheetTitle>
+                        <SheetDescription class="text-left">
+                          {{ email }}
+                        </SheetDescription>
+                      </div>
+                    </SheetHeader>
+                    <div class="flex flex-col gap-2 py-4">
+                      <NuxtLink
+                        to="/"
+                        class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+                        ><HouseIcon
+                          size="16px"
+                          strokeWidth="{1}"
+                          class="mr-2"
+                        />
+                        Home
+                      </NuxtLink>
+                      <Separator class="my-2" />
+                      <NuxtLink
+                        to="/create-event"
+                        class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+                        ><CalendarPlusIcon
+                          size="16px"
+                          strokeWidth="{1}"
+                          class="mr-2"
+                        />
+                        Create event
+                      </NuxtLink>
+                      <NuxtLink
+                        to="/create-team"
+                        class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+                        ><UserRoundPlusIcon
+                          size="16px"
+                          strokeWidth="{1}"
+                          class="mr-2"
+                        />
+                        Create team
+                      </NuxtLink>
+                      <NuxtLink
+                        to="/create-project"
+                        class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+                        ><PackagePlusIcon
+                          size="16px"
+                          strokeWidth="{1}"
+                          class="mr-2"
+                        />
+                        Create project
+                      </NuxtLink>
+                      <Separator class="my-2" />
+                      <NuxtLink
+                        to="/events"
+                        class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+                      >
+                        <CalendarDaysIcon
+                          size="16px"
+                          strokeWidth="{1}"
+                          class="mr-2"
+                        />
+                        Your events
+                      </NuxtLink>
+                      <NuxtLink
+                        to="/teams"
+                        class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+                      >
+                        <UsersRoundIcon
+                          size="16px"
+                          strokeWidth="{1}"
+                          class="mr-2"
+                        />
+                        Your teams
+                      </NuxtLink>
+                      <NuxtLink
+                        to="/projects"
+                        class="flex flex-row items-center h-6 transform transition-transform duration-200 hover:translate-x-2"
+                      >
+                        <BoxesIcon size="16px" strokeWidth="{1}" class="mr-2" />
+                        Your projects
+                      </NuxtLink>
+
+                      <Separator class="my-2" />
+                      <Button
+                        @click="logout"
+                        variant="link"
+                        class="justify-start font-normal text-base p-0 h-6"
+                      >
+                        <LogOutIcon
+                          size="16px"
+                          strokeWidth="{1}"
+                          class="mr-2"
+                        />
+                        Logout
+                      </Button>
+                    </div>
+                    <SheetFooter
+                      class="absolute bottom-4 w-3/4 sm:w-auto self-center"
+                    >
+                      <SheetClose as-child> </SheetClose>
+                    </SheetFooter>
+                  </SheetContent>
+                </Sheet>
               </div>
             </div>
             <!-- Hero Section -->
@@ -680,6 +804,18 @@ import {
   Users,
   Vote,
 } from "lucide-vue-next";
+import { Button } from '@/components/ui/button'
+import { Avatar } from '@/components/ui/avatar'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { onMounted, nextTick, ref } from "vue";
 import { PageFooter } from "@/components/custom/page-footer";
 import { navigateTo } from "nuxt/app";
@@ -690,12 +826,33 @@ const eventCounter = ref(0);
 const monthlyCount = ref(0);
 const joinCode = ref("");
 const scrollInstance = ref(null);
+const user = useSupabaseUser();
 
+const displayName = ref(user.value.user_metadata.name);
+const email = ref(user.value.email);
+const profilePictureUrl = ref("");
 const colorMode = useColorMode();
 const { toast } = useToast();
 const { $initLocomotiveScroll } = useNuxtApp();
 const supabase = useSupabaseClient();
 const isMobile = useMediaQuery("(max-width: 600px)");
+
+if (
+  user.value.app_metadata.provider == "email" &&
+  !user.value.app_metadata.providers.includes("google")
+) {
+  const { data: profilePicData, error: profilePicError } = supabase.storage
+    .from("profile-pictures")
+    .getPublicUrl(`pics/default-${user.value.id}.png`);
+
+  if (profilePicError) {
+    console.error("Could not fetch profile picture");
+  }
+  
+  profilePictureUrl.value = profilePicData.publicUrl;
+} else {
+  profilePictureUrl.value = user.value.user_metadata.avatar_url;
+}
 
 // Light mode gradients (indigo-50 to indigo-600)
 const gradients = [
