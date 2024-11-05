@@ -611,15 +611,15 @@
                 data-scroll-class="appear"
               >
                 <div
-                  class="relative z-10 w-[36rem] h-80 overflow-hidden"
+                  class="relative z-10 w-[38rem] h-80 overflow-hidden"
                   v-if="$colorMode.value === 'light'"
                 >
                   <img
-                    src="/images/landing_img_1.png"
+                    src="/images/landing_img_light_1.png"
                     class="absolute top-12 left-0 max-w-none object-none"
                   />
                   <img
-                    src="/images/landing_img_2.png"
+                    src="/images/landing_img_light_2.png"
                     class="absolute top-0 left-64 max-w-none object-none"
                   />
                   <div
@@ -627,9 +627,21 @@
                   ></div>
                 </div>
                 <div
-                  class="relative w-[36rem] h-80 overflow-hidden"
+                  class="relative z-10 w-[38rem] h-80 overflow-hidden"
                   v-if="$colorMode.value === 'dark'"
-                ></div>
+                >
+                <img
+                    src="/images/landing_img_dark_1.png"
+                    class="absolute top-12 left-0 max-w-none object-none"
+                  />
+                  <img
+                    src="/images/landing_img_dark_2.png"
+                    class="absolute top-0 left-64 max-w-none object-none"
+                  />
+                  <div
+                    class="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-b from-transparent to-black z-10"
+                  ></div>
+              </div>
                 <div
                   class="w-96 z-0"
                   data-scroll
@@ -675,11 +687,11 @@
                   v-if="$colorMode.value === 'light'"
                 >
                   <img
-                    src="/images/landing_img_1.png"
+                    src="/images/landing_img_light_1.png"
                     class="absolute top-12 left-0 max-w-none object-none"
                   />
                   <img
-                    src="/images/landing_img_2.png"
+                    src="/images/landing_img_light_2.png"
                     class="absolute top-0 left-64 max-w-none object-none"
                   />
                   <div
@@ -703,11 +715,11 @@
                   data-scroll
                 >
                   <img
-                    src="/images/landing_img_1.png"
+                    src="/images/landing_img_light_1.png"
                     class="absolute top-12 left-0 max-w-none object-none"
                   />
                   <img
-                    src="/images/landing_img_2.png"
+                    src="/images/landing_img_light_2.png"
                     class="absolute top-0 left-64 max-w-none object-none"
                   />
                   <div
