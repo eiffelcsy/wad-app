@@ -69,7 +69,10 @@
                       <TableCell class="py-2 px-6">{{ member.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(member.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <!-- Action placeholder -->
+                        <!-- Show pencil icon for owners to manage each member -->
+                        <span v-if="isOwner" @click="manageMember(member)" class="cursor-pointer" title="Manage">
+                          <PencilIcon class="size-6 text-muted-foreground" />
+                        </span>
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -104,7 +107,9 @@
                       <TableCell class="py-2 px-6">{{ owner.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(owner.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <!-- Action placeholder -->
+                        <span v-if="isOwner" @click="manageMember(owner)" class="cursor-pointer" title="Manage">
+                          <PencilIcon class="size-6 text-muted-foreground" />
+                        </span>
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -196,7 +201,7 @@ import { PageHeader } from "@/components/custom/page-header";
 import { PageFooter } from "@/components/custom/page-footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search } from "lucide-vue-next"; // Import Search icon
+import { Search, PencilIcon } from "lucide-vue-next"; // Import Search and Pencil icons
 
 const supabase = useSupabaseClient();
 const route = useRoute();
@@ -209,12 +214,19 @@ const memberMembers = ref([]);
 const team_name = ref('');
 const team_code = ref('');
 const team_description = ref('');
-const searchQuery = ref(""); // New search query state
+const searchQuery = ref("");
 
 // Computed property to check if the user can edit the team (if they are 'owner' or 'admin')
 const canEditTeam = computed(() => {
   return allMembers.value.some(
     (member) => member.user_id === user.id && (member.role === 'owner' || member.role === 'admin')
+  );
+});
+
+// Computed property to check if the user is an owner
+const isOwner = computed(() => {
+  return allMembers.value.some(
+    (member) => member.user_id === user.id && member.role === 'owner'
   );
 });
 
@@ -365,6 +377,11 @@ const ensureUserInTeam = async (teamId) => {
 // Function placeholder for editing team
 const editTeam = () => {
   console.log("Edit Team clicked");
+};
+
+// Function to manage individual team members, triggered by pencil icon
+const manageMember = (member) => {
+  console.log("Manage member:", member);
 };
 
 onMounted(() => {
