@@ -1,8 +1,26 @@
 <template>
-  <div class="flex flex-col min-h-screen">
+  <div>
     <PageHeader />
-    <div class="container mx-auto px-4 py-8">
-      <h1 class="text-3xl font-semibold mb-6">Your Team</h1>
+    <div class="bg-zinc-50 dark:bg-black min-h-screen">
+      <div class="container mx-auto px-4 py-8">
+      <!-- Display Team Name, Code, and Description -->
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h1 class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold">{{ team_name }}</h1>
+          <p class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
+            Team Code: <span class="font-bold">{{ team_code }}</span>
+          </p>
+          <p v-if="team_description" class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
+            {{ team_description }}
+          </p>
+        </div>
+        <!-- Edit Team Button, visible to owners and admins only -->
+        <div v-if="canEditTeam">
+          <Button variant="outline" @click="editTeam" class="ml-2">Edit Team</Button>
+        </div>
+      </div>
+
+      <!-- Tabs for Member Roles -->
       <Tabs default-value="all" class="w-full">
         <TabsList class="w-full border-b border-gray-300">
           <TabsTrigger value="all" class="w-full py-2 text-lg font-medium">All Members</TabsTrigger>
@@ -154,31 +172,93 @@
     </div>
   </div>
   <PageFooter />
+  </div>
 </template>
 
 <script setup>
+import { ref, onMounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import { PageHeader } from "@/components/custom/page-header";
 import { PageFooter } from "@/components/custom/page-footer";
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const supabase = useSupabaseClient();
+const route = useRoute();
+const user = useSupabaseUser().value;
+
 const allMembers = ref([]);
 const ownerMembers = ref([]);
 const adminMembers = ref([]);
 const memberMembers = ref([]);
+const team_name = ref('');
+const team_code = ref('');
+const team_description = ref('');
 
-// Get teamCode from route parameters
-const route = useRoute();
-const teamCode = route.params.teamId;
-
-const user = useSupabaseUser().value;
+// Computed property to check if the user can edit the team (if they are 'owner' or 'admin')
+const canEditTeam = computed(() => {
+  return allMembers.value.some(
+    (member) => member.user_id === user.id && (member.role === 'owner' || member.role === 'admin')
+  );
+});
 
 // Function to capitalize the first letter of the role
 const capitalizeRole = (role) => {
   return role.charAt(0).toUpperCase() + role.slice(1);
+};
+
+// Function to fetch team details based on team code
+const fetchTeamDetails = async () => {
+  try {
+    // Step 1: Find the team details using the team code from the 'teams' table
+    const { data: teamData, error: teamError } = await supabase
+      .from('teams')
+      .select('id, team_name, code, description')
+      .eq('code', route.params.teamId)
+      .single();
+
+    if (teamError || !teamData) {
+      console.error('Error fetching team:', teamError);
+      return;
+    }
+
+    // Set the team details
+    team_name.value = teamData.team_name;
+    team_code.value = teamData.code;
+    team_description.value = teamData.description;
+
+    // Fetch team members after obtaining team ID
+    await fetchTeamMembers(teamData.id);
+  } catch (error) {
+    console.error('Unexpected error fetching team details:', error);
+  }
+};
+
+// Function to fetch team members based on team ID
+const fetchTeamMembers = async (teamId) => {
+  try {
+    // Ensure the logged-in user's display name and email are saved in the team_members table
+    await ensureUserInTeam(teamId);
+
+    // Fetch team members from the 'team_members' table using the team ID
+    const { data: teamMembers, error: membersError } = await supabase
+      .from('team_members')
+      .select('user_id, name, email, role')
+      .eq('team_id', teamId);
+
+    if (membersError) {
+      console.error('Error fetching team members:', membersError);
+      return;
+    }
+
+    // Set member lists for different roles
+    allMembers.value = teamMembers;
+    ownerMembers.value = teamMembers.filter((member) => member.role === 'owner');
+    adminMembers.value = teamMembers.filter((member) => member.role === 'admin');
+    memberMembers.value = teamMembers.filter((member) => member.role === 'member');
+  } catch (error) {
+    console.error('Unexpected error fetching team members:', error);
+  }
 };
 
 // Function to ensure the logged-in user's name and email are stored in the team_members table
@@ -231,50 +311,14 @@ const ensureUserInTeam = async (teamId) => {
   }
 };
 
-// Function to fetch team members based on team code
-const fetchTeamMembers = async () => {
-  try {
-    // Step 1: Find the team ID using the team code from the 'teams' table
-    const { data: teamData, error: teamError } = await supabase
-      .from('teams')
-      .select('id')
-      .eq('code', teamCode)
-      .single();
-    if (teamError || !teamData) {
-      console.error('Error fetching team:', teamError);
-      return;
-    }
-
-    const teamId = teamData.id;
-
-    // Ensure the logged-in user's display name and email are saved in the team_members table
-    await ensureUserInTeam(teamId);
-
-    // Step 2: Fetch team members from the 'team_members' table using the team ID
-    const { data: teamMembers, error: membersError } = await supabase
-      .from('team_members')
-      .select('user_id, name, email, role')
-      .eq('team_id', teamId);
-    if (membersError) {
-      console.error('Error fetching team members:', membersError);
-      return;
-    }
-
-    // Step 3: Map the fetched data to relevant member roles
-    allMembers.value = teamMembers;
-
-    // Filter users into different role-based arrays
-    ownerMembers.value = teamMembers.filter((member) => member.role === 'owner');
-    adminMembers.value = teamMembers.filter((member) => member.role === 'admin');
-    memberMembers.value = teamMembers.filter((member) => member.role === 'member');
-  } catch (error) {
-    console.error('Unexpected error fetching team members:', error);
-  }
+// Function placeholder for editing team
+const editTeam = () => {
+  console.log("Edit Team clicked");
 };
 
-// Fetch team members on component mount
+// Fetch team details on component mount
 onMounted(() => {
-  fetchTeamMembers();
+  fetchTeamDetails();
 });
 </script>
 
