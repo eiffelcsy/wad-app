@@ -1,7 +1,7 @@
 <template>
   <div>
     <PageHeader />
-    <div class="bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20 min-h-screen">
+    <div class="bg-zinc-50 dark:bg-black min-h-screen">
       <div class="container w-full pt-8 md:pt-10 lg:pt-14">
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Your Teams</h1>
       </div>
@@ -28,7 +28,7 @@
         </Button>
       </div>
       <div class="container w-full py-8">
-        <Card>
+        <Card class="hover:border-indigo-600">
           <CardHeader>
             <CardTitle>All Teams</CardTitle>
             <CardDescription>Showing all your teams.</CardDescription>

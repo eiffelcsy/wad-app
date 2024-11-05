@@ -18,9 +18,7 @@
           </Avatar>
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        class="w-96 mr-[6.5rem] bg-zinc-50 dark:bg-black px-0 pt-0"
-      >
+      <PopoverContent class="w-96 mr-[6.5rem] bg-zinc-50 dark:bg-black p-0">
         <Tabs default-value="inbox" class="w-full">
           <TabsList class="w-full rounded-none bg-transparent border-b p-0">
             <TabsTrigger value="inbox" class="w-full"> Inbox </TabsTrigger>
@@ -28,61 +26,110 @@
           </TabsList>
           <!-- Inbox Notifications -->
           <TabsContent value="inbox" class="mt-0">
-            <ScrollArea class="w-full h-[32rem]">
-              <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-                <li
-                  v-for="notification in inboxNotifications"
-                  :key="notification.id"
-                  class="px-4 py-4 hover:bg-gray-100 dark:hover:bg-zinc-900"
-                  @click="markAsRead(notification.id)"
+            <div v-if="inboxNotifications.length > 0">
+              <ScrollArea class="w-full h-[30rem] border-b">
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                  <li
+                    v-for="notification in inboxNotifications"
+                    :key="notification.id"
+                    class="px-4 py-4 hover:bg-gray-100 dark:hover:bg-zinc-900"
+                    @mouseover="markAsRead(notification.id)"
+                    @click="() => navigateTo(notification.target_path)"
+                  >
+                    <div class="flex flex-row justify-between">
+                      <div class="w-64">
+                        <p
+                          class="text-sm text-zinc-900 dark:text-zinc-100 font-medium"
+                        >
+                          {{ notification.message }}
+                        </p>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                          {{ formatDate(notification.created_at) }}
+                        </p>
+                      </div>
+                      <div>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          class="rounded-full"
+                          @click="archiveNotification(notification.id)"
+                          ><Archive class="size-4"
+                        /></Button>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </ScrollArea>
+              <div class="w-full flex flex-row gap-2 p-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  class="w-full"
+                  @click="markAllAsRead"
+                  >Mark all as read</Button
                 >
-                  <div class="flex flex-row justify-between">
-                    <div>
-                      <p
-                        class="text-sm text-zinc-900 dark:text-zinc-100 font-medium"
-                      >
-                        {{ notification.message }}
-                      </p>
-                      <p class="text-sm text-zinc-500 dark:text-zinc-400">
-                        {{ formatDate(notification.created_at) }}
-                      </p>
-                    </div>
-                    <div>
-                      <Button size="icon" variant="ghost" class="rounded-full" @click="archiveNotification(notification.id)"><Archive class="size-4"/></Button>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </ScrollArea>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  class="w-full"
+                  @click="archiveAll"
+                  >Archive all</Button
+                >
+              </div>
+            </div>
+            <div
+              v-else
+              class="w-full h-[30rem] my-4 flex items-center justify-center"
+            >
+              <div class="flex flex-col items-center justify-center gap-2">
+                <div
+                  class="w-12 h-12 p-2 rounded-full bg-zinc-900 flex items-center justify-center"
+                >
+                  <Inbox class="w-6 h-6 opacity-50" />
+                </div>
+                <h1 class="text-zinc-500 text-center">No new notifications</h1>
+              </div>
+            </div>
           </TabsContent>
           <!-- Archived Notifications -->
           <TabsContent value="archive" class="mt-0">
-            <ScrollArea class="w-full h-[32rem]">
-              <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-                <li
-                  v-for="notification in archivedNotifications"
-                  :key="notification.id"
-                  class="px-4 py-4 hover:bg-gray-100 dark:hover:bg-zinc-900"
-                >
-                  <p
-                    class="text-sm text-zinc-900 dark:text-zinc-100 font-medium"
+            <div v-if="archivedNotifications.length > 0">
+              <ScrollArea class="w-full h-[32rem]">
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                  <li
+                    v-for="notification in archivedNotifications"
+                    :key="notification.id"
+                    class="px-4 py-4 hover:bg-gray-100 dark:hover:bg-zinc-900"
                   >
-                    {{ notification.message }}
-                  </p>
-                  <p class="text-sm text-zinc-500 dark:text-zinc-400">
-                    {{ formatDate(notification.created_at) }}
-                  </p>
-                </li>
-              </ul>
-            </ScrollArea>
+                    <p
+                      class="text-sm text-zinc-900 dark:text-zinc-100 font-medium"
+                    >
+                      {{ notification.message }}
+                    </p>
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                      {{ formatDate(notification.created_at) }}
+                    </p>
+                  </li>
+                </ul>
+              </ScrollArea>
+            </div>
+            <div
+              v-else
+              class="w-full h-[30rem] my-4 flex items-center justify-center"
+            >
+              <div class="flex flex-col items-center justify-center gap-2">
+                <div
+                  class="w-12 h-12 p-2 rounded-full bg-zinc-900 flex items-center justify-center"
+                >
+                  <Archive class="w-6 h-6 opacity-50" />
+                </div>
+                <h1 class="text-zinc-500 text-center">
+                  No notifications in archive
+                </h1>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
-        <div
-          v-if="notifications.length === 0"
-          class="p-4 text-center text-gray-500 dark:text-gray-400"
-        >
-          No new notifications
-        </div>
       </PopoverContent>
     </Popover>
     <!-- Notification Indicator -->
@@ -102,7 +149,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-import { Archive, BellIcon } from "lucide-vue-next";
+import { Archive, BellIcon, Inbox } from "lucide-vue-next";
 import {
   Popover,
   PopoverContent,
@@ -119,7 +166,8 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/drawer'
+} from "@/components/ui/drawer";
+import { navigateTo } from "nuxt/app";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -140,13 +188,6 @@ async function fetchNotifications() {
   }
 }
 
-function markAllAsRead() {
-  const unreadNotifications = notifications.value.filter((n) => !n.read);
-  unreadNotifications.forEach(async (notification) => {
-    await markAsRead(notification.id);
-  });
-}
-
 async function archiveNotification(notificationId) {
   const { error } = await supabase
     .from("notifications")
@@ -162,6 +203,20 @@ async function archiveNotification(notificationId) {
   if (notification) {
     notification.is_archived = true;
   }
+}
+
+function markAllAsRead() {
+  const unreadNotifications = notifications.value.filter((n) => !n.read);
+  unreadNotifications.forEach(async (notification) => {
+    await markAsRead(notification.id);
+  });
+}
+
+function archiveAll() {
+  const inboxNotifications = notifications.value.filter((n) => !n.is_archived);
+  inboxNotifications.forEach(async (notification) => {
+    await archiveNotification(notification.id);
+  });
 }
 
 async function markAsRead(notificationId) {
@@ -193,7 +248,12 @@ onMounted(() => {
     .channel("notifications-channel")
     .on(
       "postgres_changes",
-      { event: "INSERT", schema: "public", table: "notifications" },
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: `user_id=eq.${user.value.id}`,
+      },
       (payload) => {
         notifications.value.unshift(payload.new);
         unreadCount.value += 1;

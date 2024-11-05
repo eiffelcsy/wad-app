@@ -2,7 +2,7 @@
   <div>
     <PageHeader />
     <div
-      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20"
+      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-zinc-50 dark:bg-black"
     >
       <div class="mx-auto w-full lg:w-1/2">
         <h1
@@ -14,7 +14,7 @@
           Create a new project and associate it with a team. Start by giving
           your project a name and description, then choose a team.
         </p>
-        <Card class="mt-4 md:mt-8 lg:mt-12">
+        <Card class="mt-4 md:mt-8 lg:mt-12 hover:border-indigo-600">
           <CardContent class="pt-4">
             <div>
               <h1

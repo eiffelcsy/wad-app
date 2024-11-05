@@ -95,7 +95,7 @@
             type="submit"
             class="w-full text-sm sm:text-base py-2 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white mt-4"
           >
-            {{ authType === "login" ? "Sign In" : "Sign Up" }}
+            {{ authType === "login" || "" ? "Sign In" : "Sign Up" }}
           </Button>
         </form>
 
@@ -376,7 +376,8 @@ onMounted(() => {
  * Renders the Google Sign-In button with appropriate configurations based on authType.
  */
 const renderGoogleButton = () => {
-  window.google.accounts.id.renderButton(googleButton.value, {
+  if (window.google) {
+    window.google.accounts.id.renderButton(googleButton.value, {
     type: "standard",
     shape: "pill",
     theme: "outline",
@@ -384,6 +385,7 @@ const renderGoogleButton = () => {
     size: "large",
     logo_alignment: "left",
   });
+  }
 };
 
 // Watcher that re-renders the Google Sign-In button when authType changes

@@ -108,7 +108,7 @@
           </TabsList>
 
           <TabsContent value="all">
-            <Card>
+            <Card class="hover:border-indigo-600">
               <CardHeader>
                 <CardTitle>All Events</CardTitle>
                 <CardDescription>Showing all your events.</CardDescription>
@@ -158,7 +158,7 @@
           </TabsContent>
 
           <TabsContent value="past">
-            <Card>
+            <Card class="hover:border-indigo-600">
               <CardHeader>
                 <CardTitle>Past Events</CardTitle>
                 <CardDescription
@@ -208,7 +208,7 @@
           </TabsContent>
 
           <TabsContent value="upcoming">
-            <Card>
+            <Card class="hover:border-indigo-600">
               <CardHeader>
                 <CardTitle>Upcoming Events</CardTitle>
                 <CardDescription

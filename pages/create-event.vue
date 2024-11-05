@@ -2,7 +2,7 @@
   <div>
     <PageHeader />
     <div
-      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-gradient-to-b from-white dark:from-black to-indigo-200/30 dark:to-indigo-900/20"
+      class="w-full px-8 min-h-screen flex flex-col pt-8 pb-10 items-center bg-zinc-50 dark:bg-black"
     >
       <div class="mx-auto w-full lg:w-1/2">
         <h1
@@ -24,7 +24,7 @@
           <div
             class="w-full flex flex-col mt-4 md:flex-row md:justify-center gap-4 md:gap-6 lg:gap-8"
           >
-            <Card class="w-full">
+            <Card class="w-full hover:border-indigo-600 transition duration-500">
               <CardContent class="pt-4">
                 <div>
                   <h1
@@ -65,7 +65,7 @@
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card class="hover:border-indigo-600 transition duration-500">
               <CardContent class="pt-4">
                 <div>
                   <h1
@@ -102,7 +102,7 @@
           <div
             class="w-full flex flex-col mt-4 md:flex-row md:justify-center gap-4 md:gap-6 lg:gap-8"
           >
-            <Card class="w-full">
+            <Card class="w-full hover:border-indigo-600 transition duration-500">
               <CardContent>
                 <div>
                   <h1
@@ -191,7 +191,7 @@
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card class="hover:border-indigo-600 transition duration-500">
               <CardContent
                 ><div>
                   <h1

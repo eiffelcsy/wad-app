@@ -14,7 +14,7 @@
           >
             <div>
               <div>
-                <Card>
+                <Card class="hover:border-indigo-600 transition duration-500">
                   <CardHeader>
                     <CardTitle>Upcoming Events</CardTitle>
                   </CardHeader>
@@ -99,7 +99,7 @@
                 </Card>
               </div>
               <div class="mt-4 md:mt-6 lg:mt-8">
-                <Card>
+                <Card class="hover:border-indigo-600 transition duration-500">
                   <CardHeader>
                     <CardTitle>Project Tasks</CardTitle>
                   </CardHeader>
@@ -161,7 +161,7 @@
             </div>
 
             <div class="order-last lg:order-1">
-              <Card class="mb-4 md:mb-6 lg:mb-8">
+              <Card class="mb-4 md:mb-6 lg:mb-8 hover:border-indigo-600 transition duration-500">
                 <CardHeader>
                   <CardTitle>Manage Teams</CardTitle>
                 </CardHeader>
@@ -195,7 +195,7 @@
                   </Button>
                 </CardFooter>
               </Card>
-              <Card>
+              <Card class="hover:border-indigo-600 transition duration-500">
                 <CardHeader>
                   <CardTitle>Your Profile</CardTitle>
                 </CardHeader>
