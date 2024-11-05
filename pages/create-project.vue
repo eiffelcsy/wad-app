@@ -11,8 +11,9 @@
           New Project
         </h1>
         <p class="text-base text-zinc-400 dark:text-zinc-500">
-          Create a new project and associate it with a team. Start by giving
-          your project a name and description, then choose a team.
+          Create a new project and associate it with a team. You can only do so if you are
+          the owner or an admin of that team. Start by giving
+          your project a name and description, then choose a team. 
         </p>
         <Card class="mt-4 md:mt-8 lg:mt-12 hover:border-indigo-600">
           <CardContent class="pt-4">
@@ -59,8 +60,14 @@
                       v-for="team in teams"
                       :key="team.team_id"
                       :value="team.team_id"
+                      :disabled="!['owner', 'admin'].includes(team.role)"
                     >
-                      {{ team.teams.team_name }}
+                      <span
+                        :title="['owner', 'admin'].includes(team.role) ? '' : 'You are not the owner or an admin of this team'"
+                        :class="!['owner', 'admin'].includes(team.role) ? 'text-gray-400 cursor-not-allowed' : ''"
+                      >
+                        {{ team.teams.team_name }}
+                      </span>
                     </SelectItem>
                   </SelectGroup>
                 </SelectContent>
@@ -86,8 +93,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, type Ref, ref } from "vue";
-import { ArrowLeftIcon } from "lucide-vue-next";
+import { onMounted, ref } from "vue";
 import { navigateTo } from "nuxt/app";
 import { PageHeader } from "@/components/custom/page-header";
 import { PageFooter } from "@/components/custom/page-footer";
@@ -106,11 +112,12 @@ const selectedTeam = ref<string | null>(null); // Store selected team
 const user = useSupabaseUser();
 const supabase = useSupabaseClient();
 
+// Fetch teams on mount and filter based on role
 onMounted(async () => {
   if (user.value) {
     const { data, error } = await supabase
       .from("team_members")
-      .select("team_id, teams(team_name)")
+      .select("team_id, teams(team_name), role") // Fetch role as well
       .eq("user_id", user.value.id);
 
     if (error) {
@@ -121,7 +128,7 @@ onMounted(async () => {
   }
 });
 
-const ValidateProject = ():Boolean => {
+const ValidateProject = (): Boolean => {
   let isValid = true;
   errors.value = {}; // Clear previous errors
 
@@ -183,4 +190,12 @@ async function handleCreateProject() {
 .error {
   color: red;
 }
+
+.text-gray-400 {
+  color: #A0A0A0; /* Grey out the text */
+}
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
 </style>
+
