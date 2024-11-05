@@ -11,7 +11,7 @@
           <!-- Fixed header -->
           <div class="w-full flex h-14 border-b bg-background">
             <div
-              class="flex-1 grid grid-cols-[14rem,0px] md:grid-cols-[1fr,70px] lg:grid-cols-[1fr,100px] gap-4 p-3"
+              class="flex-1 grid grid-cols-[14rem,0px] md:grid-cols-[1fr,70px] lg:grid-cols-[1fr,120px] gap-4 p-3"
             >
               <div class="font-medium">Task Name</div>
               <div class="font-medium hidden md:block" v-if="!isMobile">Assigned</div>
@@ -19,7 +19,7 @@
           </div>
 
           <!-- Fixed task list -->
-          <div class="w-full">
+          <div class="w-full" v-if="taskGroups.length > 0">
             <div v-for="group in taskGroups" :key="group.id">
               <!-- Group Header -->
               <div
@@ -78,11 +78,14 @@
               </div>
             </div>
           </div>
+          <div class="w-full h-20 flex items-center justify-center text-zinc-500 text-sm">
+            No tasks found
+          </div>
         </div>
 
         <!-- Scrollable timeline -->
         <div class="overflow-x-auto w-fit">
-          <div class="w-fit flex-1">
+          <div class="w-fit flex-1" v-if="timelineDates.length > 0 && taskGroups.length > 0">
             <!-- Timeline header -->
             <div
               class="w-fit flex sticky top-0 bg-background border-b h-14"

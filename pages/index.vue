@@ -1,9 +1,7 @@
 <template>
   <div>
     <PageHeader class="dark:bg-zinc-950" />
-    <div
-      class="bg-zinc-50 dark:bg-black"
-    >
+    <div class="bg-zinc-50 dark:bg-black">
       <div class="container min-h-screen">
         <div class="w-full pt-8 md:pt-10 lg:pt-14">
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold">
@@ -19,53 +17,52 @@
                     <CardTitle>Upcoming Events</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div
-                      v-if="upcomingEvents.length === 0"
-                      class="text-base text-zinc-400 dark:text-zinc-500"
-                    >
-                      No upcoming events found.
-                    </div>
-                    <div v-else>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead class="w-1/2">Title</TableHead>
-                            <TableHead>Date Range</TableHead>
-                            <TableHead></TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          <TableRow
-                            v-for="event in upcomingEvents"
-                            :key="event.id"
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead class="w-1/2">Title</TableHead>
+                          <TableHead>Date Range</TableHead>
+                          <TableHead></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow
+                          v-for="event in upcomingEvents"
+                          :key="event.id"
+                          v-if="upcomingEvents.length > 0"
+                        >
+                          <TableCell class="text-left">{{
+                            event.title
+                          }}</TableCell>
+                          <TableCell class="text-left text-nowrap">
+                            {{
+                              new Date(event.start_date).toLocaleDateString()
+                            }}
+                            to
+                            {{ new Date(event.end_date).toLocaleDateString() }}
+                          </TableCell>
+                          <TableCell>
+                            <Button size="icon" variant="ghost" aschild
+                              ><NuxtLink
+                                :to="{
+                                  name: 'event-eventId',
+                                  params: { eventId: event.code },
+                                }"
+                                ><ArrowUpRight
+                                  class="size-4 hover:opacity-70" /></NuxtLink
+                            ></Button>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow v-else>
+                          <TableCell
+                            colspan="3"
+                            class="text-center text-zinc-500"
                           >
-                            <TableCell class="text-left">{{
-                              event.title
-                            }}</TableCell>
-                            <TableCell class="text-left text-nowrap">
-                              {{
-                                new Date(event.start_date).toLocaleDateString()
-                              }}
-                              to
-                              {{
-                                new Date(event.end_date).toLocaleDateString()
-                              }}
-                            </TableCell>
-                            <TableCell>
-                              <Button size="icon" variant="ghost" aschild
-                                ><NuxtLink
-                                  :to="{
-                                    name: 'event-eventId',
-                                    params: { eventId: event.code },
-                                  }"
-                                  ><ArrowUpRight
-                                    class="size-4 hover:opacity-70" /></NuxtLink
-                              ></Button>
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </div>
+                            No tasks found
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
                   </CardContent>
                   <CardFooter
                     class="flex flex-col md:flex-row items-end justify-between px-6 pb-6"
@@ -104,12 +101,6 @@
                     <CardTitle>Project Tasks</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div
-                      v-if="todos.length === 0"
-                      class="text-base text-zinc-400 dark:text-zinc-500"
-                    >
-                      No assigned TODOs found.
-                    </div>
                     <Table class="min-w-full">
                       <TableHeader>
                         <TableRow>
@@ -125,7 +116,11 @@
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        <TableRow v-for="(todo, index) in todos" :key="todo.id">
+                        <TableRow
+                          v-for="(todo, index) in todos"
+                          :key="todo.id"
+                          v-if="todos.length > 0"
+                        >
                           <TableCell class="py-2 px-4">{{
                             todo.title
                           }}</TableCell>
@@ -139,8 +134,16 @@
                                 params: { projectId: todo.project_id },
                               }"
                               class="relative hover:before:w-full after:content-['_↗'] before:absolute before:left-0 before:-bottom-0.5 before:h-[1px] before:bg-primary"
-                              >{{ getProjectTitle(todo.project_id) }}  </NuxtLink
-                            >
+                              >{{ getProjectTitle(todo.project_id) }}
+                            </NuxtLink>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow v-else>
+                          <TableCell
+                            colspan="3"
+                            class="text-center text-zinc-500"
+                          >
+                            No tasks found
                           </TableCell>
                         </TableRow>
                       </TableBody>
@@ -161,7 +164,9 @@
             </div>
 
             <div class="order-last lg:order-1">
-              <Card class="mb-4 md:mb-6 lg:mb-8 hover:border-indigo-600 transition duration-500">
+              <Card
+                class="mb-4 md:mb-6 lg:mb-8 hover:border-indigo-600 transition duration-500"
+              >
                 <CardHeader>
                   <CardTitle>Manage Teams</CardTitle>
                 </CardHeader>

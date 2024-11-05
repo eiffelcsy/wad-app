@@ -61,8 +61,8 @@ const table = useVueTable({
         <!-- No results message -->
         <template v-else>
           <TableRow>
-            <TableCell :colspan="columns.length" class="h-24 text-center">
-              No results.
+            <TableCell :colspan="columns.length" class="h-24 text-center text-zinc-500">
+              No tasks found
             </TableCell>
           </TableRow>
         </template>

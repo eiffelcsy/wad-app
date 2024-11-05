@@ -121,12 +121,12 @@
                       <TableHead>Date Range</TableHead>
                       <TableHead>Time Range</TableHead>
                       <TableHead>Event Code</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow v-if="allEvents.length == 0">
-                      <TableCell colspan="6" class="text-center"
+                      <TableCell colspan="6" class="text-center text-zinc-400 dark:text-zinc-500"
                         >No Events Found.</TableCell
                       >
                     </TableRow>
@@ -173,12 +173,12 @@
                       <TableHead>Date Range</TableHead>
                       <TableHead>Time Range</TableHead>
                       <TableHead>Event Code</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow v-if="pastEvents.length == 0">
-                      <TableCell colspan="6" class="text-center"
+                      <TableCell colspan="6" class="text-center text-zinc-400 dark:text-zinc-500"
                         >No Events Found.</TableCell
                       >
                     </TableRow>
@@ -223,12 +223,12 @@
                       <TableHead>Date Range</TableHead>
                       <TableHead>Time Range</TableHead>
                       <TableHead>Event Code</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow v-if="upcomingEvents.length == 0">
-                      <TableCell colspan="6" class="text-center"
+                      <TableCell colspan="6" class="text-center text-zinc-400 dark:text-zinc-500"
                         >No Events Found.</TableCell
                       >
                     </TableRow>

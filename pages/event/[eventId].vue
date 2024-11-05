@@ -53,6 +53,12 @@
           <p class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
             Event Code: <span class="font-bold">{{ event_code }}</span>
           </p>
+          <p class="text-base mt-1">
+            Confirmed Timeslot:
+            <span class="font-bold text-indigo-500 text-lg animate-pulse">{{
+              confirmedTimeslotString
+            }}</span>
+          </p>
         </div>
         <div class="flex flex-row items-center space-x-2">
           <EditEvent />
@@ -217,53 +223,74 @@
                   >
                 </CardHeader>
                 <CardContent>
-                  <div class="w-full flex items-center justify-center">
-                    <!-- Heatmap Grid -->
-                    <table
-                      class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-                    >
-                      <thead>
-                        <tr>
-                          <th class="pb-0.5"></th>
-                          <th
-                            v-for="(date, dateIndex) in dates"
-                            :key="dateIndex"
-                            class="text-sm font-medium pb-0.5"
-                          >
-                            {{ formatDate(date) }}
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                          <td
-                            v-if="timeIndex % 2 == 0"
-                            class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
-                          >
-                            {{ time }}
-                          </td>
-                          <td v-else></td>
-                          <td
-                            v-for="(date, dateIndex) in dates"
-                            :key="dateIndex"
-                            class="h-6 p-0 text-center heatmap-cell"
-                          >
-                            <div
-                              class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md"
-                              :style="{
-                                backgroundColor: getHeatmapColor(
-                                  dateIndex,
-                                  timeIndex
-                                ),
-                              }"
+                  <TooltipProvider :delayDuration="200">
+                    <div class="w-full flex items-center justify-center">
+                      <!-- Heatmap Grid -->
+                      <table
+                        class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                      >
+                        <thead>
+                          <tr>
+                            <th class="pb-0.5"></th>
+                            <th
+                              v-for="(date, dateIndex) in dates"
+                              :key="dateIndex"
+                              class="text-sm font-medium pb-0.5"
                             >
-                              {{ getAvailabilityCount(dateIndex, timeIndex) }}
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                              {{ formatDate(date) }}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(time, timeIndex) in times"
+                            :key="timeIndex"
+                          >
+                            <td
+                              v-if="timeIndex % 2 == 0"
+                              class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
+                            >
+                              {{ time }}
+                            </td>
+                            <td v-else></td>
+                            <td
+                              v-for="(date, dateIndex) in dates"
+                              :key="dateIndex"
+                              class="h-6 p-0 text-center heatmap-cell"
+                            >
+                              <Tooltip>
+                                <TooltipTrigger as-child>
+                                  <div
+                                    class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md"
+                                    :style="{
+                                      backgroundColor: getHeatmapColor(
+                                        dateIndex,
+                                        timeIndex
+                                      ),
+                                    }"
+                                  >
+                                    {{
+                                      getAvailabilityCount(dateIndex, timeIndex)
+                                    }}
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    {{
+                                      getAvailableParticipantNames(
+                                        dateIndex,
+                                        timeIndex
+                                      ).join(", ") || "No one available"
+                                    }}
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </TooltipProvider>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -283,7 +310,7 @@
               </Card>
             </TabsContent>
           </Tabs>
-          <div class="flex flex-col lg:flex-row gap-8" v-else>
+          <div class="flex flex-col lg:flex-row gap-8 justify-center" v-else>
             <Card class="lg:w-80 xl:w-96">
               <CardHeader>
                 <CardTitle>Your Availability</CardTitle>
@@ -359,126 +386,288 @@
                 >
               </CardHeader>
               <CardContent>
-                <div class="w-full flex items-center justify-center">
-                  <!-- Heatmap Grid -->
-                  <table
-                    class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-                  >
-                    <thead>
-                      <tr>
-                        <th class="pb-0.5"></th>
-                        <th
-                          v-for="(date, dateIndex) in dates"
-                          :key="dateIndex"
-                          class="text-sm font-medium pb-0.5"
-                        >
-                          {{ formatDate(date) }}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                        <td
-                          v-if="timeIndex % 2 == 0"
-                          class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
-                        >
-                          {{ time }}
-                        </td>
-                        <td v-else></td>
-                        <td
-                          v-for="(date, dateIndex) in dates"
-                          :key="dateIndex"
-                          class="h-6 p-0 text-center heatmap-cell"
-                        >
-                          <div
-                            class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md transition-all duration-500 ease-in-out"
-                            :style="{
-                              backgroundColor: getHeatmapColor(
-                                dateIndex,
-                                timeIndex
-                              ),
-                            }"
+                <TooltipProvider :delayDuration="200">
+                  <div class="w-full flex items-center justify-center">
+                    <!-- Heatmap Grid -->
+                    <table
+                      class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                    >
+                      <thead>
+                        <tr>
+                          <th class="pb-0.5"></th>
+                          <th
+                            v-for="(date, dateIndex) in dates"
+                            :key="dateIndex"
+                            class="text-sm font-medium pb-0.5"
                           >
-                            {{ getAvailabilityCount(dateIndex, timeIndex) }}
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-            <Card class="lg:w-80 xl:w-96">
-              <CardHeader>
-                <CardTitle>Recommended Timeslots</CardTitle>
-                <CardDescription
-                  >Below are the top 10 timeslots with the highest
-                  <span class="font-bold text-green-400">availability</span>
-                  among everyone.</CardDescription
-                >
-              </CardHeader>
-              <CardContent>
-                <div class="w-full flex items-center justify-center">
-                  <ol>
-                    <li
-                      v-for="{ count, timeslot } in getSortedAvailability()"
-                      :key="timeslot"
-                      class="flex items-center space-x-2 mb-2"
-                    >
-                      <!-- Date portion with box, slight curves, and padding -->
-                      <div
-                        class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
-                      >
-                        {{ timeslot }}
-                      </div>
-                      <!-- Availability in green, following format "[count] people available" -->
-                      <span class="text-green-500 font-semibold">
-                        {{ count }} people available
-                      </span>
-                    </li>
-                  </ol>
-                </div>
-              </CardContent>
-            </Card>
-            <div class="ml-auto">
-              <div>
-                <!-- Button to trigger overlay -->
-                <button
-                  class="bg-blue-500 text-black bg-white rounded px-4 h-[60px]"
-                  @click="toggleOverlay"
-                >
-                  Suggest Location
-                </button>
-
-                <!-- Overlay -->
-                <div
-                  v-if="showOverlay"
-                  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-                >
-                  <div
-                    class="bg-white rounded-lg shadow-lg w-4/5 max-w-lg h-4/5 p-4 relative"
-                  >
-                    <button
-                      class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                      @click="closeOverlay"
-                    >
-                      &times;
-                    </button>
-                    <GoogleMaps />
+                            {{ formatDate(date) }}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                          <td
+                            v-if="timeIndex % 2 == 0"
+                            class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
+                          >
+                            {{ time }}
+                          </td>
+                          <td v-else></td>
+                          <td
+                            v-for="(date, dateIndex) in dates"
+                            :key="dateIndex"
+                            class="h-6 p-0 text-center heatmap-cell"
+                          >
+                            <Tooltip>
+                              <TooltipTrigger as-child>
+                                <div
+                                  class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md transition-all duration-500 ease-in-out"
+                                  :style="{
+                                    backgroundColor: getHeatmapColor(
+                                      dateIndex,
+                                      timeIndex
+                                    ),
+                                  }"
+                                >
+                                  {{
+                                    getAvailabilityCount(dateIndex, timeIndex)
+                                  }}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>
+                                  {{
+                                    getAvailableParticipantNames(
+                                      dateIndex,
+                                      timeIndex
+                                    ).join(", ") || "No one available"
+                                  }}
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
-                </div>
-              </div>
+                </TooltipProvider>
+              </CardContent>
+            </Card>
+            <div class="flex flex-col gap-4">
+              <Card class="lg:w-80 xl:w-96 h-fit">
+                <CardHeader>
+                  <CardTitle>Recommended Timeslots</CardTitle>
+                  <CardDescription
+                    >Below are the top 10 timeslots with the highest
+                    <span class="font-bold text-green-400">availability</span>
+                    among everyone.</CardDescription
+                  >
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea class="h-72">
+                    <div class="w-full flex items-center justify-center">
+                      <ol>
+                        <li
+                          v-for="{ count, timeslot } in getSortedAvailability()"
+                          :key="timeslot"
+                          class="flex items-center space-x-2 mb-2"
+                        >
+                          <!-- Date portion with box, slight curves, and padding -->
+                          <div
+                            class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
+                          >
+                            {{ timeslot }}
+                          </div>
+                          <!-- Availability in green, following format "[count] people available" -->
+                          <span class="text-green-500 font-semibold">
+                            {{ count }} people available
+                          </span>
+                        </li>
+                      </ol>
+                    </div>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+              <Dialog>
+                <DialogTrigger as-child>
+                  <Button size="lg" class="w-full" variant="outline"
+                    >View Recommended Locations</Button
+                  >
+                </DialogTrigger>
+                <DialogContent class="w-5/6 rounded-md">
+                  <DialogHeader>
+                    <DialogTitle>Location Suggestions</DialogTitle>
+                    <DialogDescription
+                      >Suggested meeting & eating spots for your event, based on
+                      participant locations.</DialogDescription
+                    >
+                  </DialogHeader>
+                  <GoogleMaps />
+                  <DialogFooter>
+                    <DialogClose as-child>
+                      <Button type="button" variant="secondary"> Close </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              <Card class="lg:w-80 xl:w-96 h-fit">
+                <CardHeader>
+                  <div class="flex flex-row justify-between">
+                    <CardTitle>Event Participants</CardTitle>
+                    <CardTitle
+                      >{{ event_participants.length }} /
+                      {{ participants_num }}</CardTitle
+                    >
+                  </div>
+                  <CardDescription
+                    >View all participants who have joined this event
+                    below.</CardDescription
+                  >
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea class="h-48 mb-8">
+                    <div class="w-full flex items-center justify-center">
+                      <ol class="w-full">
+                        <li
+                          v-for="participant in event_participants"
+                          :key="Object.keys(participant)[0]"
+                          class="flex text-xl space-x-2 mb-2"
+                        >
+                          {{ Object.keys(participant)[0] }}
+                        </li>
+                      </ol>
+                    </div>
+                  </ScrollArea>
+                  <Dialog>
+                    <DialogTrigger as-child>
+                      <Button
+                        size="lg"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                        >Confirm Timeslot</Button
+                      >
+                    </DialogTrigger>
+                    <DialogContent class="w-5/6 rounded-md h-fit">
+                      <DialogHeader>
+                        <DialogTitle>Confirm Timeslot</DialogTitle>
+                        <DialogDescription
+                          >Tentatively lock in a timeslot and notify
+                          participants who have an account with MeetLah. The
+                          timeslot will also be visible on this event's main
+                          page.</DialogDescription
+                        >
+                      </DialogHeader>
+                      <ScrollArea class="h-[40rem]">
+                        <TooltipProvider :delayDuration="200">
+                          <table
+                            class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                          >
+                            <thead>
+                              <tr>
+                                <th class="pb-0.5"></th>
+                                <th
+                                  v-for="(date, dateIndex) in dates"
+                                  :key="dateIndex"
+                                  class="text-sm font-medium pb-0.5"
+                                >
+                                  {{ formatDate(date) }}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr
+                                v-for="(time, timeIndex) in times"
+                                :key="timeIndex"
+                              >
+                                <td
+                                  v-if="timeIndex % 2 == 0"
+                                  class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
+                                >
+                                  {{ time }}
+                                </td>
+                                <td v-else></td>
+                                <td
+                                  v-for="(date, dateIndex) in dates"
+                                  :key="dateIndex"
+                                  class="h-6 p-0 text-center heatmap-cell cursor-pointer"
+                                  @click="
+                                    selectConfirmTimeslot(dateIndex, timeIndex)
+                                  "
+                                >
+                                  <Tooltip>
+                                    <TooltipTrigger as-child>
+                                      <div
+                                        class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md transition duration-100 ease-in-out"
+                                        :style="{
+                                          backgroundColor: getHeatmapColor(
+                                            dateIndex,
+                                            timeIndex
+                                          ),
+                                        }"
+                                        :class="[
+                                          isConfirmed(dateIndex, timeIndex)
+                                            ? 'bg-indigo-600 text-white' +
+                                              getConfirmMergedClass(
+                                                dateIndex,
+                                                timeIndex
+                                              )
+                                            : 'rounded-md',
+                                        ]"
+                                      >
+                                        {{
+                                          getAvailabilityCount(
+                                            dateIndex,
+                                            timeIndex
+                                          )
+                                        }}
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>
+                                        {{
+                                          getAvailableParticipantNames(
+                                            dateIndex,
+                                            timeIndex
+                                          ).join(", ") || "No one available"
+                                        }}
+                                      </p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </TooltipProvider>
+                      </ScrollArea>
+                      <DialogFooter>
+                        <Button
+                          type="button"
+                          variant="primary"
+                          @click="confirmSelectedTimeslot"
+                          :disabled="confirmedTimeslot.length === 0"
+                        >
+                          Confirm Selected Timeslot
+                        </Button>
+                        <DialogClose as-child>
+                          <Button type="button" variant="secondary">
+                            Close
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </CardContent>
+              </Card>
             </div>
           </div>
           <!-- Existing Dialog and Toast Components -->
-          <Dialog :open="showDialog">
-            <DialogOverlay />
+          <Dialog :open="showNameDialog">
             <DialogContent class="w-5/6 rounded-md">
-              <DialogTitle>Update Display Name</DialogTitle>
-              <DialogDescription>
-                Please enter your display name to continue.
-              </DialogDescription>
-
+              <DialogHeader>
+                <DialogTitle>Update Display Name</DialogTitle>
+                <DialogDescription>
+                  Please enter your display name to continue.
+                </DialogDescription>
+              </DialogHeader>
               <Input
                 v-model="newDisplayName"
                 placeholder="Enter your display name"
@@ -523,10 +712,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Trash2 } from "lucide-vue-next";
 import { useMediaQuery } from "@vueuse/core";
 import { EditEvent } from "@/components/custom/edit-event";
 import { GoogleMaps } from "@/components/custom/google-maps";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -534,12 +740,14 @@ const route = useRoute();
 const { toast } = useToast();
 const isMobile = useMediaQuery("(max-width: 1000px)");
 
-const showDialog = ref(false);
+const showNameDialog = ref(false);
 const event_id = ref("");
 const newDisplayName = ref("");
 const displayName = ref("");
 const event_title = ref("");
 const event_participants = ref([]);
+const participants_num = ref(0);
+const participants_userIds = ref([]);
 const isCreator = ref(false);
 
 // Variables for the interval grid
@@ -550,13 +758,13 @@ const endTime = ref("");
 const dates = ref([]);
 const times = ref([]);
 const intervals = ref([]);
+const confirmedTimeslot = ref([]);
+const confirmedTimeslotString = ref("");
 
 // Variable to store the participant's name
 const participant_name = ref(null);
 
 const event_code = route.params.eventId;
-
-const showOverlay = ref(false);
 
 onMounted(async () => {
   // Fetch event details from Supabase
@@ -576,13 +784,17 @@ onMounted(async () => {
   } else {
     event_id.value = findEvent.id;
     event_title.value = findEvent.title;
-
-    // Set dates and times
     startDate.value = findEvent.start_date;
     endDate.value = findEvent.end_date;
     startTime.value = findEvent.start_time;
     endTime.value = findEvent.end_time;
-    isCreator.value = findEvent.creator_user_id == user.value.id;
+    isCreator.value = user.value
+      ? findEvent.creator_user_id == user.value.id
+      : false;
+    participants_num.value = findEvent.number_of_participants;
+    confirmedTimeslotString.value = findEvent.confirmed_timeslot
+      ? findEvent.confirmed_timeslot
+      : "TBC";
 
     // Generate intervals
     generateIntervals();
@@ -594,23 +806,28 @@ onMounted(async () => {
     await fetchParticipantData();
 
     // Fetch user events from api
-    const timeMin = combineDateAndTime(
-      findEvent.start_date,
-      findEvent.start_time
-    );
-    const timeMax = combineDateAndTime(findEvent.end_date, findEvent.end_time);
-    const [gCalEvents, mCalEvents] = await Promise.all([
-      fetchGoogleCalEvents(timeMin, timeMax),
-      fetchMicrosoftCalEvents(timeMin, timeMax),
-    ]);
+    if (user.value) {
+      const timeMin = combineDateAndTime(
+        findEvent.start_date,
+        findEvent.start_time
+      );
+      const timeMax = combineDateAndTime(
+        findEvent.end_date,
+        findEvent.end_time
+      );
+      const [gCalEvents, mCalEvents] = await Promise.all([
+        fetchGoogleCalEvents(timeMin, timeMax),
+        fetchMicrosoftCalEvents(timeMin, timeMax),
+      ]);
 
-    // Once the events are fetched, update availability based on the results
-    if (gCalEvents && gCalEvents.length > 0) {
-      await updateAvailabilityFromGoogleCal(gCalEvents);
-    }
+      // Once the events are fetched, update availability based on the results
+      if (gCalEvents && gCalEvents.length > 0) {
+        await updateAvailabilityFromGoogleCal(gCalEvents);
+      }
 
-    if (mCalEvents && mCalEvents.length > 0) {
-      await updateAvailabilityFromMicrosoftCal(mCalEvents);
+      if (mCalEvents && mCalEvents.length > 0) {
+        await updateAvailabilityFromMicrosoftCal(mCalEvents);
+      }
     }
   }
 });
@@ -630,6 +847,7 @@ async function fetchParticipants() {
     event_participants.value = findParticipants.map(
       ({ name, availability }) => ({ [name]: availability })
     );
+    participants_userIds.value = findParticipants.map(({ user_id }) => user_id);
   }
 }
 
@@ -638,7 +856,7 @@ async function fetchParticipantData() {
 
   if (participant) {
     setParticipantData(participant);
-    await fetchParticipants(); // Refresh participants list
+    await fetchParticipants();
   }
 }
 
@@ -655,7 +873,7 @@ async function getOrCreateParticipant() {
     return participant;
   } else {
     if (!newDisplayName.value) {
-      showDialog.value = true;
+      showNameDialog.value = true;
       return null;
     }
 
@@ -858,7 +1076,7 @@ function combineDateAndTime(startDate, startTime) {
 function setParticipantData(participant) {
   displayName.value = participant.name;
   participant_name.value = participant.name;
-  showDialog.value = false;
+  showNameDialog.value = false;
 
   loadAvailability(participant.availability);
 }
@@ -1034,7 +1252,7 @@ function getSortedAvailability() {
 
   // Iterate over the intervals and calculate availability counts for each timeslot
   intervals.value.forEach((interval, index) => {
-    const timeSlot = `${interval.date} ${interval.time}`;
+    const timeSlot = `${formatDate(interval.date)} ${interval.time}`;
     const availabilityCount = availabilityCounts.value[index] || 0;
     availabilityDict.push({ timeslot: timeSlot, count: availabilityCount });
   });
@@ -1167,7 +1385,11 @@ async function confirmDelete() {
 
 async function leaveEvent(userId, eventId) {
   try {
-    const { error } = await supabase.from("participants").delete().eq("event_id", eventId).eq("user_id", userId);
+    const { error } = await supabase
+      .from("participants")
+      .delete()
+      .eq("event_id", eventId)
+      .eq("user_id", userId);
 
     if (error) {
       throw error;
@@ -1201,14 +1423,140 @@ async function confirmLeave() {
   }
 }
 
-function toggleOverlay() {
-  showOverlay.value = true;
-  console.log("Overlay toggled to true"); // Debug message
+function getAvailableParticipantNames(dateIndex, timeIndex) {
+  const intervalIndex = dateIndex * times.value.length + timeIndex;
+  const names = [];
+
+  event_participants.value.forEach((participant) => {
+    const name = Object.keys(participant)[0];
+    const availabilityString = participant[name];
+    if (availabilityString && availabilityString.length > intervalIndex) {
+      if (availabilityString[intervalIndex] === "1") {
+        names.push(name);
+      }
+    }
+  });
+
+  return names;
 }
 
-function closeOverlay() {
-  showOverlay.value = false;
-  console.log("Overlay toggled to false"); // Debug message
+function isConfirmed(dateIndex, timeIndex) {
+  const intervalIndex = dateIndex * times.value.length + timeIndex;
+  return confirmedTimeslot.value.includes(intervalIndex);
+}
+
+function selectConfirmTimeslot(dateIndex, timeIndex) {
+  const intervalIndex = dateIndex * times.value.length + timeIndex;
+
+  // If confirmedTimeslot is empty, start new selection
+  if (confirmedTimeslot.value.length === 0) {
+    confirmedTimeslot.value.push(intervalIndex);
+  } else {
+    const selectedIndices = confirmedTimeslot.value;
+    const selectedDateIndex = Math.floor(
+      selectedIndices[0] / times.value.length
+    );
+
+    // Ensure same date
+    if (dateIndex !== selectedDateIndex) {
+      // Reset selection to new date
+      confirmedTimeslot.value = [intervalIndex];
+      return;
+    }
+
+    // Check if the new interval is adjacent to current selection
+    const minIndex = Math.min(...selectedIndices);
+    const maxIndex = Math.max(...selectedIndices);
+
+    if (intervalIndex === minIndex - 1 || intervalIndex === maxIndex + 1) {
+      // Adjacent, add to selection
+      confirmedTimeslot.value.push(intervalIndex);
+      confirmedTimeslot.value.sort((a, b) => a - b);
+    } else {
+      // Not adjacent or gap detected, reset selection
+      confirmedTimeslot.value = [intervalIndex];
+    }
+  }
+}
+
+async function confirmSelectedTimeslot() {
+  if (confirmedTimeslot.value.length === 0) {
+    toast({
+      title: "No Timeslot Selected",
+      description: "Please select a timeslot to confirm.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  const intervalsSelected = confirmedTimeslot.value.map(
+    (index) => intervals.value[index]
+  );
+
+  const firstInterval = intervalsSelected[0];
+  const lastInterval = intervalsSelected[intervalsSelected.length - 1];
+
+  confirmedTimeslotString.value = `${formatDate(firstInterval.date)} ${
+    firstInterval.time
+  } - ${lastInterval.time}`;
+
+  const { data: confirmedTimeslotData, error: confirmedTimeslotError } =
+    await supabase
+      .from("events")
+      .update({ confirmed_timeslot: confirmedTimeslotString.value })
+      .eq("id", event_id.value)
+      .select();
+
+  if (!confirmedTimeslotError) {
+    toast({
+      title: "Timeslot Confirmed",
+      description: `You have confirmed the timeslot: ${confirmedTimeslotString.value}`,
+      variant: "success",
+    });
+
+    participants_userIds.value.forEach(async (id) => {
+      console.log(id);
+      const { data, error } = await supabase
+        .from("notifications")
+        .insert([
+          {
+            user_id: id,
+            message: `Timeslot confirmed in event ${event_title.value}: ${confirmedTimeslotString.value}`,
+            target_path: `/event/${event_code}`
+          },
+        ])
+        .select();
+
+      if (error) {
+        console.error(
+          "Error sending notifications to event participants:",
+          error.message
+        );
+      }
+    });
+  } else {
+    console.error(confirmedTimeslotError.message);
+  }
+}
+
+function getConfirmMergedClass(dateIndex, timeIndex) {
+  const hasAbove = timeIndex > 0 && isConfirmed(dateIndex, timeIndex - 1);
+  const hasBelow =
+    timeIndex < times.value.length - 1 && isConfirmed(dateIndex, timeIndex + 1);
+
+  let classes = " border-x-4";
+
+  if (hasAbove && hasBelow) {
+    classes += " rounded-none border-t-0 border-b-0";
+  } else if (hasAbove) {
+    classes += " rounded-t-none border-t-0 border-b-4";
+  } else if (hasBelow) {
+    classes += " rounded-b-none border-b-0 border-t-4";
+  } else {
+    classes += " rounded-md border-4";
+  }
+
+  return classes;
 }
 </script>
 
@@ -1220,6 +1568,10 @@ function closeOverlay() {
 
 .interval-cell .selected {
   @apply bg-red-400 border-red-400;
+}
+
+.heatmap-cell .bg-indigo-600 {
+  border-color: #4f46e5;
 }
 
 th,
