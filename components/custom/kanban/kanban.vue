@@ -207,73 +207,94 @@ const setupRealTimeSubscription = () => {
 };
 
 const onDragEnd = async () => {
-  const allTasks = [
-    ...pendingTasks.value,
-    ...doingTasks.value,
-    ...doneTasks.value,
-  ];
 
   await Promise.all(
-    allTasks.map((task) => {
-      if (pendingTasks.value.includes(task)) {
-        task.status = "pending";
-      } else if (doingTasks.value.includes(task)) {
-        task.status = "in_progress";
-      } else if (doneTasks.value.includes(task)) {
-        task.status = "completed";
-      }
-      return updateTaskStatus(task);
+    pendingTasks.value.map((task, index) => {
+      task.status = "pending";
+      task.order = index; // Set order based on current index in pendingTasks
+
+      return supabase
+        .from("todos")
+        .update({ status: task.status, order: task.order })
+        .eq("id", task.id);
+    })
+  );
+
+  await Promise.all(
+    doingTasks.value.map((task, index) => {
+      task.status = "in_progress";
+      task.order = index; // Set order based on current index in doingTasks
+
+      return supabase
+        .from("todos")
+        .update({ status: task.status, order: task.order })
+        .eq("id", task.id);
+    })
+  );
+
+  await Promise.all(
+    doneTasks.value.map((task, index) => {
+      task.status = "completed";
+      task.order = index; // Set order based on current index in doneTasks
+
+      return supabase
+        .from("todos")
+        .update({ status: task.status, order: task.order })
+        .eq("id", task.id);
     })
   );
 };
 
 async function fetchTasks() {
   try {
-    const { data: todos, error: todosError } = await supabase
+    const { data: pendingTodos, error: pendingError } = await supabase
       .from("todos")
       .select("*")
       .eq("project_id", props.projectId)
-      .eq("status", "pending");
+      .eq("status", "pending")
+      .order("order", { ascending: true });
 
-    if (todosError) {
-      throw new Error(todosError.message);
+    if (pendingError) {
+      throw new Error(pendingError.message);
     }
 
-    pendingTasks.value = Array.isArray(todos) ? todos : [];
+    pendingTasks.value = Array.isArray(pendingTodos) ? pendingTodos : [];
   } catch (error) {
     console.error("Error fetching todos:", error);
     pendingTasks.value = [];
   }
 
   try {
-    const { data: todos, error: todosError } = await supabase
+    const { data: doingTodos, error: doingError } = await supabase
       .from("todos")
       .select("*")
       .eq("project_id", props.projectId)
-      .eq("status", "in_progress");
+      .eq("status", "in_progress")
+      .order("order", { ascending: true });
 
-    if (todosError) {
-      throw new Error(todosError.message);
+    if (doingError) {
+      throw new Error(doingError.message);
     }
 
-    doingTasks.value = Array.isArray(todos) ? todos : [];
+    doingTasks.value = Array.isArray(doingTodos) ? doingTodos : [];
   } catch (error) {
     console.error("Error fetching todos:", error);
     doingTasks.value = [];
   }
 
   try {
-    const { data: todos, error: todosError } = await supabase
+    const { data: doneTodos, error: doneError } = await supabase
       .from("todos")
       .select("*")
       .eq("project_id", props.projectId)
-      .eq("status", "completed");
+      .eq("status", "completed")
+      .order("order", { ascending: true });
 
-    if (todosError) {
-      throw new Error(todosError.message);
+    if (doneError) {
+      throw new Error(doneError.message);
     }
 
-    doneTasks.value = Array.isArray(todos) ? todos : [];
+    doneTasks.value = Array.isArray(doneTodos) ? doneTodos : [];
   } catch (error) {
     console.error("Error fetching todos:", error);
     doneTasks.value = [];
@@ -281,13 +302,24 @@ async function fetchTasks() {
 }
 
 const updateTaskStatus = async (task) => {
-  const { error } = await supabase
+  const { data: currStatus, error: currStatusError } = await supabase
     .from("todos")
-    .update({ status: task.status })
+    .select("status")
     .eq("id", task.id);
 
-  if (error) {
-    console.error("Error updating task status:", error);
+  if (currStatusError) {
+    console.error(currStatusError.message);
+  } else {
+    if (currStatus.status != task.status) {
+      const { error } = await supabase
+        .from("todos")
+        .update({ status: task.status })
+        .eq("id", task.id);
+
+      if (error) {
+        console.error("Error updating task status:", error);
+      }
+    }
   }
 };
 

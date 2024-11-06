@@ -348,8 +348,8 @@ async function fetchData() {
   // Group tasks by "task_group"
   const groups = {};
   data.forEach((todo) => {
+    console.log(todo)
     const groupName = todo.task_group;
-
     if (!groups[groupName]) {
       groups[groupName] = {
         id: groupName, // Using groupName as id

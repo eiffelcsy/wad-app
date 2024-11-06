@@ -420,7 +420,7 @@ const handleRealTimeChange = (payload) => {
 
 const addNewTaskGroup = () => {
   if (newTaskGroup.value) {
-    taskGroups.value.push({ task_group: newTaskGroup.value });
+    taskGroups.value.push(newTaskGroup.value);
     newTaskGroup.value = "";
   }
 };
