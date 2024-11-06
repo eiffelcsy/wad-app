@@ -22,8 +22,13 @@
 
         <!-- Search bar for team members -->
         <div class="relative w-full max-h-10 pr-2 mb-6">
-          <Input id="searchMembers" type="text" placeholder="Search Users..." class="pl-10 text-base"
-            v-model="searchQuery" />
+          <Input
+            id="searchMembers"
+            type="text"
+            placeholder="Search Users..."
+            class="pl-10 text-base"
+            v-model="searchQuery"
+          />
           <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
             <Search class="size-6 text-muted-foreground" />
           </span>
@@ -133,7 +138,7 @@
                       <TableCell class="py-2 px-6">{{ admin.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(admin.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <span @click="manageMember(admin)" class="cursor-pointer" title="Manage">
+                        <span v-if="isOwner" @click="manageMember(owner)" class="cursor-pointer" title="Manage">
                           <PencilIcon class="size-6 text-muted-foreground" />
                         </span>
                       </TableCell>
@@ -170,7 +175,7 @@
                       <TableCell class="py-2 px-6">{{ member.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(member.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <span @click="manageMember(admin)" class="cursor-pointer" title="Manage">
+                        <span v-if="isOwner" @click="manageMember(owner)" class="cursor-pointer" title="Manage">
                           <PencilIcon class="size-6 text-muted-foreground" />
                         </span>
                       </TableCell>
@@ -186,17 +191,29 @@
         <div class="container w-full pt-8">
           <h2 class="text-2xl font-semibold mb-4">Team Projects</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card v-for="(project, index) in teamProjects" :key="index" class="mt-6 hover:border-indigo-600 relative">
+            <Card
+              v-for="(project, index) in teamProjects"
+              :key="index"
+              class="mt-6 hover:border-indigo-600 relative"
+            >
               <div class="absolute top-2 right-2 flex gap-2">
                 <!-- Edit Icon Button -->
-                <Button @click="startEditing(project.id, project.title)" class="text-blue-500 hover:text-blue-700"
-                  variant="ghost" size="icon">
+                <Button
+                  @click="startEditing(project.id, project.title)"
+                  class="text-blue-500 hover:text-blue-700"
+                  variant="ghost"
+                  size="icon"
+                >
                   <Edit class="size-5" />
                 </Button>
 
                 <!-- Delete Icon Button -->
-                <Button @click="deleteProject(project.id)" class="text-red-500 hover:text-red-700" variant="ghost"
-                  size="icon">
+                <Button
+                  @click="deleteProject(project.id)"
+                  class="text-red-500 hover:text-red-700"
+                  variant="ghost"
+                  size="icon"
+                >
                   <Trash class="size-5" />
                 </Button>
               </div>
