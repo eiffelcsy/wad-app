@@ -210,13 +210,13 @@
                       <div
                         class="w-16 h-16 rounded-full flex items-center justify-center absolute opacity-0 hover:opacity-100 hover:backdrop-brightness-50 transition-all duration-300"
                       >
-                        <Pencil />
+                        <Pencil class="text-white" />
                       </div>
                       <img :src="profilePictureUrl" />
                     </Avatar>
                     <div>
                       <h1 class="text-2xl font-semibold">
-                        {{ displayName }}
+                        {{ displayName }} 
                       </h1>
                       <p class="text-base text-zinc-400 dark:text-zinc-500">
                         {{ email }}

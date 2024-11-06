@@ -93,7 +93,7 @@
                   Get Started
                 </Button>
               </div>
-              <div v-else>
+              <div v-if="user">
                 <Sheet>
                   <SheetTrigger as-child>
                     <Button
