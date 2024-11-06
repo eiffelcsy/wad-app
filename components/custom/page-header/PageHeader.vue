@@ -13,7 +13,7 @@
         class="size-12 mr-2"
         v-if="$colorMode.value === 'dark'"
       />
-      <NuxtLink v-if="!isMobile" to="/" prefetch="true" 
+      <NuxtLink v-if="!isMobile" to="/" prefetch="true"
         ><p class="text-xl font-bold tracking-wider hover:opacity-80">
           Meet<span class="text-indigo-600 dark:text-indigo-500">L</span>ah
         </p></NuxtLink
@@ -35,7 +35,7 @@
         </SheetTrigger>
         <SheetContent class="flex flex-col">
           <SheetHeader class="flex flex-row items-center">
-            <Avatar class="w-10 h-10 mr-2">
+            <Avatar class="w-10 h-10 mr-3">
               <img :src="profilePictureUrl" />
             </Avatar>
             <div>
@@ -135,9 +135,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet'
-import { Avatar } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/sheet";
+import { Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Notifications } from "@/components/custom/notifications";
 
 const supabase = useSupabaseClient();
@@ -154,13 +154,20 @@ if (
 ) {
   const { data: profilePicData, error: profilePicError } = supabase.storage
     .from("profile-pictures")
-    .getPublicUrl(`pics/default-${user.value.id}.png`);
-
+    .getPublicUrl(`pics/${user.value.id}`);
   if (profilePicError) {
-    console.error("Could not fetch profile picture");
+    const { data: defaultProfilePicData, error: defaultProfilePicError } =
+      supabase.storage
+        .from("profile-pictures")
+        .getPublicUrl(`default-pics/default-${user.value.id}.png`);
+    if (defaultProfilePicError) {
+      console.error(defaultProfilePicError.message);
+    } else {
+      profilePictureUrl.value = defaultProfilePicData.publicUrl;
+    }
+  } else {
+    profilePictureUrl.value = profilePicData.publicUrl;
   }
-  
-  profilePictureUrl.value = profilePicData.publicUrl;
 } else {
   profilePictureUrl.value = user.value.user_metadata.avatar_url;
 }

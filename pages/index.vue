@@ -206,7 +206,10 @@
                 </CardHeader>
                 <CardContent>
                   <div class="flex flex-row">
-                    <Avatar class="w-16 h-16 mr-6">
+                    <Avatar
+                      class="w-16 h-16 mr-6 hover:brightness-50"
+                      @click="openProfileDialog"
+                    >
                       <img :src="profilePictureUrl" />
                     </Avatar>
                     <div>
@@ -223,6 +226,33 @@
                     <mCalButton />
                   </div>
                 </CardContent>
+                <Dialog v-model:open="isProfileDialogOpen">
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Update Profile Picture</DialogTitle>
+                    </DialogHeader>
+                    <div class="flex flex-col items-center gap-4">
+                      <img
+                        v-if="newAvatarUrl"
+                        :src="newAvatarUrl"
+                        class="w-32 h-32 rounded-full object-cover"
+                      />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        @change="handleAvatarUpload"
+                      />
+                    </div>
+                    <DialogFooter>
+                      <Button variant="primary" @click="saveAvatar"
+                        >Save</Button
+                      >
+                      <Button variant="secondary" @click="closeProfileDialog"
+                        >Cancel</Button
+                      >
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </Card>
             </div>
           </div>
@@ -252,6 +282,7 @@
         </Dialog>
       </div>
     </div>
+    <Toaster />
     <PageFooter />
   </div>
 </template>
@@ -276,32 +307,99 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowRight, ArrowUpRight, Pencil } from "lucide-vue-next";
+import { ArrowRight, ArrowUpRight } from "lucide-vue-next";
 import { PageFooter } from "@/components/custom/page-footer";
 import { gCalButton } from "@/components/custom/gcal-button";
 import { mCalButton } from "@/components/custom/mcal-button";
+import { Avatar } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { Toaster, ToastAction } from "@/components/ui/toast";
 
 definePageMeta({
   middleware: "landing",
 });
 
-// Supabase setup
 const supabase = useSupabaseClient();
+const user = useSupabaseUser();
+const { toast } = useToast();
 
 const showDialog = ref(false);
 const newDisplayName = ref("");
 const displayName = ref("");
 const profilePictureUrl = ref("");
 const email = ref("");
-const user = useSupabaseUser();
-
-// State variables for Upcoming Events and TODOs
 const upcomingEvents = ref([]);
 const todos = ref([]);
-
 const projects = ref([]);
+const isProfileDialogOpen = ref(false);
+const newAvatarUrl = ref(null);
+const selectedFile = ref(null);
+const uploading = ref(false);
 
-// Fetch user info and open dialog if display name is missing
+function openProfileDialog() {
+  isProfileDialogOpen.value = true;
+}
+
+function closeProfileDialog() {
+  isProfileDialogOpen.value = false;
+  newAvatarUrl.value = null;
+  selectedFile.value = null;
+}
+
+function handleAvatarUpload(event) {
+  const file = event.target.files[0];
+  if (file) {
+    newAvatarUrl.value = URL.createObjectURL(file);
+    selectedFile.value = file;
+  }
+}
+
+async function saveAvatar() {
+  uploading.value = true;
+  try {
+    const file = selectedFile.value;
+    if (!file) {
+      throw new Error("Please select an image to upload.");
+    }
+
+    const filePath = `pics/${user.value.id}`;
+    const { error } = await supabase.storage
+      .from("profile-pictures")
+      .upload(filePath, file);
+    if (error) throw error;
+
+    profilePictureUrl.value = URL.createObjectURL(file);
+
+    closeProfileDialog();
+  } catch (error) {
+    console.error("Error uploading avatar:", error.message);
+    toast({
+      title: "Uh oh! Something went wrong.",
+      description: `Error uploading profile picture: ${error.message}`,
+      variant: "destructive",
+      action: h(
+        ToastAction,
+        {
+          altText: "Try again",
+        },
+        {
+          default: () => "Try again",
+        }
+      ),
+    });
+  } finally {
+    uploading.value = false;
+  }
+}
+
 if (user.value) {
   email.value = user.value.email;
   if (
@@ -310,8 +408,20 @@ if (user.value) {
   ) {
     const { data: profilePicData, error: profilePicError } = supabase.storage
       .from("profile-pictures")
-      .getPublicUrl(`pics/default-${user.value.id}.png`);
-    profilePictureUrl.value = profilePicData.publicUrl;
+      .getPublicUrl(`pics/${user.value.id}`);
+    if (profilePicError) {
+      const { data: defaultProfilePicData, error: defaultProfilePicError } =
+        supabase.storage
+          .from("profile-pictures")
+          .getPublicUrl(`default-pics/default-${user.value.id}.png`);
+      if (defaultProfilePicError) {
+        console.error(defaultProfilePicError.message);
+      } else {
+        profilePictureUrl.value = defaultProfilePicData.publicUrl;
+      }
+    } else {
+      profilePictureUrl.value = profilePicData.publicUrl;
+    }
   } else {
     profilePictureUrl.value = user.value.user_metadata.avatar_url;
   }
