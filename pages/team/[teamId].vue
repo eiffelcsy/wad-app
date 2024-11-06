@@ -15,9 +15,7 @@
             </p>
           </div>
           <!-- Edit Team Button, visible to owners and admins only -->
-          <div v-if="canEditTeam">
-            <Button variant="outline" @click="editTeam" class="ml-2">Edit Team</Button>
-          </div>
+          <EditTeam />
         </div>
 
         <!-- Search bar for team members -->
@@ -254,6 +252,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, Edit, Trash, PencilIcon } from "lucide-vue-next";
+import { EditTeam } from "@/components/custom/edit-team";
+
 
 const supabase = useSupabaseClient();
 const route = useRoute();
