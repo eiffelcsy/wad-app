@@ -206,10 +206,12 @@
                 </CardHeader>
                 <CardContent>
                   <div class="flex flex-row">
-                    <Avatar
-                      class="w-16 h-16 mr-6 hover:brightness-50"
-                      @click="openProfileDialog"
-                    >
+                    <Avatar class="w-16 h-16 mr-6" @click="openProfileDialog">
+                      <div
+                        class="w-16 h-16 rounded-full flex items-center justify-center absolute opacity-0 hover:opacity-100 hover:backdrop-brightness-50 transition-all duration-300"
+                      >
+                        <Pencil />
+                      </div>
                       <img :src="profilePictureUrl" />
                     </Avatar>
                     <div>
@@ -244,10 +246,10 @@
                       />
                     </div>
                     <DialogFooter>
-                      <Button variant="primary" @click="saveAvatar"
+                      <Button class="bg-indigo-600 hover:bg-indigo-700 text-white"@click="saveAvatar"
                         >Save</Button
                       >
-                      <Button variant="secondary" @click="closeProfileDialog"
+                      <Button variant="outline" @click="closeProfileDialog"
                         >Cancel</Button
                       >
                     </DialogFooter>
@@ -307,7 +309,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowRight, ArrowUpRight } from "lucide-vue-next";
+import { ArrowRight, ArrowUpRight, Pencil } from "lucide-vue-next";
 import { PageFooter } from "@/components/custom/page-footer";
 import { gCalButton } from "@/components/custom/gcal-button";
 import { mCalButton } from "@/components/custom/mcal-button";
