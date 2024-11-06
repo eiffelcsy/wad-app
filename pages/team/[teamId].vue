@@ -69,7 +69,6 @@
                       <TableCell class="py-2 px-6">{{ member.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(member.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <!-- Show pencil icon for owners to manage each member -->
                         <span v-if="isOwner" @click="manageMember(member)" class="cursor-pointer" title="Manage">
                           <PencilIcon class="size-6 text-muted-foreground" />
                         </span>
@@ -188,6 +187,56 @@
             </Card>
           </TabsContent>
         </Tabs>
+
+        <!-- Display Projects associated with the team -->
+        <div class="container w-full pt-8">
+          <h2 class="text-2xl font-semibold mb-4">Team Projects</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card
+              v-for="(project, index) in teamProjects"
+              :key="index"
+              class="mt-6 hover:border-indigo-600 relative"
+            >
+              <div class="absolute top-2 right-2 flex gap-2">
+                <!-- Edit Icon Button -->
+                <Button
+                  @click="startEditing(project.id, project.title)"
+                  class="text-blue-500 hover:text-blue-700"
+                  variant="ghost"
+                  size="icon"
+                >
+                  <Edit class="size-5" />
+                </Button>
+
+                <!-- Delete Icon Button -->
+                <Button
+                  @click="deleteProject(project.id)"
+                  class="text-red-500 hover:text-red-700"
+                  variant="ghost"
+                  size="icon"
+                >
+                  <Trash class="size-5" />
+                </Button>
+              </div>
+              <CardHeader class="gap-2">
+                <CardTitle>
+                  <div>
+                    <h1 class="text-xl hover:underline">{{ project.title }}</h1>
+                    <p class="text-base font-light text-zinc-500 mt-1">
+                      {{ project.id }}
+                    </p>
+                  </div>
+                </CardTitle>
+                <CardDescription>
+                  <Badge class="mt-2">{{ project.team_name }}</Badge>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>{{ project.description }}</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
     <PageFooter />
@@ -200,8 +249,12 @@ import { useRoute } from 'vue-router';
 import { PageHeader } from "@/components/custom/page-header";
 import { PageFooter } from "@/components/custom/page-footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, PencilIcon } from "lucide-vue-next"; // Import Search and Pencil icons
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Search, Edit, Trash, PencilIcon } from "lucide-vue-next";
 
 const supabase = useSupabaseClient();
 const route = useRoute();
@@ -214,6 +267,7 @@ const memberMembers = ref([]);
 const team_name = ref('');
 const team_code = ref('');
 const team_description = ref('');
+const teamProjects = ref([]);
 const searchQuery = ref("");
 
 // Computed property to check if the user can edit the team (if they are 'owner' or 'admin')
@@ -299,6 +353,7 @@ const fetchTeamDetails = async () => {
     team_description.value = teamData.description;
 
     await fetchTeamMembers(teamData.id);
+    await fetchTeamProjects(teamData.id);
   } catch (error) {
     console.error('Unexpected error fetching team details:', error);
   }
@@ -307,7 +362,6 @@ const fetchTeamDetails = async () => {
 // Function to fetch team members based on team ID
 const fetchTeamMembers = async (teamId) => {
   try {
-    await ensureUserInTeam(teamId);
     const { data: teamMembers, error: membersError } = await supabase
       .from('team_members')
       .select('user_id, name, email, role')
@@ -327,63 +381,57 @@ const fetchTeamMembers = async (teamId) => {
   }
 };
 
-// Function to ensure the logged-in user's name and email are stored in the team_members table
-const ensureUserInTeam = async (teamId) => {
-  if (user) {
-    const name = user.user_metadata.name;
-    const email = user.email;
-
-    const { data: existingMember, error } = await supabase
-      .from('team_members')
+// Function to fetch projects based on team ID
+const fetchTeamProjects = async (teamId) => {
+  try {
+    const { data: projectsData, error: projectsError } = await supabase
+      .from('projects')
       .select('*')
-      .eq('team_id', teamId)
-      .eq('user_id', user.id)
-      .single();
+      .eq('team_id', teamId);
 
-    if (error && error.code !== "PGRST116") {
-      console.error("Error fetching team member:", error.message);
+    if (projectsError) {
+      console.error('Error fetching team projects:', projectsError);
       return;
     }
 
-    if (!existingMember) {
-      const { error: insertError } = await supabase
-        .from('team_members')
-        .insert({
-          team_id: teamId,
-          user_id: user.id,
-          name: name,
-          email: email,
-          role: 'member',
-          added_at: new Date().toISOString(),
-        });
-
-      if (insertError) {
-        console.error("Error inserting team member:", insertError.message);
-      }
-    } else if (!existingMember.name || !existingMember.email) {
-      const { error: updateError } = await supabase
-        .from('team_members')
-        .update({ name, email })
-        .eq('team_id', teamId)
-        .eq('user_id', user.id);
-
-      if (updateError) {
-        console.error("Error updating team member:", updateError.message);
-      }
-    }
+    teamProjects.value = projectsData;
+  } catch (error) {
+    console.error('Unexpected error fetching team projects:', error);
   }
 };
 
-// Function placeholder for editing team
-const editTeam = () => {
-  console.log("Edit Team clicked");
+// Function to delete a project
+const deleteProject = async (projectId) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete this project? This action cannot be undone."
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const { error: deleteError } = await supabase
+      .from('projects')
+      .delete()
+      .eq('id', projectId);
+
+    if (deleteError) {
+      console.error("Error deleting project:", deleteError);
+      return;
+    }
+
+    teamProjects.value = teamProjects.value.filter((project) => project.id !== projectId);
+  } catch (err) {
+    console.error("Unexpected error deleting project:", err);
+  }
 };
 
-// Function to manage individual team members, triggered by pencil icon
-const manageMember = (member) => {
-  console.log("Manage member:", member);
+// Function to start editing a project
+const startEditing = (projectId, currentTitle) => {
+  editingProjectId.value = projectId;
+  editTitle.value = currentTitle;
 };
 
+// Initial data fetching
 onMounted(() => {
   fetchTeamDetails();
 });
