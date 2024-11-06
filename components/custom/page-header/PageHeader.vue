@@ -172,10 +172,6 @@ if (
   profilePictureUrl.value = user.value.user_metadata.avatar_url;
 }
 
-/**
- * Logs the user out using Supabase's authentication.
- * If successful, redirects to the homepage. If an error occurs, it logs the error.
- */
 const logout = async () => {
   const { error } = await supabase.auth.signOut();
   if (error) {

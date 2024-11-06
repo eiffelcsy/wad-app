@@ -833,6 +833,16 @@ import { PageFooter } from "@/components/custom/page-footer";
 import { navigateTo } from "nuxt/app";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { Toaster, ToastAction } from "@/components/ui/toast";
+import {
+  UsersRoundIcon,
+  CalendarDaysIcon,
+  BoxesIcon,
+  LogOutIcon,
+  HouseIcon,
+  CalendarPlusIcon,
+  PackagePlusIcon,
+  UserRoundPlusIcon,
+} from "lucide-vue-next";
 
 const eventCounter = ref(0);
 const monthlyCount = ref(0);
@@ -840,8 +850,8 @@ const joinCode = ref("");
 const scrollInstance = ref(null);
 const user = useSupabaseUser();
 
-const displayName = ref(user.value.user_metadata.name);
-const email = ref(user.value.email);
+const displayName = ref("");
+const email = ref("");
 const profilePictureUrl = ref("");
 const colorMode = useColorMode();
 const { toast } = useToast();
@@ -849,21 +859,32 @@ const { $initLocomotiveScroll } = useNuxtApp();
 const supabase = useSupabaseClient();
 const isMobile = useMediaQuery("(max-width: 600px)");
 
-if (
+if (user.value) {
+  displayName.value = ref(user.value.user_metadata.name);
+  email.value = ref(user.value.email);
+  if (
   user.value.app_metadata.provider == "email" &&
   !user.value.app_metadata.providers.includes("google")
 ) {
   const { data: profilePicData, error: profilePicError } = supabase.storage
     .from("profile-pictures")
-    .getPublicUrl(`pics/default-${user.value.id}.png`);
-
+    .getPublicUrl(`pics/${user.value.id}`);
   if (profilePicError) {
-    console.error("Could not fetch profile picture");
+    const { data: defaultProfilePicData, error: defaultProfilePicError } =
+      supabase.storage
+        .from("profile-pictures")
+        .getPublicUrl(`default-pics/default-${user.value.id}.png`);
+    if (defaultProfilePicError) {
+      console.error(defaultProfilePicError.message);
+    } else {
+      profilePictureUrl.value = defaultProfilePicData.publicUrl;
+    }
+  } else {
+    profilePictureUrl.value = profilePicData.publicUrl;
   }
-  
-  profilePictureUrl.value = profilePicData.publicUrl;
 } else {
   profilePictureUrl.value = user.value.user_metadata.avatar_url;
+}
 }
 
 // Light mode gradients (indigo-50 to indigo-600)
@@ -1128,6 +1149,16 @@ onMounted(async () => {
     }, 1000);
   }
 });
+
+const logout = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error("Error logging out:", error.message); // Logs the error if something goes wrong
+  } else {
+    console.log("Logged out successfully!");
+    location.reload();
+  }
+};
 </script>
 
 <style>
