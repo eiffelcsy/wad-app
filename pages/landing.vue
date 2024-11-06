@@ -241,7 +241,7 @@
                   <span class="text-indigo-600 font-semibold">MeetLah</span>.
                 </p>
                 <div
-                  class="flex flex-col md:flex-row gap-4 fade-in-bottom justify-center"
+                  class="flex flex-col md:flex-row gap-2 fade-in-bottom justify-center"
                   data-scroll
                 >
                   <form
