@@ -336,7 +336,7 @@ async function updateEvent() {
         updates = {
             title: title.value,
             description: description.value,
-            creator_user_id: user.id,
+            creator_user_id: user ? user.id : null,
             start_date: dayjs(dateRange.value.start).format("YYYY-MM-DD"),
             end_date: dayjs(dateRange.value.end).format("YYYY-MM-DD"),
             start_time: adjustedStartTime,
