@@ -3,7 +3,7 @@
     <ClientOnly>
       <div id="scroll-container" data-scroll-container>
         <main class="min-h-screen">
-          <div class="relative w-screen h-screen">
+          <div class="relative w-screen min-h-screen">
             <!-- Gradient Background -->
             <div
               class="w-full h-full absolute inset-0 overflow-hidden bg-white dark:bg-black opacity-35"
@@ -220,7 +220,7 @@
             </div>
             <!-- Hero Section -->
             <section
-              class="h-screen px-8 pt-8 lg:pt-[10vh] flex flex-col mx-auto justify-center items-center bg-transparent"
+              class="min-h-screen px-8 pt-8 lg:pt-[10vh] flex flex-col mx-auto justify-center items-center bg-transparent"
               data-scroll-section
             >
               <div
@@ -266,7 +266,7 @@
                   </Button>
                   <Button
                     variant="outline"
-                    class="w-28 button-far-fade-in-left"
+                    class="button-far-fade-in-left"
                     @click="toDesc()"
                   >
                     How it Works
