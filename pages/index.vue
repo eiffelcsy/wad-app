@@ -58,7 +58,7 @@
                             colspan="3"
                             class="text-center text-zinc-500"
                           >
-                            No tasks found
+                            No events found.
                           </TableCell>
                         </TableRow>
                       </TableBody>
@@ -143,7 +143,7 @@
                             colspan="3"
                             class="text-center text-zinc-500"
                           >
-                            No tasks found
+                            No tasks found.
                           </TableCell>
                         </TableRow>
                       </TableBody>
