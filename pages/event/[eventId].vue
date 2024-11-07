@@ -1598,13 +1598,13 @@ async function confirmDelete() {
   }
 }
 
-async function leaveEvent(userId, eventId) {
+async function leaveEvent(userName, eventId) {
   try {
     const { error } = await supabase
       .from("participants")
       .delete()
       .eq("event_id", eventId)
-      .eq("user_id", userId);
+      .eq("name", userName);
 
     if (error) {
       throw error;
@@ -1617,7 +1617,7 @@ async function leaveEvent(userId, eventId) {
 }
 
 async function confirmLeave() {
-  const success = await leaveEvent(user.value.id, event_id.value);
+  const success = await leaveEvent(displayName.value, event_id.value);
   if (success) {
     toast({
       title: "Event Left",
