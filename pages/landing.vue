@@ -630,7 +630,7 @@
                   class="relative z-10 w-[38rem] h-80 overflow-hidden"
                   v-if="$colorMode.value === 'dark'"
                 >
-                <img
+                  <img
                     src="/images/landing_img_dark_1.png"
                     class="absolute top-12 left-0 max-w-none object-none"
                   />
@@ -641,7 +641,7 @@
                   <div
                     class="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-b from-transparent to-black z-10"
                   ></div>
-              </div>
+                </div>
                 <div
                   class="w-96 z-0"
                   data-scroll
@@ -710,27 +710,37 @@
                 data-scroll-class="appear"
               >
                 <div
-                  class="relative w-[36rem] h-80 overflow-hidden z-10"
+                  class="relative w-[48rem] h-[40rem] overflow-hidden z-10"
                   v-if="$colorMode.value === 'light'"
                   data-scroll
                 >
                   <img
-                    src="/images/landing_img_light_1.png"
-                    class="absolute top-12 left-0 max-w-none object-none"
-                  />
-                  <img
-                    src="/images/landing_img_light_2.png"
-                    class="absolute top-0 left-64 max-w-none object-none"
+                    src="/images/landing_img_light_3.png"
+                    class="absolute -top-32 -left-32 max-w-none scale-[0.7]"
                   />
                   <div
                     class="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-b from-transparent to-white z-10"
                   ></div>
+                  <div
+                    class="absolute bottom-0 right-0 right-0 w-1/4 h-full bg-gradient-to-r from-transparent to-white z-10"
+                  ></div>
                 </div>
                 <div
-                  class="relative w-[36rem] h-80 overflow-hidden z-10"
+                  class="relative w-[48rem] h-[40rem] overflow-hidden z-10 "
                   v-if="$colorMode.value === 'dark'"
                   data-scroll
-                ></div>
+                >
+                  <img
+                    src="/images/landing_img_dark_3.png"
+                    class="absolute -top-32 -left-32 max-w-none scale-[0.7]"
+                  />
+                  <div
+                    class="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-b from-transparent to-black z-10"
+                  ></div>
+                  <div
+                    class="absolute bottom-0 right-0 right-0 w-1/4 h-full bg-gradient-to-r from-transparent to-black z-10"
+                  ></div>
+                </div>
                 <div
                   class="w-96 z-0"
                   data-scroll
@@ -816,8 +826,8 @@ import {
   Users,
   Vote,
 } from "lucide-vue-next";
-import { Button } from '@/components/ui/button'
-import { Avatar } from '@/components/ui/avatar'
+import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/ui/avatar";
 import {
   Sheet,
   SheetClose,
@@ -827,7 +837,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet'
+} from "@/components/ui/sheet";
 import { onMounted, nextTick, ref } from "vue";
 import { PageFooter } from "@/components/custom/page-footer";
 import { navigateTo } from "nuxt/app";
@@ -863,28 +873,28 @@ if (user.value) {
   displayName.value = ref(user.value.user_metadata.name);
   email.value = ref(user.value.email);
   if (
-  user.value.app_metadata.provider == "email" &&
-  !user.value.app_metadata.providers.includes("google")
-) {
-  const { data: profilePicData, error: profilePicError } = supabase.storage
-    .from("profile-pictures")
-    .getPublicUrl(`pics/${user.value.id}`);
-  if (profilePicError) {
-    const { data: defaultProfilePicData, error: defaultProfilePicError } =
-      supabase.storage
-        .from("profile-pictures")
-        .getPublicUrl(`default-pics/default-${user.value.id}.png`);
-    if (defaultProfilePicError) {
-      console.error(defaultProfilePicError.message);
+    user.value.app_metadata.provider == "email" &&
+    !user.value.app_metadata.providers.includes("google")
+  ) {
+    const { data: profilePicData, error: profilePicError } = supabase.storage
+      .from("profile-pictures")
+      .getPublicUrl(`pics/${user.value.id}`);
+    if (profilePicError) {
+      const { data: defaultProfilePicData, error: defaultProfilePicError } =
+        supabase.storage
+          .from("profile-pictures")
+          .getPublicUrl(`default-pics/default-${user.value.id}.png`);
+      if (defaultProfilePicError) {
+        console.error(defaultProfilePicError.message);
+      } else {
+        profilePictureUrl.value = defaultProfilePicData.publicUrl;
+      }
     } else {
-      profilePictureUrl.value = defaultProfilePicData.publicUrl;
+      profilePictureUrl.value = profilePicData.publicUrl;
     }
   } else {
-    profilePictureUrl.value = profilePicData.publicUrl;
+    profilePictureUrl.value = user.value.user_metadata.avatar_url;
   }
-} else {
-  profilePictureUrl.value = user.value.user_metadata.avatar_url;
-}
 }
 
 // Light mode gradients (indigo-50 to indigo-600)
