@@ -976,6 +976,16 @@ const participant_name = ref(null);
 
 const event_code = route.params.eventId;
 
+definePageMeta({
+  head: {
+    meta: [
+      { property: 'og:title', content: event_title.value },
+      { property: 'og:description', content: 'You have been invited!' },
+      { property: 'og:url', content: `https://meetlah.xyz/event/${event_code}` },
+    ]
+  }
+})
+
 onMounted(async () => {
   // Fetch event details from Supabase
   const { data: findEvent, error: findEventError } = await supabase
