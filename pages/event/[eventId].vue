@@ -139,92 +139,28 @@
       <Separator class="w-full" />
       <div class="py-8 mx-auto container">
         <client-only>
-          <Tabs default-value="your" v-if="isMobile">
-            <TabsList class="grid w-full grid-cols-2">
-              <TabsTrigger value="your"> Your Availability </TabsTrigger>
-              <TabsTrigger value="overall"> Overall Availability </TabsTrigger>
-            </TabsList>
-            <TabsContent value="your">
-              <Card class="lg:w-80 xl:w-96">
-                <CardHeader>
-                  <CardTitle>Your Availability</CardTitle>
-                  <CardDescription
-                    >Indicate blocks of time when you are
-                    <span class="font-bold text-red-300">unavailable</span>. Tap
-                    to select start cell, then tap again to select end cell and
-                    all the cells in between.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div class="w-full flex items-center justify-center">
-                    <!-- Interval Grid -->
-                    <table
-                      class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-                    >
-                      <thead>
-                        <tr>
-                          <th class="pb-0.5"></th>
-                          <th
-                            v-for="(date, dateIndex) in dates"
-                            :key="dateIndex"
-                            class="text-sm font-medium pb-0.5"
-                          >
-                            {{ formatDate(date) }}
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                          <td
-                            v-if="timeIndex % 2 == 0"
-                            class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
-                          >
-                            {{ time }}
-                          </td>
-                          <td v-else></td>
-                          <td
-                            v-for="(date, dateIndex) in dates"
-                            :key="dateIndex"
-                            @mousedown="startSelection(dateIndex, timeIndex)"
-                            @mouseover="dragSelection(dateIndex, timeIndex)"
-                            @mouseup="endSelection"
-                            @touchstart.prevent="
-                              tapSelection(dateIndex, timeIndex)
-                            "
-                            class="h-6 p-0 text-center interval-cell"
-                          >
-                            <div
-                              :class="[
-                                'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950',
-                                isSelected(dateIndex, timeIndex)
-                                  ? getMergedClass(dateIndex, timeIndex) +
-                                    ' selected merged'
-                                  : 'rounded-lg',
-                              ]"
-                            ></div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="overall">
-              <Card class="lg:w-80 xl:w-96">
-                <CardHeader>
-                  <CardTitle>Overall Availability</CardTitle>
-                  <CardDescription
-                    >View the
-                    <span class="font-bold text-green-400">availability</span>
-                    of everyone in the event. Find a timeslot that suits
-                    everyone's schedule.</CardDescription
-                  >
-                </CardHeader>
-                <CardContent>
-                  <TooltipProvider :delayDuration="200">
+          <div v-if="isMobile">
+            <Tabs default-value="your">
+              <TabsList class="grid w-full grid-cols-2">
+                <TabsTrigger value="your"> Your Availability </TabsTrigger>
+                <TabsTrigger value="overall">
+                  Overall Availability
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="your">
+                <Card class="lg:w-80 xl:w-96">
+                  <CardHeader>
+                    <CardTitle>Your Availability</CardTitle>
+                    <CardDescription
+                      >Indicate blocks of time when you are
+                      <span class="font-bold text-red-300">unavailable</span>.
+                      Tap to select start cell, then tap again to select end
+                      cell and all the cells in between.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
                     <div class="w-full flex items-center justify-center">
-                      <!-- Heatmap Grid -->
+                      <!-- Interval Grid -->
                       <table
                         class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
                       >
@@ -236,7 +172,8 @@
                               :key="dateIndex"
                               class="text-sm font-medium pb-0.5"
                             >
-                              {{ formatDate(date) }}
+                              {{ formatDate(date)[0] }} <br />
+                              {{ formatDate(date)[1] }}
                             </th>
                           </tr>
                         </thead>
@@ -255,45 +192,325 @@
                             <td
                               v-for="(date, dateIndex) in dates"
                               :key="dateIndex"
-                              class="h-6 p-0 text-center heatmap-cell"
+                              @mousedown="startSelection(dateIndex, timeIndex)"
+                              @mouseover="dragSelection(dateIndex, timeIndex)"
+                              @mouseup="endSelection"
+                              @touchstart.prevent="
+                                tapSelection(dateIndex, timeIndex)
+                              "
+                              class="h-6 p-0 text-center interval-cell"
                             >
-                              <Tooltip>
-                                <TooltipTrigger as-child>
-                                  <div
-                                    class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md"
-                                    :style="{
-                                      backgroundColor: getHeatmapColor(
-                                        dateIndex,
-                                        timeIndex
-                                      ),
-                                    }"
-                                  >
-                                    {{
-                                      getAvailabilityCount(dateIndex, timeIndex)
-                                    }}
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>
-                                    {{
-                                      getAvailableParticipantNames(
-                                        dateIndex,
-                                        timeIndex
-                                      ).join(", ") || "No one available"
-                                    }}
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
+                              <div
+                                :class="[
+                                  'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950',
+                                  isSelected(dateIndex, timeIndex)
+                                    ? getMergedClass(dateIndex, timeIndex) +
+                                      ' selected merged'
+                                    : 'rounded-lg',
+                                ]"
+                              ></div>
                             </td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
-                  </TooltipProvider>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="overall">
+                <Card class="lg:w-80 xl:w-96">
+                  <CardHeader>
+                    <CardTitle>Overall Availability</CardTitle>
+                    <CardDescription
+                      >View the
+                      <span class="font-bold text-green-400">availability</span>
+                      of everyone in the event. Find a timeslot that suits
+                      everyone's schedule.</CardDescription
+                    >
+                  </CardHeader>
+                  <CardContent>
+                    <TooltipProvider :delayDuration="200">
+                      <div class="w-full flex items-center justify-center">
+                        <!-- Heatmap Grid -->
+                        <table
+                          class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                        >
+                          <thead>
+                            <tr>
+                              <th class="pb-0.5"></th>
+                              <th
+                                v-for="(date, dateIndex) in dates"
+                                :key="dateIndex"
+                                class="text-sm font-medium pb-0.5"
+                              >
+                                {{ formatDate(date)[0] }} <br />
+                                {{ formatDate(date)[1] }}
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              v-for="(time, timeIndex) in times"
+                              :key="timeIndex"
+                            >
+                              <td
+                                v-if="timeIndex % 2 == 0"
+                                class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
+                              >
+                                {{ time }}
+                              </td>
+                              <td v-else></td>
+                              <td
+                                v-for="(date, dateIndex) in dates"
+                                :key="dateIndex"
+                                class="h-6 p-0 text-center heatmap-cell"
+                              >
+                                <Tooltip>
+                                  <TooltipTrigger as-child>
+                                    <div
+                                      class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md"
+                                      :style="{
+                                        backgroundColor: getHeatmapColor(
+                                          dateIndex,
+                                          timeIndex
+                                        ),
+                                      }"
+                                    >
+                                      {{
+                                        getAvailabilityCount(
+                                          dateIndex,
+                                          timeIndex
+                                        )
+                                      }}
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>
+                                      {{
+                                        getAvailableParticipantNames(
+                                          dateIndex,
+                                          timeIndex
+                                        ).join(", ") || "No one available"
+                                      }}
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </TooltipProvider>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+            <div class="flex flex-col gap-8 mt-8">
+              <Card class="lg:w-80 xl:w-96 h-fit">
+                <CardHeader>
+                  <CardTitle>Recommended Timeslots</CardTitle>
+                  <CardDescription
+                    >Below are the top 10 timeslots with the highest
+                    <span class="font-bold text-green-400">availability</span>
+                    among everyone.</CardDescription
+                  >
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea class="h-72">
+                    <div class="w-full flex items-center justify-center">
+                      <ol>
+                        <li
+                          v-for="{ count, timeslot } in getSortedAvailability()"
+                          :key="timeslot"
+                          class="flex items-center space-x-2 mb-2"
+                        >
+                          <!-- Date portion with box, slight curves, and padding -->
+                          <div
+                            class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
+                          >
+                            {{ timeslot }}
+                          </div>
+                          <!-- Availability in green, following format "[count] people available" -->
+                          <span class="text-green-500 font-semibold">
+                            {{ count }} people available
+                          </span>
+                        </li>
+                      </ol>
+                    </div>
+                  </ScrollArea>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
+              <Dialog>
+                <DialogTrigger as-child>
+                  <Button size="lg" class="w-full" variant="outline"
+                    >View Recommended Locations</Button
+                  >
+                </DialogTrigger>
+                <DialogContent class="w-5/6 rounded-md">
+                  <DialogHeader>
+                    <DialogTitle>Location Suggestions</DialogTitle>
+                    <DialogDescription
+                      >Suggested meeting & eating spots for your event, based on
+                      participant locations.</DialogDescription
+                    >
+                  </DialogHeader>
+                  <GoogleMaps />
+                  <DialogFooter>
+                    <DialogClose as-child>
+                      <Button type="button" variant="secondary"> Close </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              <Card class="lg:w-80 xl:w-96 h-fit">
+                <CardHeader>
+                  <div class="flex flex-row justify-between">
+                    <CardTitle>Event Participants</CardTitle>
+                    <CardTitle
+                      >{{ event_participants.length }} /
+                      {{ participants_num }}</CardTitle
+                    >
+                  </div>
+                  <CardDescription
+                    >View all participants who have joined this event
+                    below.</CardDescription
+                  >
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea class="h-48 mb-8">
+                    <div class="w-full flex items-center justify-center">
+                      <ol class="w-full">
+                        <li
+                          v-for="participant in event_participants"
+                          :key="Object.keys(participant)[0]"
+                          class="flex text-xl space-x-2 mb-2"
+                        >
+                          {{ Object.keys(participant)[0] }}
+                        </li>
+                      </ol>
+                    </div>
+                  </ScrollArea>
+                  <Dialog>
+                    <DialogTrigger as-child>
+                      <Button
+                        size="lg"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                        >Confirm Timeslot</Button
+                      >
+                    </DialogTrigger>
+                    <DialogContent class="w-5/6 rounded-md h-fit">
+                      <DialogHeader>
+                        <DialogTitle>Confirm Timeslot</DialogTitle>
+                        <DialogDescription
+                          >Tentatively lock in a timeslot and notify
+                          participants who have an account with MeetLah. The
+                          timeslot will also be visible on this event's main
+                          page.</DialogDescription
+                        >
+                      </DialogHeader>
+                      <ScrollArea class="h-[40rem]">
+                        <TooltipProvider :delayDuration="200">
+                          <table
+                            class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
+                          >
+                            <thead>
+                              <tr>
+                                <th class="pb-0.5"></th>
+                                <th
+                                  v-for="(date, dateIndex) in dates"
+                                  :key="dateIndex"
+                                  class="text-sm font-medium pb-0.5"
+                                >
+                                  {{ formatDate(date) }}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr
+                                v-for="(time, timeIndex) in times"
+                                :key="timeIndex"
+                              >
+                                <td
+                                  v-if="timeIndex % 2 == 0"
+                                  class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
+                                >
+                                  {{ time }}
+                                </td>
+                                <td v-else></td>
+                                <td
+                                  v-for="(date, dateIndex) in dates"
+                                  :key="dateIndex"
+                                  class="h-6 p-0 text-center heatmap-cell cursor-pointer"
+                                  @click="
+                                    selectConfirmTimeslot(dateIndex, timeIndex)
+                                  "
+                                >
+                                  <Tooltip>
+                                    <TooltipTrigger as-child>
+                                      <div
+                                        class="h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 text-xs rounded-md transition duration-100 ease-in-out"
+                                        :style="{
+                                          backgroundColor: getHeatmapColor(
+                                            dateIndex,
+                                            timeIndex
+                                          ),
+                                        }"
+                                        :class="[
+                                          isConfirmed(dateIndex, timeIndex)
+                                            ? 'bg-indigo-600 text-white' +
+                                              getConfirmMergedClass(
+                                                dateIndex,
+                                                timeIndex
+                                              )
+                                            : 'rounded-md',
+                                        ]"
+                                      >
+                                        {{
+                                          getAvailabilityCount(
+                                            dateIndex,
+                                            timeIndex
+                                          )
+                                        }}
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>
+                                        {{
+                                          getAvailableParticipantNames(
+                                            dateIndex,
+                                            timeIndex
+                                          ).join(", ") || "No one available"
+                                        }}
+                                      </p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </TooltipProvider>
+                      </ScrollArea>
+                      <DialogFooter>
+                        <Button
+                          type="button"
+                          variant="primary"
+                          @click="confirmSelectedTimeslot"
+                          :disabled="confirmedTimeslot.length === 0"
+                        >
+                          Confirm Selected Timeslot
+                        </Button>
+                        <DialogClose as-child>
+                          <Button type="button" variant="secondary">
+                            Close
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
           <div class="flex flex-col lg:flex-row gap-8 justify-center" v-else>
             <Card class="lg:w-80 xl:w-96">
               <CardHeader>
@@ -318,7 +535,8 @@
                           :key="dateIndex"
                           class="text-sm font-medium pb-0.5"
                         >
-                          {{ formatDate(date) }}
+                          {{ formatDate(date)[0] }} <br />
+                          {{ formatDate(date)[1] }}
                         </th>
                       </tr>
                     </thead>
@@ -384,7 +602,8 @@
                             :key="dateIndex"
                             class="text-sm font-medium pb-0.5"
                           >
-                            {{ formatDate(date) }}
+                            {{ formatDate(date)[0] }} <br />
+                            {{ formatDate(date)[1] }}
                           </th>
                         </tr>
                       </thead>
@@ -649,9 +868,13 @@
               <DialogHeader>
                 <DialogTitle>Enter Display Name</DialogTitle>
                 <DialogDescription class="text-left">
-                  Please enter your display name to continue. If you have joined this event previously, enter your previous display name.<br/> <span v-if="!user" class="text-red-600">Remember your
-                  display name <span class="font-bold">(case-sensitive)</span>, you will need it to log back
-                  into this event.</span>
+                  Please enter your display name to continue. If you have joined
+                  this event previously, enter your previous display name.<br />
+                  <span v-if="!user" class="text-red-600"
+                    >Remember your display name
+                    <span class="font-bold">(case-sensitive)</span>, you will
+                    need it to log back into this event.</span
+                  >
                 </DialogDescription>
               </DialogHeader>
               <Input
@@ -1080,8 +1303,13 @@ const saveDisplayName = async () => {
 
 // Interval Grid Methods
 function formatDate(date) {
-  const options = { year: "2-digit", month: "short", day: "2-digit" };
-  return new Date(date).toLocaleDateString(undefined, options);
+  const options = {
+    weekday: "short",
+    year: "2-digit",
+    month: "short",
+    day: "2-digit",
+  };
+  return new Date(date).toLocaleDateString(undefined, options).split(", ");
 }
 
 function generateIntervals() {
