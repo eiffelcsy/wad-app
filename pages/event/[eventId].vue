@@ -9,12 +9,12 @@
       <div class="flex flex-row items-center">
         <NuxtImg
           src="/images/logo_light.png"
-          class="logo-animation"
+          class="size-12 mr-2"
           v-if="$colorMode.value === 'light'"
         />
         <NuxtImg
           src="/images/logo_dark.png"
-          class="logo-animation"
+          class="size-12 mr-2"
           v-if="$colorMode.value === 'dark'"
         />
         <h1
