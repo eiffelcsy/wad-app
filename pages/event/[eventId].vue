@@ -981,7 +981,6 @@ definePageMeta({
     meta: [
       { property: 'og:title', content: "Join Event" },
       { property: 'og:description', content: 'You have been invited!' },
-      { property: 'og:url', content: `https://meetlah.xyz/event/${event_code}` },
     ]
   }
 })
