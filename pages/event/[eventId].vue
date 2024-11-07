@@ -409,7 +409,7 @@
                         >
                       </DialogHeader>
                       <ScrollArea class="h-[40rem]">
-                        <TooltipProvider :delayDuration="200">
+                        <TooltipProvider :delayDuration="300">
                           <table
                             class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
                           >
@@ -421,7 +421,8 @@
                                   :key="dateIndex"
                                   class="text-sm font-medium pb-0.5"
                                 >
-                                  {{ formatDate(date) }}
+                                  {{ formatDate(date)[0] }} <br />
+                                  {{ formatDate(date)[1] }}
                                 </th>
                               </tr>
                             </thead>
