@@ -15,15 +15,18 @@
             </p>
           </div>
           <!-- Edit Team Button, visible to owners and admins only -->
-          <div v-if="canEditTeam">
-            <Button variant="outline" @click="editTeam" class="ml-2">Edit Team</Button>
-          </div>
+          <EditTeam />
         </div>
 
         <!-- Search bar for team members -->
         <div class="relative w-full max-h-10 pr-2 mb-6">
-          <Input id="searchMembers" type="text" placeholder="Search Users..." class="pl-10 text-base"
-            v-model="searchQuery" />
+          <Input
+            id="searchMembers"
+            type="text"
+            placeholder="Search Users..."
+            class="pl-10 text-base"
+            v-model="searchQuery"
+          />
           <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
             <Search class="size-6 text-muted-foreground" />
           </span>
@@ -133,7 +136,7 @@
                       <TableCell class="py-2 px-6">{{ admin.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(admin.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <span @click="manageMember(admin)" class="cursor-pointer" title="Manage">
+                        <span v-if="isOwner" @click="manageMember(owner)" class="cursor-pointer" title="Manage">
                           <PencilIcon class="size-6 text-muted-foreground" />
                         </span>
                       </TableCell>
@@ -170,7 +173,7 @@
                       <TableCell class="py-2 px-6">{{ member.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(member.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <span @click="manageMember(admin)" class="cursor-pointer" title="Manage">
+                        <span v-if="isOwner" @click="manageMember(owner)" class="cursor-pointer" title="Manage">
                           <PencilIcon class="size-6 text-muted-foreground" />
                         </span>
                       </TableCell>
@@ -186,17 +189,29 @@
         <div class="container w-full pt-8">
           <h2 class="text-2xl font-semibold mb-4">Team Projects</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card v-for="(project, index) in teamProjects" :key="index" class="mt-6 hover:border-indigo-600 relative">
+            <Card
+              v-for="(project, index) in teamProjects"
+              :key="index"
+              class="mt-6 hover:border-indigo-600 relative"
+            >
               <div class="absolute top-2 right-2 flex gap-2">
                 <!-- Edit Icon Button -->
-                <Button @click="startEditing(project.id, project.title)" class="text-blue-500 hover:text-blue-700"
-                  variant="ghost" size="icon">
+                <Button
+                  @click="startEditing(project.id, project.title)"
+                  class="text-blue-500 hover:text-blue-700"
+                  variant="ghost"
+                  size="icon"
+                >
                   <Edit class="size-5" />
                 </Button>
 
                 <!-- Delete Icon Button -->
-                <Button @click="deleteProject(project.id)" class="text-red-500 hover:text-red-700" variant="ghost"
-                  size="icon">
+                <Button
+                  @click="deleteProject(project.id)"
+                  class="text-red-500 hover:text-red-700"
+                  variant="ghost"
+                  size="icon"
+                >
                   <Trash class="size-5" />
                 </Button>
               </div>
@@ -237,6 +252,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, Edit, Trash, PencilIcon } from "lucide-vue-next";
+import { EditTeam } from "@/components/custom/edit-team";
+
 
 const supabase = useSupabaseClient();
 const route = useRoute();
@@ -316,6 +333,55 @@ const capitalizeRole = (role) => {
   return role.charAt(0).toUpperCase() + role.slice(1);
 };
 
+const ensureUserInTeam = async (teamId) => {
+  if (user) {
+    const name = user.user_metadata.name;
+    const email = user.email;
+
+    // Check if the user already exists in team_members
+    const { data: existingMember, error } = await supabase
+      .from('team_members')
+      .select('*')
+      .eq('team_id', teamId)
+      .eq('user_id', user.id)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      console.error("Error fetching team member:", error.message);
+      return;
+    }
+
+    if (!existingMember) {
+      // Insert the user if they are not already in the team_members table
+      const { error: insertError } = await supabase
+        .from('team_members')
+        .insert({
+          team_id: teamId,
+          user_id: user.id,
+          name: name,
+          email: email,
+          role: 'member', // Default role; adjust as needed
+          added_at: new Date().toISOString(),
+        });
+
+      if (insertError) {
+        console.error("Error inserting team member:", insertError.message);
+      }
+    } else if (!existingMember.name || !existingMember.email) {
+      // Update the user’s name and email if they are missing
+      const { error: updateError } = await supabase
+        .from('team_members')
+        .update({ name, email })
+        .eq('team_id', teamId)
+        .eq('user_id', user.id);
+
+      if (updateError) {
+        console.error("Error updating team member:", updateError.message);
+      }
+    }
+  }
+};
+
 // Function to fetch team details based on team code
 const fetchTeamDetails = async () => {
   try {
@@ -353,6 +419,9 @@ const fetchTeamMembers = async (teamId) => {
       console.error('Error fetching team members:', membersError);
       return;
     }
+
+     // Ensure the logged-in user's display name and email are saved in the team_members table
+     await ensureUserInTeam(teamId);
 
     allMembers.value = teamMembers;
     ownerMembers.value = teamMembers.filter((member) => member.role === 'owner');
