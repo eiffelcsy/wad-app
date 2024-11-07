@@ -215,9 +215,12 @@
                       <img :src="profilePictureUrl" />
                     </Avatar>
                     <div>
-                      <h1 class="text-2xl font-semibold">
-                        {{ displayName }} 
-                      </h1>
+                      <div class="flex flex-row gap-2 items-center">
+                        <h1 class="text-2xl font-semibold">
+                          {{ displayName }}
+                        </h1>
+                        <Pencil class="w-4 h-4 opacity-0 hover:opacity-100 transition-all duration-200" @click="openDialog"/>
+                      </div>
                       <p class="text-base text-zinc-400 dark:text-zinc-500">
                         {{ email }}
                       </p>
@@ -246,7 +249,9 @@
                       />
                     </div>
                     <DialogFooter>
-                      <Button class="bg-indigo-600 hover:bg-indigo-700 text-white"@click="saveAvatar"
+                      <Button
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white"
+                        @click="saveAvatar"
                         >Save</Button
                       >
                       <Button variant="outline" @click="closeProfileDialog"
@@ -261,7 +266,7 @@
         </div>
 
         <!-- Dialog for updating display name -->
-        <Dialog :open="showDialog">
+        <Dialog v-model:open="showDialog">
           <DialogOverlay />
           <DialogContent class="w-5/6 rounded-md border-indigo-600">
             <DialogTitle>Update Display Name</DialogTitle>
@@ -273,13 +278,16 @@
               placeholder="Enter your display name"
               class="my-4"
             />
-            <div class="flex justify-end">
+            <DialogFooter>
               <Button
                 @click="saveDisplayName"
                 class="bg-indigo-600 hover:bg-indigo-700 text-white"
                 >Save</Button
               >
-            </div>
+              <Button variant="outline" @click="closeDialog"
+                        >Cancel</Button
+              >
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
@@ -348,6 +356,14 @@ const uploading = ref(false);
 
 function openProfileDialog() {
   isProfileDialogOpen.value = true;
+}
+
+function openDialog() {
+  showDialog.value = true;
+}
+
+function closeDialog() {
+  showDialog.value = false;
 }
 
 function closeProfileDialog() {

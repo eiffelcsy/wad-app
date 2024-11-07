@@ -2,11 +2,12 @@
     <div>
       <!-- Display button for Microsoft Calendar connection -->
       <Button
-        class="w-full transition-all duration-300 ease-in-out hover:bg-red-600 hover:text-white"
+        class="w-full transition-all duration-300 ease-in-out hover:border-none hover:bg-red-600 hover:text-white"
         @mouseenter="isHovered = true"
         @mouseleave="isHovered = false"
         @click="disconnectMicrosoftCalendar"
         v-if="msCalConnected"
+        variant="outline"
       >
         <template v-if="isHovered">
           <XCircle class="mr-2 size-4" /> Disconnect from Microsoft Calendar

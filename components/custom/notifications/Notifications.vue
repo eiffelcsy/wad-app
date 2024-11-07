@@ -9,7 +9,7 @@
           class="hover:bg-transparent"
           @click="toggleDropdown"
         >
-          <Avatar class="w-8 h-8 border bg-zinc-50 dark:bg-zinc-900">
+          <Avatar class="w-8 h-8 border bg-whtie dark:bg-zinc-900">
             <BellIcon
               :size="18"
               :strokeWidth="2"
@@ -83,7 +83,7 @@
             >
               <div class="flex flex-col items-center justify-center gap-2">
                 <div
-                  class="w-12 h-12 p-2 rounded-full bg-zinc-900 flex items-center justify-center"
+                  class="w-12 h-12 p-2 rounded-full bg-zinc-200/50 dark:bg-zinc-900 flex items-center justify-center"
                 >
                   <Inbox class="w-6 h-6 opacity-50" />
                 </div>
@@ -95,7 +95,7 @@
           <TabsContent value="archive" class="mt-0">
             <div v-if="archivedNotifications.length > 0">
               <ScrollArea class="w-full h-[32rem]">
-                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                <ul class="divide-y divide-zinc-200 dark:divide-zinc-800">
                   <li
                     v-for="notification in archivedNotifications"
                     :key="notification.id"
@@ -119,7 +119,7 @@
             >
               <div class="flex flex-col items-center justify-center gap-2">
                 <div
-                  class="w-12 h-12 p-2 rounded-full bg-zinc-900 flex items-center justify-center"
+                  class="w-12 h-12 p-2 rounded-full bg-zinc-200/50 dark:bg-zinc-900 flex items-center justify-center"
                 >
                   <Archive class="w-6 h-6 opacity-50" />
                 </div>
