@@ -333,6 +333,55 @@ const capitalizeRole = (role) => {
   return role.charAt(0).toUpperCase() + role.slice(1);
 };
 
+const ensureUserInTeam = async (teamId) => {
+  if (user) {
+    const name = user.user_metadata.name;
+    const email = user.email;
+
+    // Check if the user already exists in team_members
+    const { data: existingMember, error } = await supabase
+      .from('team_members')
+      .select('*')
+      .eq('team_id', teamId)
+      .eq('user_id', user.id)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      console.error("Error fetching team member:", error.message);
+      return;
+    }
+
+    if (!existingMember) {
+      // Insert the user if they are not already in the team_members table
+      const { error: insertError } = await supabase
+        .from('team_members')
+        .insert({
+          team_id: teamId,
+          user_id: user.id,
+          name: name,
+          email: email,
+          role: 'member', // Default role; adjust as needed
+          added_at: new Date().toISOString(),
+        });
+
+      if (insertError) {
+        console.error("Error inserting team member:", insertError.message);
+      }
+    } else if (!existingMember.name || !existingMember.email) {
+      // Update the user’s name and email if they are missing
+      const { error: updateError } = await supabase
+        .from('team_members')
+        .update({ name, email })
+        .eq('team_id', teamId)
+        .eq('user_id', user.id);
+
+      if (updateError) {
+        console.error("Error updating team member:", updateError.message);
+      }
+    }
+  }
+};
+
 // Function to fetch team details based on team code
 const fetchTeamDetails = async () => {
   try {
@@ -370,6 +419,9 @@ const fetchTeamMembers = async (teamId) => {
       console.error('Error fetching team members:', membersError);
       return;
     }
+
+     // Ensure the logged-in user's display name and email are saved in the team_members table
+     await ensureUserInTeam(teamId);
 
     allMembers.value = teamMembers;
     ownerMembers.value = teamMembers.filter((member) => member.role === 'owner');
