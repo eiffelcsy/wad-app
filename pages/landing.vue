@@ -39,7 +39,7 @@
                   :key="index"
                   class="absolute"
                   :style="[
-                    $colorMode.preference == 'dark'
+                    $colorMode.value == 'dark'
                       ? darkGradientStyle(gradient)
                       : gradientStyle(gradient),
                     {
@@ -530,7 +530,7 @@
                   </CardHeader>
                   <CardContent data-scroll>
                     <p class="font-light text-base">
-                      A robust and intuitive polls feature allows for rapid
+                      A robust and intuitive polls feature within each event allows for rapid
                       decision-making.
                     </p>
                   </CardContent>
