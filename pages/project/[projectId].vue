@@ -43,45 +43,45 @@
         <div class="mb-4">
           <h1 class="text-xl font-semibold">Project Timeline</h1>
           <p class="text-base text-zinc-400 dark:text-zinc-500">
-            A visual timeline of tasks and milestones over time. Hover over task bars to view full details.
+            A visual timeline of tasks and milestones over time. Hover over task
+            bars to view full details.
           </p>
         </div>
         <GanttChart class="w-full" :projectId="projectId" />
       </div>
     </div>
     <PageFooter />
-  </div>
+    <!-- edit form -->
+    <div
+      v-if="isDialogOpen"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-black rounded-lg p-6 w-full max-w-md mx-4 shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Edit Task</h2>
+        <form @submit.prevent="saveProjectTitle">
+          <!-- Title Input -->
+          <div class="mb-4">
+            <label for="title" class="block text-sm font-medium">Title</label>
+            <input
+              id="title"
+              v-model="editTitle"
+              type="text"
+              class="border border-gray-300 rounded p-2 w-full bg-black text-white"
+              required
+            />
+          </div>
 
-  <!-- edit form -->
-  <div
-    v-if="isDialogOpen"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-  >
-    <div class="bg-black rounded-lg p-6 w-full max-w-md mx-4 shadow-lg">
-      <h2 class="text-xl font-semibold mb-4">Edit Task</h2>
-      <form @submit.prevent="saveProjectTitle">
-
-        <!-- Title Input -->
-        <div class="mb-4">
-          <label for="title" class="block text-sm font-medium">Title</label>
-          <input
-            id="title"
-            v-model="editTitle"
-            type="text"
-            class="border border-gray-300 rounded p-2 w-full bg-black text-white"
-            required
-          />
-        </div>
-
-        <!-- Save and Close Buttons -->
-        <div class="flex justify-end gap-2">
-          <Button @click="isDialogOpen = false" variant="secondary">Cancel</Button>
-          <Button type="submit" variant="primary">Save Changes</Button>
-        </div>
-      </form>
+          <!-- Save and Close Buttons -->
+          <div class="flex justify-end gap-2">
+            <Button @click="isDialogOpen = false" variant="secondary"
+              >Cancel</Button
+            >
+            <Button type="submit" variant="primary">Save Changes</Button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-
 </template>
 
 <script setup>
@@ -153,7 +153,7 @@ const saveProjectTitle = async () => {
     }
 
     // 🟢 Update the project title safely
-    project.value = { ...project.value, title: editTitle.value }; 
+    project.value = { ...project.value, title: editTitle.value };
     // Spread `project.value` to create a new reference and update the title
 
     closeDialog(); // Close dialog after successful save
@@ -162,7 +162,6 @@ const saveProjectTitle = async () => {
     console.error("❌ Unexpected error updating project title:", err);
   }
 };
-
 
 const deleteProject = async (projectId) => {
   const confirmed = window.confirm(
@@ -176,9 +175,12 @@ const deleteProject = async (projectId) => {
       .from("project_members")
       .delete()
       .eq("project_id", projectId);
-      navigateTo('/projects');
+    navigateTo("/projects");
     if (deleteMembersError) {
-      console.error("Error deleting associated project members:", deleteMembersError);
+      console.error(
+        "Error deleting associated project members:",
+        deleteMembersError
+      );
       return;
     }
 
@@ -198,5 +200,4 @@ const deleteProject = async (projectId) => {
     console.error("Unexpected error deleting project:", err);
   }
 };
-
 </script>
