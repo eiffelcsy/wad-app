@@ -375,7 +375,7 @@
               >Back</Button
             >
             <Button
-              @click="submitEvent"
+              @click="debouncedSubmitEvent"
               class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
               >Create Event</Button
             >
@@ -433,6 +433,7 @@
 
 <script lang="ts" setup>
 import { type Ref, ref } from "vue";
+import debounce from "lodash.debounce";
 import dayjs from "dayjs";
 import { navigateTo } from "nuxt/app";
 import type { DateRange } from "radix-vue";
@@ -651,6 +652,8 @@ const submitEvent = async () => {
     showDialog.value = true;
   }
 };
+
+const debouncedSubmitEvent = debounce(submitEvent, 3000);
 
 // Utility function to format date
 const formatDate = (date: Date) => {

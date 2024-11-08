@@ -124,9 +124,14 @@
                           <TableCell class="py-2 px-4">{{
                             todo.title
                           }}</TableCell>
-                          <TableCell class="py-2 px-4">{{
-                            todo.status
-                          }}</TableCell>
+                          <TableCell class="py-2 px-4"
+                            ><span class="text-red-600">{{
+                              todo.status == "pending" ? "Pending" : ""
+                            }}</span
+                            ><span class="text-amber-500">{{
+                              todo.status == "in_progress" ? "In Progress" : ""
+                            }}</span></TableCell
+                          >
                           <TableCell class="py-2 px-4 flex flex-row">
                             <NuxtLink
                               :to="{
@@ -219,7 +224,10 @@
                         <h1 class="text-2xl font-semibold">
                           {{ displayName }}
                         </h1>
-                        <Pencil class="w-4 h-4 opacity-0 hover:opacity-100 transition-all duration-200" @click="openDialog"/>
+                        <Pencil
+                          class="w-4 h-4 opacity-0 hover:opacity-100 transition-all duration-200"
+                          @click="openDialog"
+                        />
                       </div>
                       <p class="text-base text-zinc-400 dark:text-zinc-500">
                         {{ email }}
@@ -284,9 +292,7 @@
                 class="bg-indigo-600 hover:bg-indigo-700 text-white"
                 >Save</Button
               >
-              <Button variant="outline" @click="closeDialog"
-                        >Cancel</Button
-              >
+              <Button variant="outline" @click="closeDialog">Cancel</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -499,7 +505,7 @@ const fetchTodos = async () => {
   if (error) {
     console.error("Error fetching todos:", error.message);
   } else {
-    todos.value = data;
+    todos.value = data.filter((todo) => todo.status !== "completed");
   }
 };
 

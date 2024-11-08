@@ -78,7 +78,7 @@
               </div>
             </div>
           </div>
-          <div class="w-full h-20 flex items-center justify-center text-zinc-500 text-sm">
+          <div class="w-full h-20 flex items-center justify-center text-zinc-500 text-sm" v-else>
             No tasks found
           </div>
         </div>
