@@ -102,24 +102,22 @@
 </style> -->
 
 <template>
-    <GoogleMap
-      :api-key="apiKey"
-      style="width: 100%; height: 500px"
-      :center="center"
-      :zoom="15"
-    >
-      <Marker :options="{ position: center }" />
-    </GoogleMap>
-  </template>
-  
-  <script setup>
-  import { GoogleMap, Marker } from "vue3-google-map";
+  <GoogleMap
+    :api-key="apiKey"
+    style="width: 100%; height: 500px"
+    :center="center"
+    :zoom="15"
+  >
+    <Marker :options="{ position: center }" />
+  </GoogleMap>
+</template>
 
-  const config = useRuntimeConfig();
-  const center = { lat:  1.296568, lng: 103.852119 };
-  const apiKey = config.public.GMAPS_API_KEY;
-  </script>
+<script setup>
+import { GoogleMap, Marker } from "vue3-google-map";
 
-<style>
+const config = useRuntimeConfig();
+const center = { lat: 1.296568, lng: 103.852119 };
+const apiKey = config.public.GMAPS_API_KEY;
+</script>
 
-</style>
+<style></style>
