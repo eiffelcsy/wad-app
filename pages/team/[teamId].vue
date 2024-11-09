@@ -67,9 +67,7 @@
                       <TableCell class="py-2 px-6">{{ member.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(member.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <span v-if="isOwner" @click="manageMember(member)" class="cursor-pointer" title="Manage">
-                          <PencilIcon class="size-6 text-muted-foreground" />
-                        </span>
+                          <EditRole :currentUserId="member.user_id" @roleUpdated="handleRoleUpdated" />
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -253,6 +251,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, Edit, Trash, PencilIcon } from "lucide-vue-next";
 import { EditTeam } from "@/components/custom/edit-team";
+import { EditRole } from "@/components/custom/edit-role";
 
 
 const supabase = useSupabaseClient();
@@ -481,6 +480,31 @@ const startEditing = (projectId, currentTitle) => {
   editingProjectId.value = projectId;
   editTitle.value = currentTitle;
 };
+
+// Function to handle role updates from the EditRole component
+function handleRoleUpdated({ userId, newRole }) {
+    // Find the member in `allMembers` and update their role
+    const member = allMembers.value.find((member) => member.user_id === userId);
+    if (member) {
+        // Update the role in the `allMembers` array
+        member.role = newRole;
+
+        // Update `adminMembers` and `memberMembers` lists
+        if (newRole === 'admin') {
+            // Move to `adminMembers` if they are not already there
+            if (!adminMembers.value.some(m => m.user_id === userId)) {
+                adminMembers.value.push(member);
+            }
+            memberMembers.value = memberMembers.value.filter(m => m.user_id !== userId);
+        } else if (newRole === 'member') {
+            // Move to `memberMembers` if they are not already there
+            if (!memberMembers.value.some(m => m.user_id === userId)) {
+                memberMembers.value.push(member);
+            }
+            adminMembers.value = adminMembers.value.filter(m => m.user_id !== userId);
+        }
+    }
+}
 
 // Initial data fetching
 onMounted(() => {
