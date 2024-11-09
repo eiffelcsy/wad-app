@@ -1,6 +1,5 @@
 <template>
     <div v-if="canEditRole">
-        <!-- Conditionally render the edit role dialog if the user has permission and is not the owner -->
         <Dialog v-if="userRole.value !== 'owner'">
             <DialogTrigger as-child>
                 <Button variant="outline" size="icon" class="pencil-button" @click="openDialog">
@@ -8,33 +7,30 @@
                 </Button>
             </DialogTrigger>
             <DialogContent v-if="isDialogOpen" class="dialog-content w-full max-w-[400px] overflow-hidden">
-                <DialogHeader class="p-6 pb-0">
+                <DialogHeader class="p-6 pb-2">
                     <DialogTitle>Edit Role</DialogTitle>
                     <DialogDescription>
                         Change the user's role or remove them from the team.
                     </DialogDescription>
                 </DialogHeader>
-                <!-- Content for editing role -->
-                <div class="scroll-container overflow-y-auto overflow-x-hidden max-h-[50vh] px-6 w-full">
-                    <div class="content-wrapper grid gap-4 py-4 w-full">
-                        <div class="flex flex-col justify-between w-full">
-                            <div class="fixed-width-content flex items-center w-full mt-4 gap-4 box-border">
-                                <!-- Role selection dropdown -->
-                                <div class="flex-1">
-                                    <label class="text-base md:text-xl text-zinc-800 dark:text-zinc-100 font-semibold my-2">User Role</label>
-                                    <select v-model="selectedRole" class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 border border-gray-300 rounded">
-                                        <option value="admin">Admin</option>
-                                        <option value="member">Member</option>
-                                    </select>
-                                </div>
-                                <!-- Smaller Delete button to the right of the dropdown -->
-                                <Button variant="destructive" class="delete-user-button ml-4" @click="deleteUser">Delete User</Button>
-                            </div>
-                        </div>
+
+                <!-- User Role section wrapped in flex container with spacer -->
+                <div class="user-role-wrapper px-6 pt-2 flex flex-col" style="margin-top: -8px;">
+                    <div class="user-role-section">
+                        <label class="text-base md:text-xl text-zinc-800 dark:text-zinc-100 font-semibold my-2">User Role</label>
+                        <select v-model="selectedRole" class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 border border-gray-300 rounded">
+                            <option value="admin">Admin</option>
+                            <option value="member">Member</option>
+                        </select>
                     </div>
+                    <!-- Spacer div to maintain space between dropdown and buttons -->
+                    <div class="spacer" style="height: 16px;"></div>
                 </div>
-                <DialogFooter class="p-6 pt-0 box-border">
-                    <DialogClose @click="closeDialog">Cancel</DialogClose>
+
+                <!-- Dialog Footer with Buttons -->
+                <DialogFooter class="p-6 pt-4 box-border flex justify-end gap-2">
+                    <Button variant="destructive" class="delete-user-button" @click="confirmDeleteUser">Delete User</Button>
+                    <DialogClose>Cancel</DialogClose>
                     <Button type="submit" @click="updateRole">Save changes</Button>
                 </DialogFooter>
             </DialogContent>
@@ -49,6 +45,22 @@
     max-width: 400px;
     overflow-x: hidden;
     box-sizing: border-box;
+}
+
+.user-role-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.spacer {
+    height: 16px; /* Adjust height to control space between dropdown and buttons */
+}
+
+.user-role-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem; /* Minimal space above User Role section */
 }
 
 .content-wrapper {
@@ -207,8 +219,6 @@ async function updateRole() {
 
         if (error) throw error;
 
-        alert("User role updated successfully!");
-
         // Emit the `roleUpdated` event with the updated role details
         emit("roleUpdated", { userId: props.currentUserId, newRole: selectedRole.value });
 
@@ -220,8 +230,12 @@ async function updateRole() {
     }
 }
 
-// Function to delete the user from the team
-async function deleteUser() {
+// Function to confirm and delete the user from the team
+async function confirmDeleteUser() {
+    const confirmed = confirm("Are you sure you want to delete this user from the team? This action cannot be undone.");
+
+    if (!confirmed) return; // Exit if the user cancels
+
     try {
         const { error } = await supabase
             .from("team_members")

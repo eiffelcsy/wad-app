@@ -67,7 +67,7 @@
                       <TableCell class="py-2 px-6">{{ member.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(member.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                          <EditRole :currentUserId="member.user_id" @roleUpdated="handleRoleUpdated" />
+                          <EditRole v-if="member.role !== 'owner'" :currentUserId="member.user_id" @roleUpdated="handleRoleUpdated" />
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -361,6 +361,9 @@ const ensureUserInTeam = async (teamId) => {
 
       if (insertError) {
         console.error("Error inserting team member:", insertError.message);
+      } else {
+        // Re-fetch team members after successfully adding the new user
+        await fetchTeamMembers(teamId);
       }
     } else if (!existingMember.name || !existingMember.email) {
       // Update the user’s name and email if they are missing
@@ -372,6 +375,9 @@ const ensureUserInTeam = async (teamId) => {
 
       if (updateError) {
         console.error("Error updating team member:", updateError.message);
+      } else {
+        // Re-fetch team members after successfully updating the user's info
+        await fetchTeamMembers(teamId);
       }
     }
   }
