@@ -134,9 +134,7 @@
                       <TableCell class="py-2 px-6">{{ admin.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(admin.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <span v-if="isOwner" @click="manageMember(owner)" class="cursor-pointer" title="Manage">
-                          <PencilIcon class="size-6 text-muted-foreground" />
-                        </span>
+                        <EditRole :currentUserId="admin.user_id" @roleUpdated="handleRoleUpdated" />
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -171,9 +169,7 @@
                       <TableCell class="py-2 px-6">{{ member.email }}</TableCell>
                       <TableCell class="py-2 px-6">{{ capitalizeRole(member.role) }}</TableCell>
                       <TableCell class="py-2 px-6">
-                        <span v-if="isOwner" @click="manageMember(owner)" class="cursor-pointer" title="Manage">
-                          <PencilIcon class="size-6 text-muted-foreground" />
-                        </span>
+                        <EditRole :currentUserId="member.user_id" @roleUpdated="handleRoleUpdated" />
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -482,6 +478,7 @@ const startEditing = (projectId, currentTitle) => {
 };
 
 // Function to handle role updates from the EditRole component
+// Function to handle role updates from the EditRole component
 function handleRoleUpdated({ userId, newRole }) {
     // Find the member in `allMembers` and update their role
     const member = allMembers.value.find((member) => member.user_id === userId);
@@ -495,12 +492,14 @@ function handleRoleUpdated({ userId, newRole }) {
             if (!adminMembers.value.some(m => m.user_id === userId)) {
                 adminMembers.value.push(member);
             }
+            // Remove from `memberMembers` if they exist there
             memberMembers.value = memberMembers.value.filter(m => m.user_id !== userId);
         } else if (newRole === 'member') {
             // Move to `memberMembers` if they are not already there
             if (!memberMembers.value.some(m => m.user_id === userId)) {
                 memberMembers.value.push(member);
             }
+            // Remove from `adminMembers` if they exist there
             adminMembers.value = adminMembers.value.filter(m => m.user_id !== userId);
         }
     }
