@@ -364,6 +364,100 @@
               </Dialog>
               <Card class="lg:w-80 xl:w-96 h-fit">
                 <CardHeader>
+                  <CardTitle>Event Polls</CardTitle>
+                  <CardDescription>
+                    Participate in polls related to this event.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <!-- List of Polls -->
+                  <div v-if="polls && polls.length">
+                    <div v-for="poll in polls" :key="poll.id" class="mb-4">
+                      <h3 class="text-lg font-semibold">{{ poll.question }}</h3>
+                      <div v-if="!hasUserVoted(poll)">
+                        <!-- Voting Options -->
+                        <div
+                          v-for="option in poll.poll_options"
+                          :key="option.id"
+                        >
+                          <Button
+                            @click="vote(poll.id, option.id)"
+                            class="my-1"
+                          >
+                            {{ option.option_text }}
+                          </Button>
+                        </div>
+                      </div>
+                      <div v-else>
+                        <!-- Poll Results -->
+                        <div
+                          v-for="option in poll.poll_options"
+                          :key="option.id"
+                          class="flex justify-between my-1"
+                        >
+                          <span>{{ option.option_text }}</span>
+                          <span
+                            >{{ getVoteCount(poll.id, option.id) }} votes</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else>
+                    <p>No polls available.</p>
+                  </div>
+                  <!-- Create Poll Button (only for event creator) -->
+                  <div v-if="isCreator">
+                    <Dialog>
+                      <DialogTrigger as-child>
+                        <Button class="w-full mt-4">Create New Poll</Button>
+                      </DialogTrigger>
+                      <DialogContent class="w-5/6 rounded-md">
+                        <DialogHeader>
+                          <DialogTitle>Create a New Poll</DialogTitle>
+                        </DialogHeader>
+                        <div class="my-4">
+                          <Input
+                            v-model="newPollQuestion"
+                            placeholder="Poll Question"
+                          />
+                          <div class="mt-2">
+                            <div
+                              v-for="(option, index) in newPollOptions"
+                              :key="index"
+                              class="flex items-center my-1"
+                            >
+                              <Input
+                                v-model="newPollOptions[index]"
+                                placeholder="Option text"
+                              />
+                              <Button
+                                size="icon"
+                                class="ml-2"
+                                @click="removeOption(index)"
+                                >-</Button
+                              >
+                            </div>
+                            <Button class="mt-2" @click="addOption"
+                              >Add Option</Button
+                            >
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button variant="primary" @click="createPoll"
+                            >Create Poll</Button
+                          >
+                          <DialogClose as-child>
+                            <Button variant="secondary">Cancel</Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card class="lg:w-80 xl:w-96 h-fit">
+                <CardHeader>
                   <div class="flex flex-row justify-between">
                     <CardTitle>Event Participants</CardTitle>
                     <CardTitle
@@ -716,6 +810,100 @@
               </Dialog>
               <Card class="lg:w-80 xl:w-96 h-fit">
                 <CardHeader>
+                  <CardTitle>Event Polls</CardTitle>
+                  <CardDescription>
+                    Participate in polls related to this event.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <!-- List of Polls -->
+                  <div v-if="polls && polls.length">
+                    <div v-for="poll in polls" :key="poll.id" class="mb-4">
+                      <h3 class="text-lg font-semibold">{{ poll.question }}</h3>
+                      <div v-if="!hasUserVoted(poll)">
+                        <!-- Voting Options -->
+                        <div
+                          v-for="option in poll.poll_options"
+                          :key="option.id"
+                        >
+                          <Button
+                            @click="vote(poll.id, option.id)"
+                            class="my-1"
+                          >
+                            {{ option.option_text }}
+                          </Button>
+                        </div>
+                      </div>
+                      <div v-else>
+                        <!-- Poll Results -->
+                        <div
+                          v-for="option in poll.poll_options"
+                          :key="option.id"
+                          class="flex justify-between my-1"
+                        >
+                          <span>{{ option.option_text }}</span>
+                          <span
+                            >{{ getVoteCount(poll.id, option.id) }} votes</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else>
+                    <p>No polls available.</p>
+                  </div>
+                  <!-- Create Poll Button (only for event creator) -->
+                  <div v-if="isCreator">
+                    <Dialog :open="showCreatePollDialog">
+                      <DialogTrigger as-child>
+                        <Button class="w-full mt-4">Create New Poll</Button>
+                      </DialogTrigger>
+                      <DialogContent class="w-5/6 rounded-md">
+                        <DialogHeader>
+                          <DialogTitle>Create a New Poll</DialogTitle>
+                        </DialogHeader>
+                        <div class="my-4">
+                          <Input
+                            v-model="newPollQuestion"
+                            placeholder="Poll Question"
+                          />
+                          <div class="mt-2">
+                            <div
+                              v-for="(option, index) in newPollOptions"
+                              :key="index"
+                              class="flex items-center my-1"
+                            >
+                              <Input
+                                v-model="newPollOptions[index]"
+                                placeholder="Option text"
+                              />
+                              <Button
+                                size="icon"
+                                class="ml-2"
+                                @click="removeOption(index)"
+                                >-</Button
+                              >
+                            </div>
+                            <Button class="mt-2" @click="addOption"
+                              >Add Option</Button
+                            >
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button variant="primary" @click="createPoll"
+                            >Create Poll</Button
+                          >
+                          <DialogClose as-child>
+                            <Button variant="secondary">Cancel</Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card class="lg:w-80 xl:w-96 h-fit">
+                <CardHeader>
                   <div class="flex flex-row justify-between">
                     <CardTitle>Event Participants</CardTitle>
                     <CardTitle
@@ -943,6 +1131,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -971,6 +1161,14 @@ const intervals = ref([]);
 const confirmedTimeslot = ref([]);
 const confirmedTimeslotString = ref("");
 
+// Variables for the poll
+const polls = ref([]);
+const userVotes = ref([]);
+const newPollQuestion = ref("");
+const newPollOptions = ref([""]);
+const showCreatePollDialog = ref(false);
+
+
 // Variable to store the participant's name
 const participant_name = ref(null);
 
@@ -979,11 +1177,11 @@ const event_code = route.params.eventId;
 definePageMeta({
   head: {
     meta: [
-      { property: 'og:title', content: "Join Event" },
-      { property: 'og:description', content: 'You have been invited!' },
-    ]
-  }
-})
+      { property: "og:title", content: "Join Event" },
+      { property: "og:description", content: "You have been invited!" },
+    ],
+  },
+});
 
 onMounted(async () => {
   // Fetch event details from Supabase
@@ -1049,7 +1247,181 @@ onMounted(async () => {
       }
     }
   }
+
+  await fetchPolls();
 });
+
+async function fetchPolls() {
+  const { data, error } = await supabase
+    .from('polls')
+    .select(`
+      *,
+      poll_options(*),
+      poll_votes(*)
+    `)
+    .eq('event_id', event_id.value);
+
+  if (error) {
+    console.error('Error fetching polls:', error.message);
+    return;
+  }
+
+  if (data) {
+    polls.value = data;
+    // Fetch user votes
+    userVotes.value = await getUserVotes();
+  }
+}
+
+async function getUserVotes() {
+  if (!user.value) return [];
+  const { data, error } = await supabase
+    .from('poll_votes')
+    .select('*')
+    .eq('user_id', user.value.id);
+
+  if (error) {
+    console.error('Error fetching user votes:', error.message);
+    return [];
+  }
+
+  return data;
+}
+
+function hasUserVoted(poll) {
+  if (!user.value) return false;
+  return userVotes.value.some(vote => vote.poll_id === poll.id && vote.user_id === user.value.id);
+}
+
+async function vote(pollId, optionId) {
+  if (!user.value) {
+    toast({
+      title: 'Not Logged In',
+      description: 'You must be logged in to vote.',
+      variant: 'destructive',
+    });
+    return;
+  }
+
+  // Check if user has already voted
+  if (userVotes.value.some(vote => vote.poll_id === pollId && vote.user_id === user.value.id)) {
+    toast({
+      title: 'Already Voted',
+      description: 'You have already voted in this poll.',
+      variant: 'destructive',
+    });
+    return;
+  }
+
+  const { error } = await supabase
+    .from('poll_votes')
+    .insert({
+      poll_id: pollId,
+      option_id: optionId,
+      user_id: user.value.id,
+    });
+
+  if (error) {
+    console.error('Error voting:', error.message);
+    toast({
+      title: 'Error',
+      description: 'Failed to submit vote.',
+      variant: 'destructive',
+    });
+    return;
+  }
+
+  // Update votes
+  await fetchPolls();
+}
+
+function addOption() {
+  newPollOptions.value.push('');
+}
+
+function removeOption(index) {
+  if (newPollOptions.value.length > 1) {
+    newPollOptions.value.splice(index, 1);
+  }
+}
+
+async function createPoll() {
+  if (!newPollQuestion.value.trim()) {
+    toast({
+      title: 'Invalid Input',
+      description: 'Poll question cannot be empty.',
+      variant: 'destructive',
+    });
+    return;
+  }
+
+  if (newPollOptions.value.some(option => !option.trim())) {
+    toast({
+      title: 'Invalid Input',
+      description: 'Poll options cannot be empty.',
+      variant: 'destructive',
+    });
+    return;
+  }
+
+  // Insert poll
+  const { data: pollData, error: pollError } = await supabase
+    .from('polls')
+    .insert({
+      event_id: event_id.value,
+      question: newPollQuestion.value,
+      created_by: user.value.id,
+    })
+    .select()
+    .single();
+
+  if (pollError) {
+    console.error('Error creating poll:', pollError.message);
+    toast({
+      title: 'Error',
+      description: 'Failed to create poll.',
+      variant: 'destructive',
+    });
+    return;
+  }
+
+  // Insert options
+  const optionsData = newPollOptions.value.map(optionText => ({
+    poll_id: pollData.id,
+    option_text: optionText,
+  }));
+
+  const { error: optionsError } = await supabase
+    .from('poll_options')
+    .insert(optionsData);
+
+  if (optionsError) {
+    console.error('Error inserting options:', optionsError.message);
+    toast({
+      title: 'Error',
+      description: 'Failed to create poll options.',
+      variant: 'destructive',
+    });
+    return;
+  }
+
+  // Reset form
+  newPollQuestion.value = '';
+  newPollOptions.value = [''];
+
+  // Close dialog (if you're using a reactive variable to control the dialog)
+  showCreatePollDialog.value = false;
+
+  // Fetch polls again
+  await fetchPolls();
+}
+
+function getVoteCount(pollId, optionId) {
+  const poll = polls.value.find(p => p.id === pollId);
+  if (!poll) return 0;
+  return poll.poll_votes.filter(vote => vote.option_id === optionId).length;
+}
+
 
 async function fetchParticipants() {
   const { data: findParticipants, error } = await supabase
