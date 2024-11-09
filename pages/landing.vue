@@ -6,7 +6,7 @@
           <div class="relative w-screen min-h-screen">
             <!-- Gradient Background -->
             <div
-              class="w-full h-full absolute inset-0 overflow-hidden bg-white dark:bg-black opacity-35"
+              class="w-full h-full absolute inset-0 overflow-hidden bg-white dark:bg-black opacity-35 z-0"
             >
               <!-- SVG Filter -->
               <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
@@ -37,7 +37,7 @@
                 <div
                   v-for="(gradient, index) in gradients"
                   :key="index"
-                  class="absolute"
+                  class="absolute z-0"
                   :style="[
                     $colorMode.value == 'dark'
                       ? darkGradientStyle(gradient)
@@ -93,7 +93,7 @@
                   Get Started
                 </Button>
               </div>
-              <div v-if="user">
+              <div v-if="user" class="z-10">
                 <Sheet>
                   <SheetTrigger as-child>
                     <Button
@@ -280,16 +280,16 @@
                   class="lg:hover:-translate-y-10 transition duration-300 ease-in-out"
                 >
                   <div
-                    class="relative w-56 md:w-64 lg:w-72 max-h-64 md:max-h-80 lg:max-h-none lg:h-96 border rounded-xl overflow-hidden relative card-far-fade-in-right"
+                    class="relative w-56 md:w-64 lg:w-64 2xl:w-72 max-h-64 md:max-h-80 lg:max-h-none lg:h-96 border rounded-xl overflow-hidden relative card-far-fade-in-right"
                   >
                     <NuxtImg src="/images/meeting_stock.jpg" class="w-full" />
                   </div>
                 </div>
                 <div
-                  class="lg:w-48 lg:h-80 lg:hover:-translate-y-10 transition duration-300 ease-in-out"
+                  class="lg:w-40 2xl:w-48 lg:h-80 lg:hover:-translate-y-10 transition duration-300 ease-in-out"
                 >
                   <div
-                    class="relative lg:w-48 lg:h-80 border rounded-xl bg-indigo-700 card-near-fade-in-right hidden lg:block"
+                    class="relative lg:w-40 2xl:w-48 lg:h-80 border rounded-xl bg-indigo-700 card-near-fade-in-right hidden lg:block"
                   >
                     <div
                       class="p-4 flex flex-col h-full text-white justify-end"
@@ -308,10 +308,10 @@
                   </div>
                 </div>
                 <div
-                  class="w-full md:w-3/4 lg:w-96 h-20 md:h-24 lg:h-64 lg:hover:-translate-y-10 transition duration-300 ease-in-out"
+                  class="w-full md:w-3/4 lg:w-72 2xl:w-96 h-20 md:h-24 lg:h-64 lg:hover:-translate-y-10 transition duration-300 ease-in-out"
                 >
                   <div
-                    class="relative w-full md:w-3/4 lg:w-96 h-20 md:h-24 lg:h-64 py-4 px-6 lg:py-8 lg:px-10 border border-indigo-100 dark:border-indigo-900 rounded-xl bg-white/60 dark:bg-zinc-950/60 fade-in-bottom flex flex-col justify-between"
+                    class="relative w-full md:w-3/4 lg:w-72 2xl:w-96 h-20 md:h-24 lg:h-64 py-4 px-6 lg:py-8 lg:px-10 border border-indigo-100 dark:border-indigo-900 rounded-xl bg-white/60 dark:bg-zinc-950/60 fade-in-bottom flex flex-col justify-between"
                   >
                     <div
                       class="size-10 bg-indigo-100 dark:bg-indigo-700 rounded-lg items-center justify-center hidden lg:flex"
@@ -355,10 +355,10 @@
                 </div>
 
                 <div
-                  class="w-48 lg:h-80 lg:hover:-translate-y-10 transition duration-300 ease-in-out"
+                  class="w-40 2xl:w-48 lg:h-80 lg:hover:-translate-y-10 transition duration-300 ease-in-out"
                 >
                   <div
-                    class="relative w-48 lg:h-80 border border-indigo-100 rounded-xl bg-indigo-100 dark:bg-indigo-200 card-near-fade-in-left hidden lg:block"
+                    class="relative w-40 2xl:w-48 lg:h-80 border border-indigo-100 rounded-xl bg-indigo-100 dark:bg-indigo-200 card-near-fade-in-left hidden lg:block"
                   >
                     <div
                       class="p-4 flex flex-col h-full text-indigo-950 justify-end"
@@ -374,10 +374,10 @@
                 </div>
 
                 <div
-                  class="w-full lg:w-72 lg:hover:-translate-y-10 transition duration-300 ease-in-out"
+                  class="w-full lg:w-64 lg:hover:-translate-y-10 transition duration-300 ease-in-out"
                 >
                   <div
-                    class="relative w-full lg:w-72 mb-8 lg:mb-0 h-1 lg:h-96 border rounded-xl bg-indigo-900 relative overflow-hidden card-far-fade-in-left"
+                    class="relative w-full lg:w-64 mb-8 lg:mb-0 h-1 lg:h-96 border rounded-xl bg-indigo-900 relative overflow-hidden card-far-fade-in-left"
                   >
                     <div
                       class="absolute w-[12rem] h-[12rem] -top-[10%] -left-[10%] bg-indigo-600 rounded-full scale-150 opacity-30 flex items-center justify-center"
@@ -399,11 +399,11 @@
           </div>
           <!-- Features Section -->
           <section
-            class="lg:h-[120vh] px-8 py-20 bg-indigo-700"
+            class="lg:min-h-[130vh] px-8 py-20 bg-indigo-700 lg:flex lg:jusify-center lg:items-center"
             data-scroll-section
           >
             <div
-              class="max-w-6xl mx-auto h-full flex flex-col justify-center items-center gap-8"
+              class="max-w-6xl mx-auto flex flex-col justify-center items-center gap-8"
               data-scroll
               data-scroll-speed="1"
             >
@@ -530,8 +530,8 @@
                   </CardHeader>
                   <CardContent data-scroll>
                     <p class="font-light text-base">
-                      A robust and intuitive polls feature within each event allows for rapid
-                      decision-making.
+                      A robust and intuitive polls feature within each event
+                      allows for rapid decision-making.
                     </p>
                   </CardContent>
                 </Card>
@@ -726,7 +726,7 @@
                   ></div>
                 </div>
                 <div
-                  class="relative w-[48rem] h-[40rem] overflow-hidden z-10 "
+                  class="relative w-[48rem] h-[40rem] overflow-hidden z-10"
                   v-if="$colorMode.value === 'dark'"
                   data-scroll
                 >
@@ -858,6 +858,7 @@ const eventCounter = ref(0);
 const monthlyCount = ref(0);
 const joinCode = ref("");
 const scrollInstance = ref(null);
+let scrollElement = null;
 const user = useSupabaseUser();
 
 const displayName = ref("");
@@ -1112,7 +1113,7 @@ const handleJoin = async () => {
 
 onMounted(async () => {
   await nextTick();
-  const scrollElement = $initLocomotiveScroll("#scroll-container");
+  scrollElement = $initLocomotiveScroll("#scroll-container");
   scrollInstance.value = scrollElement;
 
   const elements = document.querySelectorAll(".fade-in-bottom");
@@ -1157,6 +1158,16 @@ onMounted(async () => {
     setTimeout(() => {
       animateValue(monthlyCount, 0, monthlyEventCount, 1000);
     }, 1000);
+  }
+});
+
+onBeforeRouteLeave(() => {
+  if (scrollInstance.value) {
+    scrollInstance.value = null; // Clear scroll instance ref
+  }
+  if (scrollElement) {
+    scrollElement.destroy(); // Only call destroy if scrollElement exists
+    scrollElement = null; // Set scrollElement to null after destroying it
   }
 });
 
