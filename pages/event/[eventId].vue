@@ -928,9 +928,9 @@
                   </div>
                   <!-- Create Poll Button (only for event creator) -->
                   <div v-if="isCreator">
-                    <Dialog :open="showCreatePollDialog">
+                    <Dialog>
                       <DialogTrigger as-child>
-                        <Button class="w-full mt-4">Create New Poll</Button>
+                        <Button class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white">Create New Poll</Button>
                       </DialogTrigger>
                       <DialogContent class="w-5/6 rounded-md">
                         <DialogHeader>
@@ -1240,7 +1240,6 @@ const polls = ref([]);
 const userVotes = ref([]);
 const newPollQuestion = ref("");
 const newPollOptions = ref([""]);
-const showCreatePollDialog = ref(false);
 
 // Variable to store the participant's name
 const participant_name = ref(null);
@@ -1487,9 +1486,6 @@ async function createPoll() {
   // Reset form
   newPollQuestion.value = "";
   newPollOptions.value = [""];
-
-  // Close dialog (if you're using a reactive variable to control the dialog)
-  showCreatePollDialog.value = false;
 
   // Fetch polls again
   await fetchPolls();
