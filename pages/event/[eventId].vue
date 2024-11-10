@@ -373,7 +373,44 @@
                   <!-- List of Polls -->
                   <div v-if="polls && polls.length">
                     <div v-for="poll in polls" :key="poll.id" class="mb-4">
-                      <h3 class="text-lg font-semibold">{{ poll.question }}</h3>
+                      <div class="flex flex-row justify-between">
+                        <h3 class="text-lg font-semibold">
+                          {{ poll.question }}
+                        </h3>
+                        <div v-if="canDeletePoll(poll)">
+                          <Dialog>
+                            <DialogTrigger as-child>
+                              <Button
+                                size="icon"
+                                class="size-8"
+                                variant="ghost"
+                              >
+                                <Trash2 class="size-5 text-red-600" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Delete Poll</DialogTitle>
+                                <DialogDescription>
+                                  Are you sure you want to delete this poll?
+                                  This action cannot be undone.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <DialogFooter>
+                                <DialogClose as-child>
+                                  <Button variant="secondary">Cancel</Button>
+                                </DialogClose>
+                                <Button
+                                  variant="destructive"
+                                  @click="deletePoll(poll.id)"
+                                >
+                                  Delete
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </div>
                       <div v-if="!hasUserVoted(poll)">
                         <!-- Voting Options -->
                         <div
@@ -607,7 +644,7 @@
             </div>
           </div>
           <div class="flex flex-col lg:flex-row gap-8 justify-center" v-else>
-            <Card class="lg:w-80 xl:w-96">
+            <Card class="lg:w-80 xl:w-96 h-fit">
               <CardHeader>
                 <CardTitle>Your Availability</CardTitle>
                 <CardDescription
@@ -671,7 +708,7 @@
                 </div>
               </CardContent>
             </Card>
-            <Card class="lg:w-80 xl:w-96">
+            <Card class="lg:w-80 xl:w-96 h-fit">
               <CardHeader>
                 <CardTitle>Overall Availability</CardTitle>
                 <CardDescription
@@ -819,7 +856,44 @@
                   <!-- List of Polls -->
                   <div v-if="polls && polls.length">
                     <div v-for="poll in polls" :key="poll.id" class="mb-4">
-                      <h3 class="text-lg font-semibold">{{ poll.question }}</h3>
+                      <div class="flex flex-row justify-between">
+                        <h3 class="text-lg font-semibold">
+                          {{ poll.question }}
+                        </h3>
+                        <div v-if="canDeletePoll(poll)">
+                          <Dialog>
+                            <DialogTrigger as-child>
+                              <Button
+                                size="icon"
+                                class="size-8"
+                                variant="ghost"
+                              >
+                                <Trash2 class="size-5 text-red-600" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Delete Poll</DialogTitle>
+                                <DialogDescription>
+                                  Are you sure you want to delete this poll?
+                                  This action cannot be undone.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <DialogFooter>
+                                <DialogClose as-child>
+                                  <Button variant="secondary">Cancel</Button>
+                                </DialogClose>
+                                <Button
+                                  variant="destructive"
+                                  @click="deletePoll(poll.id)"
+                                >
+                                  Delete
+                                </Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </div>
                       <div v-if="!hasUserVoted(poll)">
                         <!-- Voting Options -->
                         <div
@@ -1168,7 +1242,6 @@ const newPollQuestion = ref("");
 const newPollOptions = ref([""]);
 const showCreatePollDialog = ref(false);
 
-
 // Variable to store the participant's name
 const participant_name = ref(null);
 
@@ -1253,16 +1326,18 @@ onMounted(async () => {
 
 async function fetchPolls() {
   const { data, error } = await supabase
-    .from('polls')
-    .select(`
+    .from("polls")
+    .select(
+      `
       *,
       poll_options(*),
       poll_votes(*)
-    `)
-    .eq('event_id', event_id.value);
+    `
+    )
+    .eq("event_id", event_id.value);
 
   if (error) {
-    console.error('Error fetching polls:', error.message);
+    console.error("Error fetching polls:", error.message);
     return;
   }
 
@@ -1276,12 +1351,12 @@ async function fetchPolls() {
 async function getUserVotes() {
   if (!user.value) return [];
   const { data, error } = await supabase
-    .from('poll_votes')
-    .select('*')
-    .eq('user_id', user.value.id);
+    .from("poll_votes")
+    .select("*")
+    .eq("user_id", user.value.id);
 
   if (error) {
-    console.error('Error fetching user votes:', error.message);
+    console.error("Error fetching user votes:", error.message);
     return [];
   }
 
@@ -1290,43 +1365,47 @@ async function getUserVotes() {
 
 function hasUserVoted(poll) {
   if (!user.value) return false;
-  return userVotes.value.some(vote => vote.poll_id === poll.id && vote.user_id === user.value.id);
+  return userVotes.value.some(
+    (vote) => vote.poll_id === poll.id && vote.user_id === user.value.id
+  );
 }
 
 async function vote(pollId, optionId) {
   if (!user.value) {
     toast({
-      title: 'Not Logged In',
-      description: 'You must be logged in to vote.',
-      variant: 'destructive',
+      title: "Not Logged In",
+      description: "You must be logged in to vote.",
+      variant: "destructive",
     });
     return;
   }
 
   // Check if user has already voted
-  if (userVotes.value.some(vote => vote.poll_id === pollId && vote.user_id === user.value.id)) {
+  if (
+    userVotes.value.some(
+      (vote) => vote.poll_id === pollId && vote.user_id === user.value.id
+    )
+  ) {
     toast({
-      title: 'Already Voted',
-      description: 'You have already voted in this poll.',
-      variant: 'destructive',
+      title: "Already Voted",
+      description: "You have already voted in this poll.",
+      variant: "destructive",
     });
     return;
   }
 
-  const { error } = await supabase
-    .from('poll_votes')
-    .insert({
-      poll_id: pollId,
-      option_id: optionId,
-      user_id: user.value.id,
-    });
+  const { error } = await supabase.from("poll_votes").insert({
+    poll_id: pollId,
+    option_id: optionId,
+    user_id: user.value.id,
+  });
 
   if (error) {
-    console.error('Error voting:', error.message);
+    console.error("Error voting:", error.message);
     toast({
-      title: 'Error',
-      description: 'Failed to submit vote.',
-      variant: 'destructive',
+      title: "Error",
+      description: "Failed to submit vote.",
+      variant: "destructive",
     });
     return;
   }
@@ -1336,7 +1415,7 @@ async function vote(pollId, optionId) {
 }
 
 function addOption() {
-  newPollOptions.value.push('');
+  newPollOptions.value.push("");
 }
 
 function removeOption(index) {
@@ -1348,25 +1427,25 @@ function removeOption(index) {
 async function createPoll() {
   if (!newPollQuestion.value.trim()) {
     toast({
-      title: 'Invalid Input',
-      description: 'Poll question cannot be empty.',
-      variant: 'destructive',
+      title: "Invalid Input",
+      description: "Poll question cannot be empty.",
+      variant: "destructive",
     });
     return;
   }
 
-  if (newPollOptions.value.some(option => !option.trim())) {
+  if (newPollOptions.value.some((option) => !option.trim())) {
     toast({
-      title: 'Invalid Input',
-      description: 'Poll options cannot be empty.',
-      variant: 'destructive',
+      title: "Invalid Input",
+      description: "Poll options cannot be empty.",
+      variant: "destructive",
     });
     return;
   }
 
   // Insert poll
   const { data: pollData, error: pollError } = await supabase
-    .from('polls')
+    .from("polls")
     .insert({
       event_id: event_id.value,
       question: newPollQuestion.value,
@@ -1376,38 +1455,38 @@ async function createPoll() {
     .single();
 
   if (pollError) {
-    console.error('Error creating poll:', pollError.message);
+    console.error("Error creating poll:", pollError.message);
     toast({
-      title: 'Error',
-      description: 'Failed to create poll.',
-      variant: 'destructive',
+      title: "Error",
+      description: "Failed to create poll.",
+      variant: "destructive",
     });
     return;
   }
 
   // Insert options
-  const optionsData = newPollOptions.value.map(optionText => ({
+  const optionsData = newPollOptions.value.map((optionText) => ({
     poll_id: pollData.id,
     option_text: optionText,
   }));
 
   const { error: optionsError } = await supabase
-    .from('poll_options')
+    .from("poll_options")
     .insert(optionsData);
 
   if (optionsError) {
-    console.error('Error inserting options:', optionsError.message);
+    console.error("Error inserting options:", optionsError.message);
     toast({
-      title: 'Error',
-      description: 'Failed to create poll options.',
-      variant: 'destructive',
+      title: "Error",
+      description: "Failed to create poll options.",
+      variant: "destructive",
     });
     return;
   }
 
   // Reset form
-  newPollQuestion.value = '';
-  newPollOptions.value = [''];
+  newPollQuestion.value = "";
+  newPollOptions.value = [""];
 
   // Close dialog (if you're using a reactive variable to control the dialog)
   showCreatePollDialog.value = false;
@@ -1417,9 +1496,46 @@ async function createPoll() {
 }
 
 function getVoteCount(pollId, optionId) {
-  const poll = polls.value.find(p => p.id === pollId);
+  const poll = polls.value.find((p) => p.id === pollId);
   if (!poll) return 0;
-  return poll.poll_votes.filter(vote => vote.option_id === optionId).length;
+  return poll.poll_votes.filter((vote) => vote.option_id === optionId).length;
+}
+
+async function deletePoll(pollId) {
+  // Close the dialog (if using a reactive variable to control the dialog state)
+  // showDeletePollDialog.value = false;
+
+  // Delete the poll from Supabase
+  const { error } = await supabase
+    .from('polls')
+    .delete()
+    .eq('id', pollId);
+
+  if (error) {
+    console.error('Error deleting poll:', error.message);
+    toast({
+      title: 'Error',
+      description: 'Failed to delete the poll.',
+      variant: 'destructive',
+    });
+    return;
+  }
+
+  // Refresh the polls list
+  await fetchPolls();
+
+  toast({
+    title: 'Poll Deleted',
+    description: 'The poll has been successfully deleted.',
+    variant: 'success',
+  });
+}
+
+function canDeletePoll(poll) {
+  if (!user.value) return false;
+
+  // Allow if the user is the event creator or the poll creator
+  return isCreator.value || poll.created_by === user.value.id;
 }
 
 
