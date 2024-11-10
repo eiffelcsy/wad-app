@@ -2,31 +2,33 @@
   <div>
     <PageHeader />
     <div class="min-h-screen bg-white dark:bg-black">
-      <div class="py-6 md:py-8 mx-auto container xl:w-[1200px] relative">
+      <div
+        class="py-6 md:py-8 mx-auto container xl:w-[1200px] relative flex justify-between"
+      >
         <h1
           class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
         >
           {{ project.title }}
         </h1>
-        <div class="absolute top-8 right-2 flex gap-2 align-middle">
+        <div class="flex gap-2 align-middle">
           <!-- Edit Icon Button -->
           <Button
             @click="startEditing(project.id, project.title)"
-            class="text-blue-500 hover:text-blue-700"
-            variant="ghost"
+            class="text-indigo-600"
+            variant="outline"
             size="icon"
           >
-            <Edit class="size-10" />
+            <Edit class="size-5" />
           </Button>
 
           <!-- Delete Icon Button -->
           <Button
             @click="deleteProject(project.id)"
-            class="text-red-500 hover:text-red-700"
-            variant="ghost"
+            class="text-red-500"
+            variant="outline"
             size="icon"
           >
-            <Trash class="size-10" />
+            <Trash2 class="size-5" />
           </Button>
         </div>
       </div>
@@ -51,36 +53,34 @@
       </div>
     </div>
     <PageFooter />
-    <!-- edit form -->
-    <div
-      v-if="isDialogOpen"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-      <div class="bg-black rounded-lg p-6 w-full max-w-md mx-4 shadow-lg">
-        <h2 class="text-xl font-semibold mb-4">Edit Task</h2>
-        <form @submit.prevent="saveProjectTitle">
-          <!-- Title Input -->
-          <div class="mb-4">
-            <label for="title" class="block text-sm font-medium">Title</label>
-            <input
-              id="title"
-              v-model="editTitle"
-              type="text"
-              class="border border-gray-300 rounded p-2 w-full bg-black text-white"
-              required
-            />
-          </div>
 
-          <!-- Save and Close Buttons -->
-          <div class="flex justify-end gap-2">
-            <Button @click="isDialogOpen = false" variant="secondary"
-              >Cancel</Button
-            >
-            <Button type="submit" variant="primary">Save Changes</Button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <!-- Edit Form using Dialog components -->
+    <Dialog v-model:open="isDialogOpen">
+      <DialogContent
+        class="bg-white dark:bg-black rounded-lg p-6 w-full max-w-md mx-4 shadow-lg"
+      >
+        <DialogHeader>
+          <DialogTitle>Edit Project</DialogTitle>
+        </DialogHeader>
+        <div class="mb-4">
+          <label for="title" class="block text-sm font-medium">Title</label>
+          <Input
+            id="title"
+            v-model="editTitle"
+            type="text"
+            placeholder="Enter Title"
+            required
+          />
+        </div>
+
+        <DialogFooter class="flex justify-end gap-2">
+          <DialogClose> Cancel </DialogClose>
+          <Button @click="saveProjectTitle" class="bg-indigo-600 hover:bg-indigo-700 text-white"
+            >Save Changes</Button
+          >
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
@@ -93,7 +93,17 @@ import { PageHeader } from "@/components/custom/page-header";
 import { PageFooter } from "@/components/custom/page-footer";
 import { GanttChart } from "@/components/custom/gantt-chart";
 import { KanbanBoard } from "@/components/custom/kanban";
-import { Trash, Edit } from "lucide-vue-next";
+import { Edit, Trash2 } from "lucide-vue-next";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const route = useRoute();
 const projectId = route.params["projectId"];
@@ -130,11 +140,6 @@ const startEditing = (projectId, currentTitle) => {
   isDialogOpen.value = true;
 };
 
-const cancelEditMode = (projectId) => {
-  isEditing.value[projectId] = false;
-  editTitle.value = "";
-};
-
 const saveProjectTitle = async () => {
   if (!editingProjectId.value) {
     console.error("❌ No project ID set for editing.");
@@ -156,7 +161,7 @@ const saveProjectTitle = async () => {
     project.value = { ...project.value, title: editTitle.value };
     // Spread `project.value` to create a new reference and update the title
 
-    closeDialog(); // Close dialog after successful save
+    isDialogOpen.value = false; // Close dialog after successful save
     console.log("✅ Project title updated successfully.");
   } catch (err) {
     console.error("❌ Unexpected error updating project title:", err);
