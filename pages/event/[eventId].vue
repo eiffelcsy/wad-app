@@ -816,7 +816,7 @@
                     <div class="w-full flex items-center justify-center">
                       <ol>
                         <li
-                          v-for="{ count, timeslot } in getSortedAvailability()"
+                          v-for="{ date, startTime, endTime, availability } in getRecommendedTimeBlocks()"
                           :key="timeslot"
                           class="flex items-center space-x-2 mb-2"
                         >
@@ -824,11 +824,11 @@
                           <div
                             class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
                           >
-                            {{ timeslot }}
+                          {{ formatDate(date).join(" ") }} {{ startTime }} - {{ endTime }}
                           </div>
                           <!-- Availability in green, following format "[count] people available" -->
                           <span class="text-green-500 font-semibold">
-                            {{ count }} people available
+                            {{ availability }} people available
                           </span>
                         </li>
                       </ol>
@@ -1976,22 +1976,62 @@ function getAvailabilityCount(dateIndex, timeIndex) {
   return availabilityCounts.value[intervalIndex] || 0;
 }
 
-function getSortedAvailability() {
-  // Create an array to hold timeslot and count pairs
-  let availabilityDict = [];
+function getRecommendedTimeBlocks() {
+  const minBlockLength = 2; 
+  const recommendedBlocks = [];
 
-  // Iterate over the intervals and calculate availability counts for each timeslot
-  intervals.value.forEach((interval, index) => {
-    const timeSlot = `${formatDate(interval.date)} ${interval.time}`;
-    const availabilityCount = availabilityCounts.value[index] || 0;
-    availabilityDict.push({ timeslot: timeSlot, count: availabilityCount });
+  dates.value.forEach((date, dateIndex) => {
+    let start = null;
+    let blockCount = 0;
+    let blockScore = 0;
+
+    times.value.forEach((time, timeIndex) => {
+      const intervalIndex = dateIndex * times.value.length + timeIndex;
+      const availability = availabilityCounts.value[intervalIndex] || 0;
+
+      if (availability > 0) {
+        if (start === null) start = timeIndex;
+        blockCount++;
+        blockScore += availability;
+
+        if (blockCount >= minBlockLength) {
+          const end = timeIndex;
+          const startTime = times.value[start];
+          
+          let endTime;
+          if (end + 1 < times.value.length) {
+            endTime = times.value[end + 1];
+          } else {
+            // Calculate end time by adding 30 minutes to the last timeslot
+            const [hour, minute] = times.value[end].split(':').map(Number);
+            const newMinute = (minute + 30) % 60;
+            const newHour = hour + Math.floor((minute + 30) / 60);
+            endTime = `${String(newHour).padStart(2, '0')}:${String(newMinute).padStart(2, '0')}`;
+          }
+
+          recommendedBlocks.push({
+            date,
+            startTime,
+            endTime,
+            score: blockScore,
+            availability,
+          });
+
+          start = null;
+          blockCount = 0;
+          blockScore = 0;
+        }
+      } else {
+        start = null;
+        blockCount = 0;
+        blockScore = 0;
+      }
+    });
   });
 
-  // Sort the array by availability count from most to least
-  availabilityDict.sort((a, b) => b.count - a.count);
-
-  // Return only the top 10 timeslots as an array
-  return availabilityDict.slice(0, 10);
+  // Sort the blocks by score (higher scores first) and return the top results
+  recommendedBlocks.sort((a, b) => b.score - a.score);
+  return recommendedBlocks.slice(0, 10); // Limit to top 10 blocks
 }
 
 const isDragging = ref(false); // Track if dragging is active

@@ -68,7 +68,7 @@
               </CardContent>
             </Card>
           </div>
-          <Button @click="nextView" class="mt-6 md:mt-8 lg:mt-10 w-full"
+          <Button @click="nextView" class="mt-6 md:mt-8 lg:mt-10 w-full bg-indigo-600 hover:bg-indigo-700 text-white"
             >Next</Button
           >
         </div>
