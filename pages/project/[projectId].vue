@@ -14,22 +14,42 @@
           <!-- Edit Icon Button -->
           <Button
             @click="startEditing(project.id, project.title)"
-            class="text-indigo-600"
+            class="text-zinc-400"
             variant="outline"
             size="icon"
           >
             <Edit class="size-5" />
           </Button>
 
-          <!-- Delete Icon Button -->
-          <Button
-            @click="deleteProject(project.id)"
-            class="text-red-500"
-            variant="outline"
-            size="icon"
-          >
-            <Trash2 class="size-5" />
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger as-child>
+              <Button
+                size="icon"
+                class="border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+              >
+                <Trash2 class="size-5" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle
+                  >Are you sure you want to delete this project?</AlertDialogTitle
+                >
+                <AlertDialogDescription>
+                  This action cannot be undone. Once deleted, the project will be
+                  permanently removed.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  class="bg-red-700 text-white hover:bg-red-900"
+                  @click="deleteProject"
+                  >Delete</AlertDialogAction
+                >
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
       <Separator />
@@ -102,6 +122,17 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -112,7 +143,6 @@ const projects = ref([]);
 const supabase = useSupabaseClient();
 const editingProjectId = ref(null);
 const editTitle = ref("");
-const isEditing = ref({});
 const isDialogOpen = ref(false);
 
 const fetchProjectDetails = async () => {

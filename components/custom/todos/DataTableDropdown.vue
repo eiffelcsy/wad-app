@@ -3,9 +3,6 @@ import { ref } from "vue";
 import { MoreHorizontal } from 'lucide-vue-next'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-
-
-
 import {
   Select,
   SelectContent,
@@ -15,6 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from '@/components/ui/dialog'
 
 const supabase = useSupabaseClient();
 const isDialogOpen = ref(false);
@@ -22,8 +27,9 @@ const editForm = ref({
   title: '',
   status: '',
   assigned_to: '',
+  assignee_name: '',
 });
-const selectedMember = ref({name: ""});
+const selectedMember = ref({ assignee_name: "", assigned_to: "" });
 const teamMembers = ref([]);
 
 
@@ -33,6 +39,7 @@ defineProps<{
     title: string
     status: string
     assigned_to: string
+    assignee_name: string
     projectId: string
   }
 }>()
@@ -60,7 +67,7 @@ async function fetchProjectId(todoId) {
 async function fetchTeamMembers(projectId) {
   const { data, error } = await supabase
     .from('project_members') 
-    .select('name, user_id') // take the name and ID in project_members out
+    .select('user_id, name') // take the name and ID in project_members out
     .eq('project_id', projectId); 
 
     if (error) {
@@ -133,13 +140,15 @@ async function saveChanges() {
   }
   // Sync selected member
   console.log('selected member is: '+ selectedMember.value);
-  editForm.value.assigned_to = selectedMember.value;
+  editForm.value.assigned_to = selectedMember.value.assigned_to;
+  editForm.value.assignee_name = selectedMember.value.assignee_name;
   const { error } = await supabase
     .from('todos')
     .update({
       title: editForm.value.title,
       status: editForm.value.status,
       assigned_to: editForm.value.assigned_to,
+      assignee_name: editForm.value.assignee_name
     })
     .eq('id', editForm.value.id)
 
@@ -175,51 +184,52 @@ async function saveChanges() {
   </DropdownMenu>
 
 
-  <div
-    v-if="isDialogOpen"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-  >
-    <div class="bg-black rounded-lg p-6 w-full max-w-md mx-4 shadow-lg">
-      <h2 class="text-xl font-semibold mb-4">Edit Task</h2>
-      <form @submit.prevent="saveChanges">
-
+  <Dialog v-model:open="isDialogOpen">
+    <DialogOverlay />
+    <DialogContent class="bg-white dark:bg-black rounded-lg p-6 w-full max-w-md mx-4 shadow-lg">
+      <DialogHeader>
+        <DialogTitle>Edit Task</DialogTitle>
+      </DialogHeader>
         <!-- Title Input -->
         <div class="mb-4">
           <label for="title" class="block text-sm font-medium">Title</label>
-          <input
+          <Input
             id="title"
             v-model="editForm.title"
             type="text"
-            class="border border-gray-300 rounded p-2 w-full bg-black text-white"
+            placeholder="Enter Title"
             required
           />
         </div>
 
         <!-- Change assigned member -->
-        <Select v-model="selectedMember">
-          <label for="member" class="block text-sm font-medium bg-black text-white">Assigned member</label>
-          <SelectTrigger>
-            <span v-if="selectedMember">
-              {{ teamMembers.find(member => member.user_id === selectedMember)?.name || "Select a member" }}
-            </span>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Members</SelectLabel>
-                <SelectItem v-for="member in teamMembers" :key="member.user_id" :value="member.user_id">
-                  {{ member.name }} 
+        <div class="mb-4">
+          <label for="member" class="block text-sm font-medium">Assigned Member</label>
+          <Select id="member" v-model="selectedMember">
+            <SelectTrigger>
+              <SelectValue placeholder="Select a member">{{ selectedMember ? selectedMember.assignee_name : 'Select an option' }}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Members</SelectLabel>
+                <SelectItem
+                  v-for="member in teamMembers"
+                  :key="member.user_id"
+                  :value="{assigned_to: member.user_id, assignee_name: member.name}"
+                >
+                  {{ member.name }}
                 </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
 
         <!-- Save and Close Buttons -->
-        <div class="flex justify-end gap-2">
-          <Button @click="isDialogOpen = false" variant="secondary">Cancel</Button>
-          <Button @click="saveChanges()" type="submit" variant="primary">Save Changes</Button>
-        </div>
-      </form>
-    </div>
-  </div>
+        <DialogFooter class="flex justify-end gap-2">
+          <DialogClose>Cancel</DialogClose>
+          <Button @click="saveChanges" class="bg-indigo-600 hover:bg-indigo-700 text-white">Save Changes</Button>
+        </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
