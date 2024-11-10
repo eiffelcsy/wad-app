@@ -441,17 +441,24 @@
                     </div>
                   </div>
                   <div v-else>
-                    <p>No polls available.</p>
+                    <p class="text-zinc-500">No polls available.</p>
                   </div>
                   <!-- Create Poll Button (only for event creator) -->
                   <div v-if="isCreator">
                     <Dialog>
                       <DialogTrigger as-child>
-                        <Button class="w-full mt-4">Create New Poll</Button>
+                        <Button
+                          class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white"
+                          >Create New Poll</Button
+                        >
                       </DialogTrigger>
                       <DialogContent class="w-5/6 rounded-md">
                         <DialogHeader>
                           <DialogTitle>Create a New Poll</DialogTitle>
+                          <DialogDescription
+                            >Gather the opinions of your event
+                            participants.</DialogDescription
+                          >
                         </DialogHeader>
                         <div class="my-4">
                           <Input
@@ -466,22 +473,28 @@
                             >
                               <Input
                                 v-model="newPollOptions[index]"
-                                placeholder="Option text"
+                                placeholder="Option Text"
                               />
                               <Button
                                 size="icon"
+                                variant="outline"
                                 class="ml-2"
                                 @click="removeOption(index)"
-                                >-</Button
-                              >
+                                ><Minus class="size-4"
+                              /></Button>
                             </div>
-                            <Button class="mt-2" @click="addOption"
-                              >Add Option</Button
+                            <Button
+                              class="mt-2 w-full text-zinc-400"
+                              variant="ghost"
+                              @click="addOption"
+                              ><Plus class="size-4 mr-2" /> Add Option</Button
                             >
                           </div>
                         </div>
                         <DialogFooter>
-                          <Button variant="primary" @click="createPoll"
+                          <Button
+                            @click="createPoll"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white mt-2"
                             >Create Poll</Button
                           >
                           <DialogClose as-child>
@@ -924,17 +937,24 @@
                     </div>
                   </div>
                   <div v-else>
-                    <p>No polls available.</p>
+                    <p class="text-zinc-500">No polls available.</p>
                   </div>
                   <!-- Create Poll Button (only for event creator) -->
                   <div v-if="isCreator">
                     <Dialog>
                       <DialogTrigger as-child>
-                        <Button class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white">Create New Poll</Button>
+                        <Button
+                          class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white"
+                          >Create New Poll</Button
+                        >
                       </DialogTrigger>
                       <DialogContent class="w-5/6 rounded-md">
                         <DialogHeader>
                           <DialogTitle>Create a New Poll</DialogTitle>
+                          <DialogDescription
+                            >Gather the opinions of your event
+                            participants.</DialogDescription
+                          >
                         </DialogHeader>
                         <div class="my-4">
                           <Input
@@ -949,22 +969,28 @@
                             >
                               <Input
                                 v-model="newPollOptions[index]"
-                                placeholder="Option text"
+                                placeholder="Option Text"
                               />
                               <Button
                                 size="icon"
+                                variant="outline"
                                 class="ml-2"
                                 @click="removeOption(index)"
-                                >-</Button
-                              >
+                                ><Minus class="size-4"
+                              /></Button>
                             </div>
-                            <Button class="mt-2" @click="addOption"
-                              >Add Option</Button
+                            <Button
+                              class="mt-2 w-full text-zinc-400"
+                              variant="ghost"
+                              @click="addOption"
+                              ><Plus class="size-4 mr-2" /> Add Option</Button
                             >
                           </div>
                         </div>
                         <DialogFooter>
-                          <Button variant="primary" @click="createPoll"
+                          <Button
+                            @click="createPoll"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white"
                             >Create Poll</Button
                           >
                           <DialogClose as-child>
@@ -1194,7 +1220,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Trash2 } from "lucide-vue-next";
+import { Minus, Plus, Trash2 } from "lucide-vue-next";
 import { useMediaQuery } from "@vueuse/core";
 import { EditEvent } from "@/components/custom/edit-event";
 import { GoogleMaps } from "@/components/custom/google-maps";
@@ -1502,17 +1528,14 @@ async function deletePoll(pollId) {
   // showDeletePollDialog.value = false;
 
   // Delete the poll from Supabase
-  const { error } = await supabase
-    .from('polls')
-    .delete()
-    .eq('id', pollId);
+  const { error } = await supabase.from("polls").delete().eq("id", pollId);
 
   if (error) {
-    console.error('Error deleting poll:', error.message);
+    console.error("Error deleting poll:", error.message);
     toast({
-      title: 'Error',
-      description: 'Failed to delete the poll.',
-      variant: 'destructive',
+      title: "Error",
+      description: "Failed to delete the poll.",
+      variant: "destructive",
     });
     return;
   }
@@ -1521,9 +1544,9 @@ async function deletePoll(pollId) {
   await fetchPolls();
 
   toast({
-    title: 'Poll Deleted',
-    description: 'The poll has been successfully deleted.',
-    variant: 'success',
+    title: "Poll Deleted",
+    description: "The poll has been successfully deleted.",
+    variant: "success",
   });
 }
 
@@ -1533,7 +1556,6 @@ function canDeletePoll(poll) {
   // Allow if the user is the event creator or the poll creator
   return isCreator.value || poll.created_by === user.value.id;
 }
-
 
 async function fetchParticipants() {
   const { data: findParticipants, error } = await supabase
