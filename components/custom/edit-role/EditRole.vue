@@ -2,7 +2,7 @@
     <div v-if="canEditRole">
         <Dialog v-if="userRole.value !== 'owner'">
             <DialogTrigger as-child>
-                <Button variant="outline" size="icon" class="pencil-button" @click="openDialog">
+                <Button variant="ghost" size="icon" class="pencil-button" @click="openDialog">
                     <PencilIcon class="pencil-icon size-5"></PencilIcon>
                 </Button>
             </DialogTrigger>
@@ -39,76 +39,6 @@
 </template>
 
 <style scoped>
-/* Dialog content styling */
-.dialog-content {
-    width: 100%;
-    max-width: 400px;
-    overflow-x: hidden;
-    box-sizing: border-box;
-}
-
-.user-role-wrapper {
-    display: flex;
-    flex-direction: column;
-}
-
-.spacer {
-    height: 16px; /* Adjust height to control space between dropdown and buttons */
-}
-
-.user-role-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 0.5rem; /* Minimal space above User Role section */
-}
-
-.content-wrapper {
-    width: 100%;
-    max-width: 100%;
-}
-
-.scroll-container {
-    width: 100%;
-    max-width: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    box-sizing: border-box;
-}
-
-.fixed-width-content {
-    max-width: 400px;
-    width: 100%;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    box-sizing: border-box;
-}
-
-/* Style for Delete User button */
-.delete-user-button {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem; /* Smaller font */
-    min-width: auto; /* Make the button narrower */
-}
-
-/* Pencil button and icon styling */
-.pencil-button {
-    background: none; /* Ensure button has no background */
-    border: none; /* Remove any border */
-    padding: 0;
-}
-
-.pencil-icon {
-    background: transparent; /* Transparent background */
-    padding: 0; /* Remove padding for a cleaner look */
-}
-
-/* General box sizing */
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
 </style>
 
 <script setup>

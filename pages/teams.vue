@@ -3,7 +3,9 @@
     <PageHeader />
     <div class="bg-zinc-50 dark:bg-black min-h-screen">
       <div class="container w-full pt-8 md:pt-10 lg:pt-14">
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">Your Teams</h1>
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-semibold">
+          Your Teams
+        </h1>
       </div>
       <div class="container w-full flex flex-row justify-between pt-8">
         <!-- Search bar with original styling -->
@@ -15,7 +17,9 @@
             class="pl-10 text-base md:text-sm"
             v-model="searchQuery"
           />
-          <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
+          <span
+            class="absolute start-0 inset-y-0 flex items-center justify-center px-2"
+          >
             <Search class="size-6 text-muted-foreground" />
           </span>
         </div>
@@ -46,34 +50,51 @@
               </TableHeader>
               <TableBody>
                 <TableRow v-if="teams.length === 0">
-                  <TableCell colspan="5" class="text-center">No Teams Found.</TableCell>
+                  <TableCell colspan="5" class="text-center"
+                    >No Teams Found.</TableCell
+                  >
                 </TableRow>
                 <TableRow v-for="team in filteredTeams" :key="team.id">
                   <TableCell>{{ team.team_name }}</TableCell>
                   <TableCell>{{ team.membersCount }}</TableCell>
                   <TableCell>{{ formatDate(team.created_at) }}</TableCell>
-                  <TableCell>{{ team.createdByName || 'Unknown' }}</TableCell>
+                  <TableCell>{{ team.createdByName || "Unknown" }}</TableCell>
                   <TableCell>
                     <div class="flex space-x-4">
                       <!-- Owner Actions -->
                       <div v-if="team.role === 'owner'" class="flex space-x-2">
                         <div class="relative group">
-                          <EyeOpenIcon class="cursor-pointer" @click="viewTeam(team.code)" />
-                          <span
-                            class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
-                          >
-                            View More
-                          </span>
+                          <TooltipProvider :delayDuration="300">
+                            <Tooltip>
+                              <TooltipTrigger as-child>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  @click="viewTeam(team.code)"
+                                  ><ArrowUpRight class="size-5"
+                                /></Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Go to Team Page</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                         <AlertDialog>
                           <AlertDialogTrigger as-child>
                             <div class="relative group">
-                              <TrashIcon class="cursor-pointer text-red-500" />
-                              <span
-                                class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
-                              >
-                                Delete Team
-                              </span>
+                              <TooltipProvider :delayDuration="300">
+                                <Tooltip>
+                                  <TooltipTrigger as-child>
+                                    <Button size="icon" variant="ghost"
+                                      ><Trash2 class="size-5 text-red-600"
+                                    /></Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Delete Team</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             </div>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
@@ -82,7 +103,9 @@
                                 Are you sure you want to delete this team?
                               </AlertDialogTitle>
                               <AlertDialogDescription>
-                                This action cannot be undone. Once deleted, the team and all its data will be permanently removed.
+                                This action cannot be undone. Once deleted, the
+                                team and all its data will be permanently
+                                removed.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
@@ -101,22 +124,37 @@
                       <!-- Member Actions -->
                       <div v-else class="flex space-x-2">
                         <div class="relative group">
-                          <EyeOpenIcon class="cursor-pointer" @click="viewTeam(team.code)" />
-                          <span
-                            class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
-                          >
-                            View More
-                          </span>
+                          <TooltipProvider :delayDuration="300">
+                            <Tooltip>
+                              <TooltipTrigger as-child>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  @click="viewTeam(team.code)"
+                                  ><ArrowUpRight class="size-5"
+                                /></Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Go to Team Page</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                         <AlertDialog>
                           <AlertDialogTrigger as-child>
                             <div class="relative group">
-                              <ExitIcon class="cursor-pointer text-red-500" />
-                              <span
-                                class="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 text-xs text-white bg-gray-700 px-2 py-1 rounded shadow-lg"
-                              >
-                                Leave Team
-                              </span>
+                              <TooltipProvider :delayDuration="300">
+                                <Tooltip>
+                                  <TooltipTrigger as-child>
+                                    <Button size="icon" variant="ghost"
+                                      ><LogOut class="size-5 text-red-600"
+                                    /></Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Leave Team</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             </div>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
@@ -125,7 +163,8 @@
                                 Are you sure you want to leave this team?
                               </AlertDialogTitle>
                               <AlertDialogDescription>
-                                Once you leave, you will no longer be able to access this team unless you join again.
+                                Once you leave, you will no longer be able to
+                                access this team unless you join again.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
@@ -149,19 +188,56 @@
         </Card>
       </div>
     </div>
-  <PageFooter />
+    <PageFooter />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { PageHeader } from "@/components/custom/page-header";
-import { Search, Plus } from "lucide-vue-next";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Search,
+  Plus,
+  Eye,
+  Trash2,
+  LogOut,
+  ArrowUpRight,
+} from "lucide-vue-next";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { PageFooter } from "@/components/custom/page-footer";
 import { navigateTo } from "nuxt/app";
-import { TrashIcon, EyeOpenIcon, ExitIcon } from "@radix-icons/vue";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -203,7 +279,10 @@ const fetchTeams = async () => {
         .eq("team_id", teamId);
 
       if (countError) {
-        console.error(`Error fetching member count for team ${teamId}:`, countError);
+        console.error(
+          `Error fetching member count for team ${teamId}:`,
+          countError
+        );
         return 0;
       }
       return count;
@@ -230,7 +309,8 @@ const fetchTeams = async () => {
     ...team,
     membersCount: teamMemberCounts[index],
     createdByName: creatorNames[team.creator_user_id] || "Unknown",
-    role: teamMemberships.find((membership) => membership.team_id === team.id)?.role,
+    role: teamMemberships.find((membership) => membership.team_id === team.id)
+      ?.role,
   }));
 };
 

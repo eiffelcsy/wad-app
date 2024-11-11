@@ -1,214 +1,244 @@
 <template>
   <div>
     <PageHeader />
-    <div class="bg-zinc-50 dark:bg-black min-h-screen">
-      <div class="container mx-auto px-4 py-8">
-        <!-- Display Team Name, Code, and Description -->
-        <div class="flex justify-between items-center mb-6">
-          <div>
-            <h1 class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold">{{ team_name }}</h1>
-            <p class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
-              Team Code: <span class="font-bold">{{ team_code }}</span>
-            </p>
-            <p v-if="team_description" class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
-              {{ team_description }}
-            </p>
-          </div>
-          <!-- Edit Team Button, visible to owners and admins only -->
+    <div class="min-h-screen bg-white dark:bg-black">
+      <div
+        class="py-6 md:py-8 mx-auto container xl:w-[1200px] relative flex justify-between items-center"
+      >
+        <div>
+          <h1
+            class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
+          >
+            {{ team_name }}
+          </h1>
+          <p class="mt-1 text-base text-zinc-400 dark:text-zinc-500">
+            Team Code: <span class="font-bold">{{ team_code }}</span>
+          </p>
+          <p
+            v-if="team_description"
+            class="text-base text-zinc-400 dark:text-zinc-500 mt-1"
+          >
+            {{ team_description }}
+          </p>
+        </div>
+        <div class="flex gap-2 align-middle">
           <EditTeam />
         </div>
+      </div>
+      <Separator />
 
-        <!-- Search bar for team members -->
-        <div class="relative w-full max-h-10 pr-2 mb-6">
+      <!-- Search bar for team members -->
+      <div class="my-8 mx-auto container xl:w-[1200px]">
+        <div class="relative w-full max-h-10 mb-6">
           <Input
             id="searchMembers"
             type="text"
             placeholder="Search Users..."
-            class="pl-10 text-base"
+            class="pl-10 text-base w-full"
             v-model="searchQuery"
           />
-          <span class="absolute start-0 inset-y-0 flex items-center justify-center px-2">
+          <span
+            class="absolute left-0 inset-y-0 flex items-center justify-center px-2"
+          >
             <Search class="size-6 text-muted-foreground" />
           </span>
         </div>
 
         <!-- Tabs for Member Roles -->
-        <Tabs default-value="all" class="w-full">
-          <TabsList class="w-full border-b border-gray-300">
-            <TabsTrigger value="all" class="w-full py-2 text-lg font-medium">All</TabsTrigger>
-            <TabsTrigger value="owner" class="w-full py-2 text-lg font-medium">Owner</TabsTrigger>
-            <TabsTrigger value="admins" class="w-full py-2 text-lg font-medium">Admins</TabsTrigger>
-            <TabsTrigger value="members" class="w-full py-2 text-lg font-medium">Members</TabsTrigger>
+        <Tabs default-value="all">
+          <TabsList class="w-full lg:w-auto">
+            <TabsTrigger value="all" class="w-full">Everyone</TabsTrigger>
+            <TabsTrigger value="owner" class="w-full">Owner</TabsTrigger>
+            <TabsTrigger value="admins" class="w-full">Admins</TabsTrigger>
+            <TabsTrigger value="members" class="w-full">Members</TabsTrigger>
           </TabsList>
 
           <!-- All Members Tab -->
           <TabsContent value="all">
-            <Card class="mt-6">
-              <CardHeader class="px-6 py-4">
-                <CardTitle class="text-xl font-semibold">All</CardTitle>
-                <CardDescription class="text-gray-500">Showing everyone in the team.</CardDescription>
+            <Card>
+              <CardHeader>
+                <CardTitle>All</CardTitle>
+                <CardDescription>Showing everyone in the team.</CardDescription>
               </CardHeader>
-              <CardContent class="px-6 py-4">
-                <Table class="w-full border border-gray-300">
-                  <TableHeader>
-                    <TableRow class="bg-gray-100">
-                      <TableHead class="py-2 px-6">Name</TableHead>
-                      <TableHead class="py-2 px-6">Email</TableHead>
-                      <TableHead class="py-2 px-6">Role</TableHead>
-                      <TableHead class="py-2 px-6">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow v-if="filteredAllMembers.length === 0">
-                      <TableCell colspan="4" class="text-center py-4 text-gray-500">No Members Found.</TableCell>
-                    </TableRow>
-                    <TableRow v-for="member in filteredAllMembers" :key="member.user_id">
-                      <TableCell class="py-2 px-6">{{ member.name }}</TableCell>
-                      <TableCell class="py-2 px-6">{{ member.email }}</TableCell>
-                      <TableCell class="py-2 px-6">{{ capitalizeRole(member.role) }}</TableCell>
-                      <TableCell class="py-2 px-6">
-                          <EditRole v-if="member.role !== 'owner'" :currentUserId="member.user_id" @roleUpdated="handleRoleUpdated" />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+              <CardContent>
+                <div class="table-wrapper overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow v-if="filteredAllMembers.length === 0">
+                        <TableCell colspan="4">No Members Found.</TableCell>
+                      </TableRow>
+                      <TableRow
+                        v-for="member in filteredAllMembers"
+                        :key="member.user_id"
+                      >
+                        <TableCell>{{ member.name }}</TableCell>
+                        <TableCell>{{ member.email }}</TableCell>
+                        <TableCell>{{ capitalizeRole(member.role) }}</TableCell>
+                        <TableCell>
+                          <EditRole
+                            v-if="member.role !== 'owner'"
+                            :currentUserId="member.user_id"
+                            @roleUpdated="handleRoleUpdated"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           <!-- Owner Tab -->
           <TabsContent value="owner">
-            <Card class="mt-6">
-              <CardHeader class="px-6 py-4">
-                <CardTitle class="text-xl font-semibold">Owner</CardTitle>
-                <CardDescription class="text-gray-500">Showing the team owner.</CardDescription>
+            <Card>
+              <CardHeader>
+                <CardTitle>Owner</CardTitle>
+                <CardDescription>Showing the team owner.</CardDescription>
               </CardHeader>
-              <CardContent class="px-6 py-4">
-                <Table class="w-full border border-gray-300">
-                  <TableHeader>
-                    <TableRow class="bg-gray-100">
-                      <TableHead class="py-2 px-6">Name</TableHead>
-                      <TableHead class="py-2 px-6">Email</TableHead>
-                      <TableHead class="py-2 px-6">Role</TableHead>
-                      <TableHead class="py-2 px-6">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow v-if="filteredOwnerMembers.length === 0">
-                      <TableCell colspan="4" class="text-center py-4 text-gray-500">No Owner Found.</TableCell>
-                    </TableRow>
-                    <TableRow v-for="owner in filteredOwnerMembers" :key="owner.user_id">
-                      <TableCell class="py-2 px-6">{{ owner.name }}</TableCell>
-                      <TableCell class="py-2 px-6">{{ owner.email }}</TableCell>
-                      <TableCell class="py-2 px-6">{{ capitalizeRole(owner.role) }}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+              <CardContent>
+                <div class="table-wrapper overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow v-if="filteredOwnerMembers.length === 0">
+                        <TableCell colspan="4">No Owner Found.</TableCell>
+                      </TableRow>
+                      <TableRow
+                        v-for="owner in filteredOwnerMembers"
+                        :key="owner.user_id"
+                      >
+                        <TableCell>{{ owner.name }}</TableCell>
+                        <TableCell>{{ owner.email }}</TableCell>
+                        <TableCell>{{ capitalizeRole(owner.role) }}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           <!-- Admins Tab -->
           <TabsContent value="admins">
-            <Card class="mt-6">
-              <CardHeader class="px-6 py-4">
-                <CardTitle class="text-xl font-semibold">Admins</CardTitle>
-                <CardDescription class="text-gray-500">Showing all team admins.</CardDescription>
+            <Card>
+              <CardHeader>
+                <CardTitle>Admins</CardTitle>
+                <CardDescription>Showing all team admins.</CardDescription>
               </CardHeader>
-              <CardContent class="px-6 py-4">
-                <Table class="w-full border border-gray-300">
-                  <TableHeader>
-                    <TableRow class="bg-gray-100">
-                      <TableHead class="py-2 px-6">Name</TableHead>
-                      <TableHead class="py-2 px-6">Email</TableHead>
-                      <TableHead class="py-2 px-6">Role</TableHead>
-                      <TableHead class="py-2 px-6">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow v-if="filteredAdminMembers.length === 0">
-                      <TableCell colspan="4" class="text-center py-4 text-gray-500">No Admins Found.</TableCell>
-                    </TableRow>
-                    <TableRow v-for="admin in filteredAdminMembers" :key="admin.user_id">
-                      <TableCell class="py-2 px-6">{{ admin.name }}</TableCell>
-                      <TableCell class="py-2 px-6">{{ admin.email }}</TableCell>
-                      <TableCell class="py-2 px-6">{{ capitalizeRole(admin.role) }}</TableCell>
-                      <TableCell class="py-2 px-6">
-                        <EditRole :currentUserId="admin.user_id" @roleUpdated="handleRoleUpdated" />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+              <CardContent>
+                <div class="table-wrapper overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow v-if="filteredAdminMembers.length === 0">
+                        <TableCell colspan="4">No Admins Found.</TableCell>
+                      </TableRow>
+                      <TableRow
+                        v-for="admin in filteredAdminMembers"
+                        :key="admin.user_id"
+                      >
+                        <TableCell>{{ admin.name }}</TableCell>
+                        <TableCell>{{ admin.email }}</TableCell>
+                        <TableCell>{{ capitalizeRole(admin.role) }}</TableCell>
+                        <TableCell>
+                          <EditRole
+                            :currentUserId="admin.user_id"
+                            @roleUpdated="handleRoleUpdated"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           <!-- Members Tab -->
           <TabsContent value="members">
-            <Card class="mt-6">
-              <CardHeader class="px-6 py-4">
-                <CardTitle class="text-xl font-semibold">Members</CardTitle>
-                <CardDescription class="text-gray-500">Showing all regular members.</CardDescription>
+            <Card>
+              <CardHeader>
+                <CardTitle>Members</CardTitle>
+                <CardDescription>Showing all regular members.</CardDescription>
               </CardHeader>
-              <CardContent class="px-6 py-4">
-                <Table class="w-full border border-gray-300">
-                  <TableHeader>
-                    <TableRow class="bg-gray-100">
-                      <TableHead class="py-2 px-6">Name</TableHead>
-                      <TableHead class="py-2 px-6">Email</TableHead>
-                      <TableHead class="py-2 px-6">Role</TableHead>
-                      <TableHead class="py-2 px-6">Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow v-if="filteredMemberMembers.length === 0">
-                      <TableCell colspan="4" class="text-center py-4 text-gray-500">No Members Found.</TableCell>
-                    </TableRow>
-                    <TableRow v-for="member in filteredMemberMembers" :key="member.user_id">
-                      <TableCell class="py-2 px-6">{{ member.name }}</TableCell>
-                      <TableCell class="py-2 px-6">{{ member.email }}</TableCell>
-                      <TableCell class="py-2 px-6">{{ capitalizeRole(member.role) }}</TableCell>
-                      <TableCell class="py-2 px-6">
-                        <EditRole :currentUserId="member.user_id" @roleUpdated="handleRoleUpdated" />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+              <CardContent>
+                <div class="table-wrapper overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow v-if="filteredMemberMembers.length === 0">
+                        <TableCell colspan="4">No Members Found.</TableCell>
+                      </TableRow>
+                      <TableRow
+                        v-for="member in filteredMemberMembers"
+                        :key="member.user_id"
+                      >
+                        <TableCell>{{ member.name }}</TableCell>
+                        <TableCell>{{ member.email }}</TableCell>
+                        <TableCell>{{ capitalizeRole(member.role) }}</TableCell>
+                        <TableCell>
+                          <EditRole
+                            :currentUserId="member.user_id"
+                            @roleUpdated="handleRoleUpdated"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+      </div>
+      <Separator />
 
-        <!-- Display Projects associated with the team -->
-        <div class="container w-full pt-8">
-          <h2 class="text-2xl font-semibold mb-4">Team Projects</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card
-              v-for="(project, index) in teamProjects"
-              :key="index"
-              class="mt-6 hover:border-indigo-600 relative"
+      <!-- Display Projects associated with the team -->
+      <div class="py-8 mx-auto container xl:w-[1200px]">
+        <div class="mb-4">
+          <h2 class="text-2xl font-semibold">Team Projects</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card
+            v-for="(project, index) in teamProjects"
+            :key="index"
+            class="relative hover:border-indigo-600"
+          >
+            <NuxtLink
+              :to="{
+                name: 'project-projectId',
+                params: { projectId: project.id },
+              }"
             >
-              <div class="absolute top-2 right-2 flex gap-2">
-                <!-- Edit Icon Button -->
-                <Button
-                  @click="startEditing(project.id, project.title)"
-                  class="text-blue-500 hover:text-blue-700"
-                  variant="ghost"
-                  size="icon"
-                >
-                  <Edit class="size-5" />
-                </Button>
-
-                <!-- Delete Icon Button -->
-                <Button
-                  @click="deleteProject(project.id)"
-                  class="text-red-500 hover:text-red-700"
-                  variant="ghost"
-                  size="icon"
-                >
-                  <Trash class="size-5" />
-                </Button>
-              </div>
               <CardHeader class="gap-2">
                 <CardTitle>
                   <div>
@@ -218,15 +248,12 @@
                     </p>
                   </div>
                 </CardTitle>
-                <CardDescription>
-                  <Badge class="mt-2">{{ project.team_name }}</Badge>
-                </CardDescription>
               </CardHeader>
               <CardContent>
                 <p>{{ project.description }}</p>
               </CardContent>
-            </Card>
-          </div>
+            </NuxtLink>
+          </Card>
         </div>
       </div>
     </div>
@@ -235,20 +262,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted, computed } from "vue";
+import { useRoute } from "vue-router";
 import { PageHeader } from "@/components/custom/page-header";
 import { PageFooter } from "@/components/custom/page-footer";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, Edit, Trash, PencilIcon } from "lucide-vue-next";
 import { EditTeam } from "@/components/custom/edit-team";
 import { EditRole } from "@/components/custom/edit-role";
-
 
 const supabase = useSupabaseClient();
 const route = useRoute();
@@ -258,23 +297,25 @@ const allMembers = ref([]);
 const ownerMembers = ref([]);
 const adminMembers = ref([]);
 const memberMembers = ref([]);
-const team_name = ref('');
-const team_code = ref('');
-const team_description = ref('');
+const team_name = ref("");
+const team_code = ref("");
+const team_description = ref("");
 const teamProjects = ref([]);
 const searchQuery = ref("");
 
 // Computed property to check if the user can edit the team (if they are 'owner' or 'admin')
 const canEditTeam = computed(() => {
   return allMembers.value.some(
-    (member) => member.user_id === user.id && (member.role === 'owner' || member.role === 'admin')
+    (member) =>
+      member.user_id === user.id &&
+      (member.role === "owner" || member.role === "admin")
   );
 });
 
 // Computed property to check if the user is an owner
 const isOwner = computed(() => {
   return allMembers.value.some(
-    (member) => member.user_id === user.id && member.role === 'owner'
+    (member) => member.user_id === user.id && member.role === "owner"
   );
 });
 
@@ -335,10 +376,10 @@ const ensureUserInTeam = async (teamId) => {
 
     // Check if the user already exists in team_members
     const { data: existingMember, error } = await supabase
-      .from('team_members')
-      .select('*')
-      .eq('team_id', teamId)
-      .eq('user_id', user.id)
+      .from("team_members")
+      .select("*")
+      .eq("team_id", teamId)
+      .eq("user_id", user.id)
       .single();
 
     if (error && error.code !== "PGRST116") {
@@ -349,13 +390,13 @@ const ensureUserInTeam = async (teamId) => {
     if (!existingMember) {
       // Insert the user if they are not already in the team_members table
       const { error: insertError } = await supabase
-        .from('team_members')
+        .from("team_members")
         .insert({
           team_id: teamId,
           user_id: user.id,
           name: name,
           email: email,
-          role: 'member', // Default role; adjust as needed
+          role: "member", // Default role; adjust as needed
           added_at: new Date().toISOString(),
         });
 
@@ -368,10 +409,10 @@ const ensureUserInTeam = async (teamId) => {
     } else if (!existingMember.name || !existingMember.email) {
       // Update the user’s name and email if they are missing
       const { error: updateError } = await supabase
-        .from('team_members')
+        .from("team_members")
         .update({ name, email })
-        .eq('team_id', teamId)
-        .eq('user_id', user.id);
+        .eq("team_id", teamId)
+        .eq("user_id", user.id);
 
       if (updateError) {
         console.error("Error updating team member:", updateError.message);
@@ -387,13 +428,13 @@ const ensureUserInTeam = async (teamId) => {
 const fetchTeamDetails = async () => {
   try {
     const { data: teamData, error: teamError } = await supabase
-      .from('teams')
-      .select('id, team_name, code, description')
-      .eq('code', route.params.teamId)
+      .from("teams")
+      .select("id, team_name, code, description")
+      .eq("code", route.params.teamId)
       .single();
 
     if (teamError || !teamData) {
-      console.error('Error fetching team:', teamError);
+      console.error("Error fetching team:", teamError);
       return;
     }
 
@@ -404,7 +445,7 @@ const fetchTeamDetails = async () => {
     await fetchTeamMembers(teamData.id);
     await fetchTeamProjects(teamData.id);
   } catch (error) {
-    console.error('Unexpected error fetching team details:', error);
+    console.error("Unexpected error fetching team details:", error);
   }
 };
 
@@ -412,24 +453,30 @@ const fetchTeamDetails = async () => {
 const fetchTeamMembers = async (teamId) => {
   try {
     const { data: teamMembers, error: membersError } = await supabase
-      .from('team_members')
-      .select('user_id, name, email, role')
-      .eq('team_id', teamId);
+      .from("team_members")
+      .select("user_id, name, email, role")
+      .eq("team_id", teamId);
 
     if (membersError) {
-      console.error('Error fetching team members:', membersError);
+      console.error("Error fetching team members:", membersError);
       return;
     }
 
-     // Ensure the logged-in user's display name and email are saved in the team_members table
-     await ensureUserInTeam(teamId);
+    // Ensure the logged-in user's display name and email are saved in the team_members table
+    await ensureUserInTeam(teamId);
 
     allMembers.value = teamMembers;
-    ownerMembers.value = teamMembers.filter((member) => member.role === 'owner');
-    adminMembers.value = teamMembers.filter((member) => member.role === 'admin');
-    memberMembers.value = teamMembers.filter((member) => member.role === 'member');
+    ownerMembers.value = teamMembers.filter(
+      (member) => member.role === "owner"
+    );
+    adminMembers.value = teamMembers.filter(
+      (member) => member.role === "admin"
+    );
+    memberMembers.value = teamMembers.filter(
+      (member) => member.role === "member"
+    );
   } catch (error) {
-    console.error('Unexpected error fetching team members:', error);
+    console.error("Unexpected error fetching team members:", error);
   }
 };
 
@@ -437,18 +484,18 @@ const fetchTeamMembers = async (teamId) => {
 const fetchTeamProjects = async (teamId) => {
   try {
     const { data: projectsData, error: projectsError } = await supabase
-      .from('projects')
-      .select('*')
-      .eq('team_id', teamId);
+      .from("projects")
+      .select("*")
+      .eq("team_id", teamId);
 
     if (projectsError) {
-      console.error('Error fetching team projects:', projectsError);
+      console.error("Error fetching team projects:", projectsError);
       return;
     }
 
     teamProjects.value = projectsData;
   } catch (error) {
-    console.error('Unexpected error fetching team projects:', error);
+    console.error("Unexpected error fetching team projects:", error);
   }
 };
 
@@ -462,16 +509,18 @@ const deleteProject = async (projectId) => {
 
   try {
     const { error: deleteError } = await supabase
-      .from('projects')
+      .from("projects")
       .delete()
-      .eq('id', projectId);
+      .eq("id", projectId);
 
     if (deleteError) {
       console.error("Error deleting project:", deleteError);
       return;
     }
 
-    teamProjects.value = teamProjects.value.filter((project) => project.id !== projectId);
+    teamProjects.value = teamProjects.value.filter(
+      (project) => project.id !== projectId
+    );
   } catch (err) {
     console.error("Unexpected error deleting project:", err);
   }
@@ -486,29 +535,33 @@ const startEditing = (projectId, currentTitle) => {
 // Function to handle role updates from the EditRole component
 // Function to handle role updates from the EditRole component
 function handleRoleUpdated({ userId, newRole }) {
-    // Find the member in `allMembers` and update their role
-    const member = allMembers.value.find((member) => member.user_id === userId);
-    if (member) {
-        // Update the role in the `allMembers` array
-        member.role = newRole;
+  // Find the member in `allMembers` and update their role
+  const member = allMembers.value.find((member) => member.user_id === userId);
+  if (member) {
+    // Update the role in the `allMembers` array
+    member.role = newRole;
 
-        // Update `adminMembers` and `memberMembers` lists
-        if (newRole === 'admin') {
-            // Move to `adminMembers` if they are not already there
-            if (!adminMembers.value.some(m => m.user_id === userId)) {
-                adminMembers.value.push(member);
-            }
-            // Remove from `memberMembers` if they exist there
-            memberMembers.value = memberMembers.value.filter(m => m.user_id !== userId);
-        } else if (newRole === 'member') {
-            // Move to `memberMembers` if they are not already there
-            if (!memberMembers.value.some(m => m.user_id === userId)) {
-                memberMembers.value.push(member);
-            }
-            // Remove from `adminMembers` if they exist there
-            adminMembers.value = adminMembers.value.filter(m => m.user_id !== userId);
-        }
+    // Update `adminMembers` and `memberMembers` lists
+    if (newRole === "admin") {
+      // Move to `adminMembers` if they are not already there
+      if (!adminMembers.value.some((m) => m.user_id === userId)) {
+        adminMembers.value.push(member);
+      }
+      // Remove from `memberMembers` if they exist there
+      memberMembers.value = memberMembers.value.filter(
+        (m) => m.user_id !== userId
+      );
+    } else if (newRole === "member") {
+      // Move to `memberMembers` if they are not already there
+      if (!memberMembers.value.some((m) => m.user_id === userId)) {
+        memberMembers.value.push(member);
+      }
+      // Remove from `adminMembers` if they exist there
+      adminMembers.value = adminMembers.value.filter(
+        (m) => m.user_id !== userId
+      );
     }
+  }
 }
 
 // Initial data fetching
