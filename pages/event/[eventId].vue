@@ -1,4 +1,3 @@
-<!-- TODO: styling -->
 <template>
   <div>
     <PageHeader v-if="user" class="dark:bg-zinc-950" />
@@ -360,10 +359,10 @@
                     <DialogTitle>Location Suggestions</DialogTitle>
                     <DialogDescription
                       >Suggested meeting & eating spots for your event, based on
-                      participant locations.</DialogDescription
+                      participant locations. Add your own location to see suggestions.</DialogDescription
                     >
                   </DialogHeader>
-                  <GoogleMaps />
+                  <GoogleMaps :eventId="event_id" />
                   <DialogFooter>
                     <DialogClose as-child>
                       <Button type="button" variant="secondary"> Close </Button>
@@ -867,7 +866,7 @@
                       participant locations.</DialogDescription
                     >
                   </DialogHeader>
-                  <GoogleMaps />
+                  <GoogleMaps :eventId=event_id />
                   <DialogFooter>
                     <DialogClose as-child>
                       <Button type="button" variant="secondary"> Close </Button>

@@ -1,123 +1,150 @@
-<!-- <template>
-    <GMapAutocomplete
-        placeholder="Search location here"
-       :options="{
-            bounds: {north: 1.4, south: 1.2, east: 104, west: 102},
-            strictBounds: true
-       }"
-    />
-          <GMapMap
-      :center="center"
-      :zoom="10"
-      map-type-id="terrain"
-      style="width: 40vw; height: 20rem"
-      :options="{
-        zoomControl: true,
-        mapTypeControl: true,
-        scaleControl: true,
-        streetViewControl: true,
-        rotateControl: true,
-        fullscreenControl: false
-      }"
-      ref="gmap"/>
-
-
-</template>
-
-<script>
-    import { GoogleMap } from 'vue3-google-map';
-    export default {
-        name: 'GoogleMaps',
-        components: {
-
-        },
-        data () {
-            return {
-                apiKey: process.env.NUXT_MAPS_API_KEY,
-                center: { lat: 51.5072, lng: 0.1276 },
-                map: null,
-                autocomplete: null,
-                currentPlace: null,
-                markers: [],
-                places: [],
-                isDragging: false,
-                files: [],
-                url: null,
-            }
-        },
-        mounted() {
-            this.geolocate();
-        },
-        methods: {
-            setPlace(place) {
-            if (place && place.geometry) {
-                this.currentPlace = place;
-                this.center = {
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng()
-                };
-                this.reverseGeocode(this.center.lat, this.center.lng);
-            }
-            },
-            geolocate() {
-            navigator.geolocation.getCurrentPosition(position => {
-                this.center = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-                };
-            });
-            },
-            reverseGeocode(lat, lng) {
-            const geocoder = new google.maps.Geocoder();
-            const latlng = { lat, lng };
-            geocoder.geocode({ location: latlng }, (results, status) => {
-                if (status === 'OK') {
-                if (results[0]) {
-                    const addressComponents = results[0].address_components;
-                    const postalCode = addressComponents.find(component =>
-                    component.types.includes('postal_code')
-                    ).long_name;
-                    const fullName = results[0].formatted_address;
-
-                    console.log(`Full Name: ${fullName}, Postal Code: ${postalCode}`);
-                    // Save the full name and postal code as needed
-                } else {
-                    console.log('No results found');
-                }
-                } else {
-                console.log('Geocoder failed due to: ' + status);
-                }
-            });
-            },
-            onFileChange(e) {
-            const file = e.target.files[0],
-            url = URL.createObjectURL(file)
-            } 
-        }
-            }
-</script>
-
-<style> 
-    
-</style> -->
-
 <template>
-  <GoogleMap
-    :api-key="apiKey"
-    style="width: 100%; height: 500px"
-    :center="center"
-    :zoom="15"
-  >
-    <Marker :options="{ position: center }" />
-  </GoogleMap>
+  <div>
+    <Button @click="getUserLocation" class="mb-4 w-full" variant="outline">Share My Location</Button>
+    <GoogleMap
+      :api-key="apiKey"
+      style="width: 100%; height: 500px"
+      :center="mapCenter"
+      :zoom="mapZoom"
+    >
+      <Marker
+        v-for="(location, index) in userLocations"
+        :key="index"
+        :options="{ position: location, label: index }"
+      />
+
+      <Polyline
+        v-for="(location, index) in userLocations"
+        :key="'polyline-' + index"
+        :path="[location, centralPoint]"
+      />
+    </GoogleMap>
+  </div>
 </template>
 
 <script setup>
-import { GoogleMap, Marker } from "vue3-google-map";
+import { ref, onMounted, defineProps } from "vue";
+import { GoogleMap, Marker, Polyline } from "vue3-google-map";
+import { Button } from "@/components/ui/button";
+import { useRuntimeConfig } from "#imports";
 
 const config = useRuntimeConfig();
-const center = { lat: 1.296568, lng: 103.852119 };
 const apiKey = config.public.GMAPS_API_KEY;
+const mapZoom = ref(15);
+
+const props = defineProps({
+  eventId: {
+    type: String,
+    required: true,
+  },
+});
+
+const mapCenter = ref({ lat: 1.296568, lng: 103.852119 });
+const userLocation = ref(null);
+const userLocations = ref([]);
+const centralPoint = ref(null);
+
+const supabase = useSupabaseClient();
+
+const getUserLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        userLocation.value = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        await sendLocationToSupabase();
+        await retrieveUserLocations();
+      },
+      (error) => {
+        console.error(error);
+        alert("Unable to retrieve your location.");
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+};
+
+const sendLocationToSupabase = async () => {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      alert("User not authenticated.");
+      return;
+    }
+    const { error } = await supabase.from("locations").upsert(
+      {
+        user_id: user.id,
+        event_id: props.eventId,
+        latitude: userLocation.value.lat,
+        longitude: userLocation.value.lng,
+      },
+      { onConflict: "user_id,event_id" }
+    );
+    if (error) {
+      console.error(error);
+      alert("Error saving location.");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const retrieveUserLocations = async () => {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      alert("User not authenticated.");
+      return;
+    }
+    if (!userLocation.value) {
+      alert("Please share your location first.");
+      return;
+    }
+    const { data, error } = await supabase
+      .from("locations")
+      .select("latitude, longitude")
+      .eq("event_id", props.eventId);
+    if (error) {
+      console.error(error);
+      return;
+    }
+    userLocations.value = data.map((item) => ({
+      lat: item.latitude,
+      lng: item.longitude,
+    }));
+    calculateCentralPoint();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const calculateCentralPoint = () => {
+  if (userLocations.value.length === 0) {
+    return;
+  }
+  let totalLat = 0;
+  let totalLng = 0;
+  userLocations.value.forEach((location) => {
+    totalLat += location.lat;
+    totalLng += location.lng;
+  });
+  centralPoint.value = {
+    lat: totalLat / userLocations.value.length,
+    lng: totalLng / userLocations.value.length,
+  };
+  mapCenter.value = centralPoint.value;
+};
+
+onMounted(() => {
+  // retrieveUserLocations();
+});
 </script>
 
 <style></style>

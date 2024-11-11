@@ -15,8 +15,8 @@
                 </DialogHeader>
 
                 <!-- User Role section wrapped in flex container with spacer -->
-                <div class="user-role-wrapper px-6 pt-2 flex flex-col" style="margin-top: -8px;">
-                    <div class="user-role-section">
+                <div class="px-6 pt-2 flex flex-col" style="margin-top: -8px;">
+                    <div>
                         <label class="text-base md:text-xl text-zinc-800 dark:text-zinc-100 font-semibold my-2">User Role</label>
                         <select v-model="selectedRole" class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 border border-gray-300 rounded">
                             <option value="admin">Admin</option>
@@ -42,7 +42,7 @@
 </style>
 
 <script setup>
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -52,7 +52,7 @@ import {
     DialogTitle,
     DialogTrigger,
     DialogClose,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import { ref, onMounted, computed, defineEmits } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { PencilIcon } from "lucide-vue-next";
@@ -76,7 +76,7 @@ const route = useRoute();
 const isMobile = useMediaQuery("(max-width: 1000px)");
 
 const userRole = ref(null); // Store the owner’s role
-const selectedRole = ref(''); // The role of the user being edited
+const selectedRole = ref("");
 const teamCode = route.params.teamId; // This represents the `code` from `teams` table
 const currentTeamId = ref(null); // Store the `id` associated with the `code`
 
