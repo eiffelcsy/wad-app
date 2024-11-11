@@ -153,8 +153,9 @@
                     <CardTitle>Your Availability</CardTitle>
                     <CardDescription
                       >Indicate blocks of time when you are
-                      <span class="font-bold text-red-300">unavailable</span>.
-                      Tap to select start cell, then tap again to select end
+                      <span class="font-bold text-red-300 text-lg"
+                        >unavailable</span
+                      >. Tap to select start cell, then tap again to select end
                       cell and all the cells in between.
                     </CardDescription>
                   </CardHeader>
@@ -223,7 +224,9 @@
                     <CardTitle>Overall Availability</CardTitle>
                     <CardDescription
                       >View the
-                      <span class="font-bold text-green-400">availability</span>
+                      <span class="font-bold text-green-400 text-lg"
+                        >availability</span
+                      >
                       of everyone in the event. Find a timeslot that suits
                       everyone's schedule.</CardDescription
                     >
@@ -320,7 +323,12 @@
                     <div class="w-full flex items-center justify-center">
                       <ol>
                         <li
-                          v-for="{ count, timeslot } in getSortedAvailability()"
+                          v-for="{
+                            date,
+                            startTime,
+                            endTime,
+                            availability,
+                          } in getRecommendedTimeBlocks()"
                           :key="timeslot"
                           class="flex items-center space-x-2 mb-2"
                         >
@@ -328,11 +336,12 @@
                           <div
                             class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
                           >
-                            {{ timeslot }}
+                            {{ formatDate(date).join(" ") }} {{ startTime }} -
+                            {{ endTime }}
                           </div>
                           <!-- Availability in green, following format "[count] people available" -->
                           <span class="text-green-500 font-semibold">
-                            {{ count }} people available
+                            {{ availability }} people available
                           </span>
                         </li>
                       </ol>
@@ -662,8 +671,8 @@
                 <CardTitle>Your Availability</CardTitle>
                 <CardDescription
                   >Indicate blocks of time when you are
-                  <span class="font-bold text-red-300">unavailable</span>. Click
-                  and drag to select blocks.
+                  <span class="font-bold text-red-300 text-lg">unavailable</span
+                  >. Click and drag to select blocks.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -726,8 +735,10 @@
                 <CardTitle>Overall Availability</CardTitle>
                 <CardDescription
                   >View the
-                  <span class="font-bold text-green-400">availability</span> of
-                  everyone in the event. <br />
+                  <span class="font-bold text-green-400 text-lg"
+                    >availability</span
+                  >
+                  of everyone in the event. <br />
                   Find a timeslot that suits everyone's
                   schedule.</CardDescription
                 >
@@ -816,7 +827,12 @@
                     <div class="w-full flex items-center justify-center">
                       <ol>
                         <li
-                          v-for="{ date, startTime, endTime, availability } in getRecommendedTimeBlocks()"
+                          v-for="{
+                            date,
+                            startTime,
+                            endTime,
+                            availability,
+                          } in getRecommendedTimeBlocks()"
                           :key="timeslot"
                           class="flex items-center space-x-2 mb-2"
                         >
@@ -824,7 +840,8 @@
                           <div
                             class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
                           >
-                          {{ formatDate(date).join(" ") }} {{ startTime }} - {{ endTime }}
+                            {{ formatDate(date).join(" ") }} {{ startTime }} -
+                            {{ endTime }}
                           </div>
                           <!-- Availability in green, following format "[count] people available" -->
                           <span class="text-green-500 font-semibold">
@@ -1977,7 +1994,7 @@ function getAvailabilityCount(dateIndex, timeIndex) {
 }
 
 function getRecommendedTimeBlocks() {
-  const minBlockLength = 2; 
+  const minBlockLength = 2;
   const recommendedBlocks = [];
 
   dates.value.forEach((date, dateIndex) => {
@@ -1997,16 +2014,18 @@ function getRecommendedTimeBlocks() {
         if (blockCount >= minBlockLength) {
           const end = timeIndex;
           const startTime = times.value[start];
-          
+
           let endTime;
           if (end + 1 < times.value.length) {
             endTime = times.value[end + 1];
           } else {
             // Calculate end time by adding 30 minutes to the last timeslot
-            const [hour, minute] = times.value[end].split(':').map(Number);
+            const [hour, minute] = times.value[end].split(":").map(Number);
             const newMinute = (minute + 30) % 60;
             const newHour = hour + Math.floor((minute + 30) / 60);
-            endTime = `${String(newHour).padStart(2, '0')}:${String(newMinute).padStart(2, '0')}`;
+            endTime = `${String(newHour).padStart(2, "0")}:${String(
+              newMinute
+            ).padStart(2, "0")}`;
           }
 
           recommendedBlocks.push({
