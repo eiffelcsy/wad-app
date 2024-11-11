@@ -59,7 +59,7 @@ const getUserLocation = () => {
       },
       (error) => {
         console.error(error);
-        alert("Unable to retrieve your location.");
+        alert("Unable to retrieve your location.", error);
       }
     );
   } else {
