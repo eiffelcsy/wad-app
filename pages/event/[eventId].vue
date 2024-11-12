@@ -547,7 +547,7 @@
                       <Button
                         size="lg"
                         class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
-                        >Confirm Timeslot</Button
+                        >Select Finalised Timeslot</Button
                       >
                     </DialogTrigger>
                     <DialogContent class="w-5/6 rounded-md h-fit">
@@ -645,15 +645,15 @@
                       </ScrollArea>
                       <DialogFooter>
                         <Button
-                          type="button"
-                          variant="primary"
+                          
+                          variant="outline"
                           @click="confirmSelectedTimeslot"
                           :disabled="confirmedTimeslot.length === 0"
                         >
                           Confirm Selected Timeslot
                         </Button>
                         <DialogClose as-child>
-                          <Button type="button" variant="secondary">
+                          <Button variant="destructive">
                             Close
                           </Button>
                         </DialogClose>
@@ -1155,7 +1155,7 @@
                           Confirm Selected Timeslot
                         </Button>
                         <DialogClose as-child>
-                          <Button variant="destructive">
+                          <Button variant="destructive" class="bg-red-600 text-white hover:bg-red-700 hover:text-white">
                             Close
                           </Button>
                         </DialogClose>
