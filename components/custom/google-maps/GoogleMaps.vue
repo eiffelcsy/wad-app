@@ -2,13 +2,18 @@
   <div>
     <div>
       <!-- Conditional rendering of buttons -->
-      <Button v-if="hasSharedLocation" @click="showUserLocation"
-        >Show Location</Button
+      <div v-if="hasSharedLocation" class="flex flex-row gap-2 mb-4">
+        <Button @click="showUserLocation" variant="outline" class="w-full"
+          >Show Location</Button
+        >
+        <Button @click="updateUserLocation" variant="outline" class="w-full"
+          >Update Location</Button
+        >
+      </div>
+
+      <Button v-else @click="shareUserLocation" class="w-full mb-4" variant="outline"
+        >Share My Location</Button
       >
-      <Button v-if="hasSharedLocation" @click="updateUserLocation"
-        >Update Location</Button
-      >
-      <Button v-else @click="shareUserLocation">Share My Location</Button>
     </div>
     <GoogleMap
       :api-key="apiKey"
@@ -49,7 +54,7 @@
               Open Now
             </div>
           </div>
-          <div class="p-2 flex flex-col gap-2 " id="content">
+          <div class="p-2 flex flex-col gap-2" id="content">
             <p class="text-sm text-gray-600">{{ place.vicinity }}</p>
             <div class="text-xs text-blue-600 space-x-2">
               <a

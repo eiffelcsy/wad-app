@@ -29,7 +29,7 @@
   
           <!-- Join button that submits the form -->
           <Button
-            class="w-full mt-0 bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
+            class="w-full mt-0 bg-indigo-600 hover:bg-indigo-700 text-white"
             >Join</Button
           >
         </form>

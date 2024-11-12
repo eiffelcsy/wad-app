@@ -61,7 +61,7 @@
                 <CardDescription>Showing everyone in the team.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div class="table-wrapper overflow-x-auto">
+                <div class="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -105,7 +105,7 @@
                 <CardDescription>Showing the team owner.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div class="table-wrapper overflow-x-auto">
+                <div class="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -141,7 +141,7 @@
                 <CardDescription>Showing all team admins.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div class="table-wrapper overflow-x-auto">
+                <div class="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -184,7 +184,7 @@
                 <CardDescription>Showing all regular members.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div class="table-wrapper overflow-x-auto">
+                <div class="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -285,7 +285,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { Search, Edit, Trash, PencilIcon } from "lucide-vue-next";
+import { Search } from "lucide-vue-next";
 import { EditTeam } from "@/components/custom/edit-team";
 import { EditRole } from "@/components/custom/edit-role";
 
@@ -571,7 +571,4 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.table-wrapper {
-  overflow-x: auto;
-}
 </style>
