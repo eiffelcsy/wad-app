@@ -940,9 +940,9 @@
                           v-for="option in poll.poll_options"
                           :key="option.id"
                         >
-                          <Button
+                          <Button 
                             @click="vote(poll.id, option.id)"
-                            class="my-1"
+                            class="my-1 w-full"
                           >
                             {{ option.option_text }}
                           </Button>

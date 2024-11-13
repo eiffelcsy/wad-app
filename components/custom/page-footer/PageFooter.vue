@@ -63,13 +63,6 @@
           <NuxtLink to="/landing" class="hover:text-gray-400"
             >Landing Page</NuxtLink
           >
-          <NuxtLink to="#" class="hover:text-gray-400">Guides</NuxtLink>
-          <NuxtLink to="#" class="hover:text-gray-400">Help</NuxtLink>
-          <NuxtLink to="#" class="hover:text-gray-400"
-            >Contact</NuxtLink
-          >
-          <NuxtLink to="#" class="hover:text-gray-400">Blog</NuxtLink>
-          <NuxtLink to="#" class="hover:text-gray-400">Changelog</NuxtLink>
         </div>
       </div>
     </div>
