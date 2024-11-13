@@ -195,6 +195,7 @@ const teamCode = ref<string | null>(null); // Team code generated
 const shareableLink = ref<string>(""); // Shareable team link
 const showDialog = ref<boolean>(false); // Control dialog visibility
 const user = useSupabaseUser().value; // Current user info from Supabase
+const { toast } = useToast();
 
 // Validation function for the current view
 const validateCurrentView = (): boolean => {

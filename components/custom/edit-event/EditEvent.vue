@@ -234,6 +234,7 @@
       </DialogFooter>
     </DialogContent>
   </Dialog>
+  <Toaster />
 </template>
 
 <script setup>
@@ -258,6 +259,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Pencil } from "lucide-vue-next";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { Toaster, ToastAction } from "@/components/ui/toast";
 
 dayjs.extend(customParseFormat);
 
@@ -265,7 +268,6 @@ dayjs.extend(customParseFormat);
 const supabase = useSupabaseClient();
 const user = useSupabaseUser().value;
 const router = useRouter();
-const route = useRoute();
 const isMobile = useMediaQuery("(max-width: 1000px)");
 const title = ref("");
 const description = ref("");
@@ -276,6 +278,7 @@ const endTime = ref("");
 const endTimeMeridiem = ref("");
 const numberOfParticipants = ref(1);
 const currentCode = useRoute().params.eventId; // Use directly from route
+const { toast } = useToast();
 
 // Fetch event details
 onMounted(async () => {
@@ -292,7 +295,10 @@ onMounted(async () => {
 
   if (findEventError) {
     console.error("Error fetching event details:", findEventError.message);
-    alert("There was an error fetching the event details.");
+    toast({
+      title: "There was an error fetching the event details.",
+      variant: "destructive",
+    });
   } else {
     title.value = findEvent.title;
     description.value = findEvent.description;
@@ -319,11 +325,11 @@ const convertTo12HourFormat = (time24) => {
     hours = 12;
   }
 
-  const time12Hour = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  const time12Hour = `${String(hours).padStart(2, "0")}:${String(
+    minutes
+  ).padStart(2, "0")}`;
   return [time12Hour, meridiem];
 };
-
-
 
 // Update event details
 async function updateEvent() {
@@ -360,8 +366,10 @@ async function updateEvent() {
     if (error) throw error;
     // Optionally show a success message
     console.log(updates);
-    alert("Event updated successfully!");
-
+    toast({
+      title: "Event updated successfully!",
+      variant: "success",
+    });
     // After successful update, use router.push to navigate back to the event page
     await router.push(`/event/${currentCode}`);
 
@@ -370,7 +378,10 @@ async function updateEvent() {
   } catch (error) {
     console.log(updates);
     console.error("Error updating event:", error.message);
-    alert("There was an error updating the event.");
+    toast({
+      title: "There was an error updating the event.",
+      variant: "destructive",
+    });
   }
   console.log(updates);
 }

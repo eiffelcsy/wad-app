@@ -198,7 +198,6 @@ import { PageHeader } from "@/components/custom/page-header";
 import {
   Search,
   Plus,
-  Eye,
   Trash2,
   LogOut,
   ArrowUpRight,
