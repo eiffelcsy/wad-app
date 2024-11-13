@@ -44,7 +44,7 @@
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   class="bg-red-700 text-white hover:bg-red-900"
-                  @click="deleteProject"
+                  @click="() => deleteProject(project.id)"
                   >Delete</AlertDialogAction
                 >
               </AlertDialogFooter>
@@ -209,7 +209,7 @@ const deleteProject = async (projectId) => {
       .from("project_members")
       .delete()
       .eq("project_id", projectId);
-    navigateTo("/projects");
+      navigateTo("/projects");
     if (deleteMembersError) {
       console.error(
         "Error deleting associated project members:",
