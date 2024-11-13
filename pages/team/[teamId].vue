@@ -273,8 +273,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -302,22 +300,6 @@ const team_code = ref("");
 const team_description = ref("");
 const teamProjects = ref([]);
 const searchQuery = ref("");
-
-// Computed property to check if the user can edit the team (if they are 'owner' or 'admin')
-const canEditTeam = computed(() => {
-  return allMembers.value.some(
-    (member) =>
-      member.user_id === user.id &&
-      (member.role === "owner" || member.role === "admin")
-  );
-});
-
-// Computed property to check if the user is an owner
-const isOwner = computed(() => {
-  return allMembers.value.some(
-    (member) => member.user_id === user.id && member.role === "owner"
-  );
-});
 
 // Filtered lists for each tab based on the search query
 const filteredAllMembers = computed(() => {
@@ -497,39 +479,6 @@ const fetchTeamProjects = async (teamId) => {
   } catch (error) {
     console.error("Unexpected error fetching team projects:", error);
   }
-};
-
-// Function to delete a project
-const deleteProject = async (projectId) => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this project? This action cannot be undone."
-  );
-
-  if (!confirmed) return;
-
-  try {
-    const { error: deleteError } = await supabase
-      .from("projects")
-      .delete()
-      .eq("id", projectId);
-
-    if (deleteError) {
-      console.error("Error deleting project:", deleteError);
-      return;
-    }
-
-    teamProjects.value = teamProjects.value.filter(
-      (project) => project.id !== projectId
-    );
-  } catch (err) {
-    console.error("Unexpected error deleting project:", err);
-  }
-};
-
-// Function to start editing a project
-const startEditing = (projectId, currentTitle) => {
-  editingProjectId.value = projectId;
-  editTitle.value = currentTitle;
 };
 
 // Function to handle role updates from the EditRole component

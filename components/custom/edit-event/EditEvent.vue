@@ -234,7 +234,158 @@
       </DialogFooter>
     </DialogContent>
   </Dialog>
+  <Toaster />
 </template>
+
+<script setup>
+import dayjs from "dayjs";
+import { parseDate } from "@internationalized/date";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { useMediaQuery } from "@vueuse/core";
+import { RangeCalendar } from "@/components/ui/range-calendar";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Pencil } from "lucide-vue-next";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { Toaster, ToastAction } from "@/components/ui/toast";
+
+dayjs.extend(customParseFormat);
+
+// Setup reactive variables
+const supabase = useSupabaseClient();
+const user = useSupabaseUser().value;
+const router = useRouter();
+const isMobile = useMediaQuery("(max-width: 1000px)");
+const title = ref("");
+const description = ref("");
+const dateRange = ref({ start: null, end: null });
+const startTime = ref("");
+const startTimeMeridiem = ref("");
+const endTime = ref("");
+const endTimeMeridiem = ref("");
+const numberOfParticipants = ref(1);
+const currentCode = useRoute().params.eventId; // Use directly from route
+const { toast } = useToast();
+
+// Fetch event details
+onMounted(async () => {
+  if (!supabase) {
+    console.error("Supabase client not initialized");
+    return;
+  }
+  // Fetch current event details from the database
+  const { data: findEvent, error: findEventError } = await supabase
+    .from("events")
+    .select("*")
+    .eq("code", currentCode)
+    .single();
+
+  if (findEventError) {
+    console.error("Error fetching event details:", findEventError.message);
+    toast({
+      title: "There was an error fetching the event details.",
+      variant: "destructive",
+    });
+  } else {
+    title.value = findEvent.title;
+    description.value = findEvent.description;
+    startTime.value = convertTo12HourFormat(findEvent.start_time)[0];
+    startTimeMeridiem.value = convertTo12HourFormat(findEvent.start_time)[1];
+    endTime.value = convertTo12HourFormat(findEvent.end_time)[0];
+    endTimeMeridiem.value = convertTo12HourFormat(findEvent.end_time)[1];
+    dateRange.value.start = parseDate(findEvent.start_date);
+    dateRange.value.end = parseDate(findEvent.end_date);
+    numberOfParticipants.value = findEvent.number_of_participants;
+  }
+});
+
+const convertTo12HourFormat = (time24) => {
+  let [hours, minutes] = time24.split(":").map(Number);
+  let meridiem = "AM";
+
+  if (hours >= 12) {
+    meridiem = "PM";
+    if (hours > 12) {
+      hours -= 12;
+    }
+  } else if (hours === 0) {
+    hours = 12;
+  }
+
+  const time12Hour = `${String(hours).padStart(2, "0")}:${String(
+    minutes
+  ).padStart(2, "0")}`;
+  return [time12Hour, meridiem];
+};
+
+// Update event details
+async function updateEvent() {
+  let updates;
+  try {
+    // Combine time and meridiem for parsing
+    const startTimeString = `${startTime.value
+      .toString()
+      .trim()} ${startTimeMeridiem.value.toString().trim()}`;
+    const endTimeString = `${endTime.value
+      .toString()
+      .trim()} ${endTimeMeridiem.value.toString().trim()}`;
+
+    // Parse and format the time in 24-hour format
+    const adjustedStartTime = dayjs(startTimeString, "hh:mm A").format("HH:mm");
+    const adjustedEndTime = dayjs(endTimeString, "hh:mm A").format("HH:mm");
+
+    updates = {
+      title: title.value,
+      description: description.value,
+      creator_user_id: user ? user.id : null,
+      start_date: dayjs(dateRange.value.start).format("YYYY-MM-DD"),
+      end_date: dayjs(dateRange.value.end).format("YYYY-MM-DD"),
+      start_time: adjustedStartTime,
+      end_time: adjustedEndTime,
+      number_of_participants: numberOfParticipants.value,
+      code: currentCode,
+    };
+    // Update the event in the database
+    const { error } = await supabase
+      .from("events")
+      .update(updates)
+      .eq("code", currentCode);
+    if (error) throw error;
+    // Optionally show a success message
+    console.log(updates);
+    toast({
+      title: "Event updated successfully!",
+      variant: "success",
+    });
+    // After successful update, use router.push to navigate back to the event page
+    await router.push(`/event/${currentCode}`);
+
+    // Optionally, reload the page with a full refresh
+    window.location.reload();
+  } catch (error) {
+    console.log(updates);
+    console.error("Error updating event:", error.message);
+    toast({
+      title: "There was an error updating the event.",
+      variant: "destructive",
+    });
+  }
+  console.log(updates);
+}
+</script>
 
 <style scoped>
 /* Dialog content styling with max width fixed */
@@ -276,143 +427,3 @@
   box-sizing: border-box;
 }
 </style>
-
-<script setup>
-import dayjs from "dayjs";
-import { parseDate } from "@internationalized/date";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ref, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { useMediaQuery } from "@vueuse/core";
-import { RangeCalendar } from "@/components/ui/range-calendar";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Pencil } from "lucide-vue-next";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-
-dayjs.extend(customParseFormat);
-
-// Setup reactive variables
-const supabase = useSupabaseClient();
-const user = useSupabaseUser().value;
-const router = useRouter();
-const route = useRoute();
-const isMobile = useMediaQuery("(max-width: 1000px)");
-const title = ref("");
-const description = ref("");
-const dateRange = ref({ start: null, end: null });
-const startTime = ref("");
-const startTimeMeridiem = ref("");
-const endTime = ref("");
-const endTimeMeridiem = ref("");
-const numberOfParticipants = ref(1);
-const currentCode = useRoute().params.eventId; // Use directly from route
-
-// Fetch event details
-onMounted(async () => {
-  if (!supabase) {
-    console.error("Supabase client not initialized");
-    return;
-  }
-  // Fetch current event details from the database
-  const { data: findEvent, error: findEventError } = await supabase
-    .from("events")
-    .select("*")
-    .eq("code", currentCode)
-    .single();
-
-  if (findEventError) {
-    console.error("Error fetching event details:", findEventError.message);
-    alert("There was an error fetching the event details.");
-  } else {
-    title.value = findEvent.title;
-    description.value = findEvent.description;
-    startTime.value = convertTo12HourFormat(findEvent.start_time)[0];
-    startTimeMeridiem.value = convertTo12HourFormat(findEvent.start_time)[1];
-    endTime.value = convertTo12HourFormat(findEvent.end_time)[0];
-    endTimeMeridiem.value = convertTo12HourFormat(findEvent.end_time)[1];
-    dateRange.value.start = parseDate(findEvent.start_date);
-    dateRange.value.end = parseDate(findEvent.end_date);
-    numberOfParticipants.value = findEvent.number_of_participants;
-  }
-});
-
-const convertTo12HourFormat = (time24) => {
-  let [hours, minutes] = time24.split(":").map(Number);
-  let meridiem = "AM";
-
-  if (hours >= 12) {
-    meridiem = "PM";
-    if (hours > 12) {
-      hours -= 12;
-    }
-  } else if (hours === 0) {
-    hours = 12;
-  }
-
-  const time12Hour = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
-  return [time12Hour, meridiem];
-};
-
-
-
-// Update event details
-async function updateEvent() {
-  let updates;
-  try {
-    // Combine time and meridiem for parsing
-    const startTimeString = `${startTime.value
-      .toString()
-      .trim()} ${startTimeMeridiem.value.toString().trim()}`;
-    const endTimeString = `${endTime.value
-      .toString()
-      .trim()} ${endTimeMeridiem.value.toString().trim()}`;
-
-    // Parse and format the time in 24-hour format
-    const adjustedStartTime = dayjs(startTimeString, "hh:mm A").format("HH:mm");
-    const adjustedEndTime = dayjs(endTimeString, "hh:mm A").format("HH:mm");
-
-    updates = {
-      title: title.value,
-      description: description.value,
-      creator_user_id: user ? user.id : null,
-      start_date: dayjs(dateRange.value.start).format("YYYY-MM-DD"),
-      end_date: dayjs(dateRange.value.end).format("YYYY-MM-DD"),
-      start_time: adjustedStartTime,
-      end_time: adjustedEndTime,
-      number_of_participants: numberOfParticipants.value,
-      code: currentCode,
-    };
-    // Update the event in the database
-    const { error } = await supabase
-      .from("events")
-      .update(updates)
-      .eq("code", currentCode);
-    if (error) throw error;
-    // Optionally show a success message
-    console.log(updates);
-    alert("Event updated successfully!");
-
-    // After successful update, use router.push to navigate back to the event page
-    await router.push(`/event/${currentCode}`);
-
-    // Optionally, reload the page with a full refresh
-    window.location.reload();
-  } catch (error) {
-    console.log(updates);
-    console.error("Error updating event:", error.message);
-    alert("There was an error updating the event.");
-  }
-  console.log(updates);
-}
-</script>

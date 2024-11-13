@@ -392,10 +392,10 @@
             >
           </DialogHeader>
           <DialogDescription>
-            Share this code or link below. <br/>
+            Share this code or link below. <br />
             <span v-if="!user" class="text-red-700">
-              Warning: As you are currently not logged in, if you do not save the
-              link, it will be lost forever.</span
+              Warning: As you are currently not logged in, if you do not save
+              the link, it will be lost forever.</span
             >
           </DialogDescription>
           <div class="flex items-center space-x-2">
@@ -466,7 +466,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -616,7 +615,11 @@ const submitEvent = async () => {
   eventCode.value = await generateEventCode();
 
   if (!eventCode) {
-    alert("Failed to generate event code. Please try again.");
+    toast({
+      title: "Failed to generate event code.",
+      description: "Please try again.",
+      variant: "destructive",
+    });
     return;
   }
 
@@ -638,7 +641,11 @@ const submitEvent = async () => {
 
   if (error) {
     console.error("Error inserting event:", error);
-    alert("Failed to create event. Please try again.");
+    toast({
+      title: "Failed to create event.",
+      description: "Please try again.",
+      variant: "destructive",
+    });
     return;
   }
 

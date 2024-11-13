@@ -202,7 +202,7 @@ const startEditing = (projectId, currentTitle) => {
 
 const saveProjectTitle = async () => {
   if (!editingProjectId.value) {
-    console.error("❌ No project ID set for editing.");
+    console.error("No project ID set for editing.");
     return;
   }
 
@@ -213,17 +213,16 @@ const saveProjectTitle = async () => {
       .eq("id", editingProjectId.value);
 
     if (updateError) {
-      console.error("❌ Error updating project title:", updateError);
+      console.error("Error updating project title:", updateError);
       return;
     }
 
-    // 🟢 Update the project title safely
     project.value = { ...project.value, title: editTitle.value };
     // Spread `project.value` to create a new reference and update the title
 
     isDialogOpen.value = false; // Close dialog after successful save
   } catch (err) {
-    console.error("❌ Unexpected error updating project title:", err);
+    console.error("Unexpected error updating project title:", err);
   }
 };
 

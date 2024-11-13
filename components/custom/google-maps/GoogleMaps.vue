@@ -11,7 +11,11 @@
         >
       </div>
 
-      <Button v-else @click="shareUserLocation" class="w-full mb-4" variant="outline"
+      <Button
+        v-else
+        @click="shareUserLocation"
+        class="w-full mb-4"
+        variant="outline"
         >Share My Location</Button
       >
     </div>
@@ -77,6 +81,7 @@
         </InfoWindow>
       </Marker>
     </GoogleMap>
+    <Toaster/>
   </div>
 </template>
 
@@ -85,6 +90,8 @@ import { ref, onMounted, defineProps } from "vue";
 import { GoogleMap, Marker, Polyline, InfoWindow } from "vue3-google-map";
 import { Button } from "@/components/ui/button";
 import { useRuntimeConfig } from "#imports";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { Toaster, ToastAction } from "@/components/ui/toast";
 
 const config = useRuntimeConfig();
 const apiKey = config.public.GMAPS_API_KEY;
@@ -96,6 +103,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const { toast } = useToast();
 
 const mapCenter = ref({ lat: 1.296568, lng: 103.852119 });
 const userLocation = ref(null);
@@ -116,7 +125,10 @@ const checkUserLocation = async () => {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      alert("User not authenticated.");
+      toast({
+        title: "User not authenticated.",
+        variant: "destructive",
+      });
       return;
     }
     const { data, error } = await supabase
@@ -173,11 +185,17 @@ const getUserLocation = (isUpdate) => {
       },
       (error) => {
         console.error(error);
-        alert("Unable to retrieve your location.");
+        toast({
+          title: "Unable to retrieve your location.",
+          variant: "destructive",
+        });
       }
     );
   } else {
-    alert("Geolocation is not supported by this browser.");
+    toast({
+      title: "Geolocation is not supported by this browser.",
+      variant: "destructive",
+    });
   }
 };
 
@@ -188,7 +206,10 @@ const sendLocationToSupabase = async () => {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      alert("User not authenticated.");
+      toast({
+        title: "User not authenticated.",
+        variant: "destructive",
+      });
       return;
     }
     const { error } = await supabase.from("locations").upsert(
@@ -202,7 +223,10 @@ const sendLocationToSupabase = async () => {
     );
     if (error) {
       console.error(error);
-      alert("Error saving location.");
+      toast({
+        title: "User not authenticated.",
+        variant: "destructive",
+      });
     } else {
       hasSharedLocation.value = true;
     }
@@ -215,7 +239,10 @@ const sendLocationToSupabase = async () => {
 const retrieveUserLocations = async () => {
   try {
     if (!userLocation.value) {
-      alert("Please share your location first.");
+      toast({
+        title: "Please share your location.",
+        variant: "destructive",
+      });
       return;
     }
     const { data, error } = await supabase
