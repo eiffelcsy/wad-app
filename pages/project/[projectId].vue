@@ -69,7 +69,25 @@
             bars to view full details.
           </p>
         </div>
-        <GanttChart class="w-full" :projectId="projectId" />
+        <Button
+          v-if="isMobile"
+          @click="toggleLandscape"
+          variant="outline"
+          class="h-8"
+        >
+          {{ isLandscape ? "Portrait View" : "Landscape View" }}
+        </Button>
+        <div class="content-wrapper">
+          <GanttChart class="w-full" :projectId="projectId" />
+          <div v-show="isLandscape" class="overlay">
+            <div class="overlay-content">
+              <button @click="closeOverlay" class="close-button">X</button>
+              <div class="landscape-wrapper">
+                <GanttChart class="w-full" :projectId="projectId" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <PageFooter />
@@ -135,6 +153,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useMediaQuery } from "@vueuse/core";
 
 const route = useRoute();
 const projectId = route.params["projectId"];
@@ -144,6 +163,17 @@ const supabase = useSupabaseClient();
 const editingProjectId = ref(null);
 const editTitle = ref("");
 const isDialogOpen = ref(false);
+const isLandscape = ref(false);
+const isMobile = useMediaQuery("(max-width: 600px)");
+
+const toggleLandscape = async () => {
+  isLandscape.value = !isLandscape.value;
+  console.log("Toggling landscape view:", isLandscape.value); // Check if this gets logged
+};
+
+const closeOverlay = async () => {
+  isLandscape.value = !isLandscape.value;
+};
 
 const fetchProjectDetails = async () => {
   const { data: projectDetails, error: projectDetailsError } = await supabase
@@ -234,3 +264,72 @@ const deleteProject = async (projectId) => {
   }
 };
 </script>
+
+<style scoped>
+/* Container that holds the rotated content */
+.content-wrapper {
+  position: relative;
+  width: 90%;
+  height: 90%;
+}
+
+/* Overlay styling */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  z-index: 999; /* Ensure it appears above other content */
+}
+
+/* Overlay content */
+.overlay-content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y: hidden;
+  text-align: center;
+  align-items: center;
+  position: relative;
+
+}
+
+.landscape-wrapper {
+  transform: rotate(90deg); /* Rotate the chart 90 degrees */
+  transform-origin: center center; /* Ensure it rotates around the center */
+  width: 100vw; /* Height of viewport becomes the width in landscape */
+  height: 100vh; /* Width of viewport becomes the height in landscape */
+}
+
+/* Close button for overlay */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  z-index: 9999;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Disable scrolling when in landscape view */
+/* body,
+html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent page scroll when in landscape mode */
+  /* height: 100%;
+} */ 
+</style>
