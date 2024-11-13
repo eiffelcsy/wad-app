@@ -273,8 +273,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -481,39 +479,6 @@ const fetchTeamProjects = async (teamId) => {
   } catch (error) {
     console.error("Unexpected error fetching team projects:", error);
   }
-};
-
-// Function to delete a project
-const deleteProject = async (projectId) => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this project? This action cannot be undone."
-  );
-
-  if (!confirmed) return;
-
-  try {
-    const { error: deleteError } = await supabase
-      .from("projects")
-      .delete()
-      .eq("id", projectId);
-
-    if (deleteError) {
-      console.error("Error deleting project:", deleteError);
-      return;
-    }
-
-    teamProjects.value = teamProjects.value.filter(
-      (project) => project.id !== projectId
-    );
-  } catch (err) {
-    console.error("Unexpected error deleting project:", err);
-  }
-};
-
-// Function to start editing a project
-const startEditing = (projectId, currentTitle) => {
-  editingProjectId.value = projectId;
-  editTitle.value = currentTitle;
 };
 
 // Function to handle role updates from the EditRole component

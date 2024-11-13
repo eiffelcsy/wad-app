@@ -15,34 +15,25 @@
         v-if="isDialogOpen"
         class="dialog-content w-full max-w-[400px] overflow-hidden"
       >
-        <DialogHeader class="p-6 pb-2">
+        <DialogHeader>
           <DialogTitle>Edit Role</DialogTitle>
           <DialogDescription>
             Change the user's role or remove them from the team.
           </DialogDescription>
         </DialogHeader>
-
-        <!-- User Role section wrapped in flex container with spacer -->
-        <div class="px-6 pt-2 flex flex-col" style="margin-top: -8px">
-          <div>
-            <label
-              class="text-base md:text-xl text-zinc-800 dark:text-zinc-100 font-semibold my-2"
-              >User Role</label
-            >
-            <select
-              v-model="selectedRole"
-              class="w-full h-12 text-sm sm:text-base p-2 sm:p-3 border border-gray-300 rounded"
-            >
-              <option value="admin">Admin</option>
-              <option value="member">Member</option>
-            </select>
-          </div>
-          <!-- Spacer div to maintain space between dropdown and buttons -->
-          <div class="spacer" style="height: 16px"></div>
-        </div>
-
-        <!-- Dialog Footer with Buttons -->
-        <DialogFooter class="p-6 pt-4 box-border flex justify-end gap-2">
+        <Select
+          v-model="selectedRole"
+          class="w-full text-sm sm:text-base p-2 sm:p-3 border border-gray-300 rounded"
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select role" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="admin">Admin</SelectItem>
+            <SelectItem value="member">Member</SelectItem>
+          </SelectContent>
+        </Select>
+        <DialogFooter>
           <Button
             variant="destructive"
             class="delete-user-button"
@@ -54,7 +45,7 @@
         </DialogFooter>
       </DialogContent>
     </Dialog>
-    <Toaster/>
+    <Toaster />
   </div>
 </template>
 
@@ -75,9 +66,8 @@ import {
 import { ref, onMounted, computed, defineEmits } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { PencilIcon } from "lucide-vue-next";
-import { useMediaQuery } from "@vueuse/core";
 import { useToast } from "@/components/ui/toast/use-toast";
-import { Toaster, ToastAction } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/toast";
 
 // Accepting currentUserId as a prop
 const props = defineProps({
