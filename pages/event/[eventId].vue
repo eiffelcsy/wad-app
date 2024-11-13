@@ -408,12 +408,12 @@
                                 <DialogClose as-child>
                                   <Button variant="secondary">Cancel</Button>
                                 </DialogClose>
-                                <Button
-                                  variant="destructive"
-                                  @click="deletePoll(poll.id)"
-                                >
-                                  Delete
-                                </Button>
+                                  <Button
+                                    variant="destructive"
+                                    @click="deletePoll(poll.id)"
+                                  >
+                                    Delete
+                                  </Button>
                               </DialogFooter>
                             </DialogContent>
                           </Dialog>
@@ -542,9 +542,9 @@
                       </ol>
                     </div>
                   </ScrollArea>
-                  <Dialog>
+                  <Dialog :open="showFinalisedTimingDialog">
                     <DialogTrigger as-child>
-                      <Button
+                      <Button @click="finalisedTimingDialog"
                         size="lg"
                         class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
                         >Select Finalised Timeslot</Button
@@ -957,9 +957,9 @@
                   </div>
                   <!-- Create Poll Button (only for event creator) -->
                   <div v-if="isCreator">
-                    <Dialog>
+                    <Dialog :open="showCreatePollDialog">
                       <DialogTrigger as-child>
-                        <Button
+                        <Button @click="createPollDialog"
                           class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white"
                           >Create New Poll</Button
                         >
@@ -1004,14 +1004,14 @@
                           </div>
                         </div>
                         <DialogFooter>
+                          <DialogClose as-child>
+                            <Button variant="secondary">Close</Button>
+                          </DialogClose>
                           <Button
                             @click="createPoll"
                             class="bg-indigo-600 hover:bg-indigo-700 text-white"
                             >Create Poll</Button
                           >
-                          <DialogClose as-child>
-                            <Button variant="secondary">Cancel</Button>
-                          </DialogClose>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
@@ -1259,6 +1259,8 @@ const { toast } = useToast();
 const isMobile = useMediaQuery("(max-width: 1000px)");
 
 const showNameDialog = ref(false);
+const showCreatePollDialog = ref(false);
+const showFinalisedTimingDialog = ref(false);
 const event_id = ref("");
 const newDisplayName = ref("");
 const displayName = ref("");
@@ -1467,7 +1469,12 @@ function removeOption(index) {
   }
 }
 
+function createPollDialog(){
+  showCreatePollDialog.value = true;
+}
+
 async function createPoll() {
+
   if (!newPollQuestion.value.trim()) {
     toast({
       title: "Invalid Input",
@@ -1504,8 +1511,20 @@ async function createPoll() {
       description: "Failed to create poll.",
       variant: "destructive",
     });
-    return;
   }
+
+ if (!pollError){
+    console.log("Successfully created a poll.");
+    showCreatePollDialog.value = false;
+    console.log(showCreatePollDialog.value);
+
+    toast({
+      title: "Poll Created",
+      description: "Successfully created a poll.",
+      variant: "success",
+    });
+    
+  };
 
   // Insert options
   const optionsData = newPollOptions.value.map((optionText) => ({
@@ -1552,7 +1571,7 @@ async function deletePoll(pollId) {
     console.error("Error deleting poll:", error.message);
     toast({
       title: "Error",
-      description: "Failed to delete the poll.",
+      description: "Failed to delete poll.",
       variant: "destructive",
     });
     return;
@@ -1563,7 +1582,7 @@ async function deletePoll(pollId) {
 
   toast({
     title: "Poll Deleted",
-    description: "The poll has been successfully deleted.",
+    description: "Poll has been successfully deleted.",
     variant: "success",
   });
 }
@@ -2229,6 +2248,11 @@ function getAvailableParticipantNames(dateIndex, timeIndex) {
   return names;
 }
 
+function finalisedTimingDialog(){
+  showFinalisedTimingDialog.value = true;
+  console.log("showFinalisedTimingDialog: ",showFinalisedTimingDialog.value)
+}
+
 function isConfirmed(dateIndex, timeIndex) {
   const intervalIndex = dateIndex * times.value.length + timeIndex;
   return confirmedTimeslot.value.includes(intervalIndex);
@@ -2320,6 +2344,9 @@ async function confirmSelectedTimeslot() {
       description: `You have confirmed the timeslot: ${confirmedTimeslotString.value}`,
       variant: "success",
     });
+
+    showFinalisedTimingDialog.value = false;
+    console.log("showFinalisedTimingDialog: ",showFinalisedTimingDialog.value)
 
     participants_userIds.value.forEach(async (id) => {
       // console.log(id);
