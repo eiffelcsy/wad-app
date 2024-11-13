@@ -1016,6 +1016,9 @@
                       </DialogContent>
                     </Dialog>
                   </div>
+                  <div v-else>
+                    <Button disabled class="w-full mt-4 text-sm">Log in as event creator to create a poll</Button>
+                  </div>
                 </CardContent>
               </Card>
               <Card class="lg:w-80 xl:w-96 h-fit">
