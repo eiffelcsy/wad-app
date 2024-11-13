@@ -1,6 +1,7 @@
 <template>
   <footer class="p-8 border-t border-zinc-200 dark:border-zinc-800">
     <div class="flex flex-col mx-auto md:max-w-[65%]">
+      <!-- First Row -->
       <div class="flex justify-between items-center">
         <!-- Left section with logo and system status -->
         <div class="flex items-center space-x-2">
@@ -8,21 +9,21 @@
           <p class="text-base">© 2024</p>
         </div>
 
-        <!-- Bottom-right section with command menu and theme toggle -->
-        <div class="flex flex-row">
-          <div class="flex items-center space-x-4">
-            <Button
-              v-if="isDesktop"
-              @click="handleOpenChange()"
-              variant="ghost"
-              class="text-sm font-light hover:text-gray-400 mr-2 p-2"
-              >Command Menu<kbd
-                class="ml-2 pointer-events-none inline-flex select-none items-center gap-1 rounded border px-1.5 py-0.5 font-mono font-medium text-muted-foreground opacity-100"
-              >
-                <span class="text-xs">⌘</span>J
-              </kbd></Button
+        <!-- Command Menu and Theme Toggle -->
+        <div class="flex flex-row items-center space-x-4">
+          <Button
+            v-if="isDesktop"
+            @click="handleOpenChange()"
+            variant="ghost"
+            class="text-sm font-light hover:text-gray-400 p-2"
+          >
+            Command Menu
+            <kbd
+              class="ml-2 pointer-events-none inline-flex select-none items-center gap-1 rounded border px-1.5 py-0.5 font-mono font-medium text-muted-foreground opacity-100"
             >
-          </div>
+              <span class="text-xs">⌘</span>J
+            </kbd>
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
               <Button variant="outline" size="icon">
@@ -49,26 +50,34 @@
           </DropdownMenu>
         </div>
       </div>
-      <!-- Right section with navigation links -->
-      <div class="flex flex-col md:flex-row justify-between mt-8">
-        <div class="order-last md:order-first mt-8 md:mt-0">
-          <NuxtLink to="https://github.com/eiffelcsy/wad-app"
-            ><GithubLogoIcon class="size-5"
-          /></NuxtLink>
-        </div>
-        <div
-          class="w-full md:pl-4 lg:pl-0 lg:w-2/3 grid grid-cols-2 gap-4 md:gap-0 md:flex md:justify-between items-center md:space-x-4 text-sm"
-        >
-          <NuxtLink to="/" class="hover:text-gray-400">Home</NuxtLink>
-          <NuxtLink to="/landing" class="hover:text-gray-400"
-            >Landing Page</NuxtLink
-          >
-        </div>
+
+      <!-- Second Row for Medium and Above: Navigation Links in Same Row as Logo -->
+      <div
+        class="hidden md:flex md:justify-between md:items-center md:mt-4 text-sm"
+      >
+        <NuxtLink to="https://github.com/eiffelcsy/wad-app">
+          <GithubLogoIcon class="size-5" />
+        </NuxtLink>
+        <NuxtLink to="/" class="hover:text-gray-400">Home</NuxtLink>
+        <NuxtLink to="/landing" class="hover:text-gray-400">Landing Page</NuxtLink>
+        
+      </div>
+
+      <!-- Small Viewports: Original Layout -->
+      <div class="grid grid-cols-2 gap-4 text-sm mt-8 md:hidden">
+        <NuxtLink to="/" class="hover:text-gray-400">Home</NuxtLink>
+        <NuxtLink to="/landing" class="hover:text-gray-400">Landing Page</NuxtLink>
+      </div>
+      <div class="flex mt-8 md:hidden">
+        <NuxtLink to="https://github.com/eiffelcsy/wad-app">
+          <GithubLogoIcon class="size-5" />
+        </NuxtLink>
       </div>
     </div>
     <AppCommands :open="open" @update:open="handleOpenChange" />
   </footer>
 </template>
+
 
 <script setup>
 import { GithubLogoIcon } from "@radix-icons/vue";
