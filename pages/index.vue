@@ -229,7 +229,7 @@
                           @click="openDialog"
                         />
                       </div>
-                      <p class="text-base text-zinc-400 dark:text-zinc-500">
+                      <p class="text-base text-zinc-400 dark:text-zinc-500 text-ellipsis overflow-hidden max-w-[50vw]">
                         {{ email }}
                       </p>
                     </div>
