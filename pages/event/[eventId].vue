@@ -407,7 +407,7 @@
                               </DialogHeader>
                               <DialogFooter>
                                 <DialogClose as-child>
-                                  <Button variant="secondary">Cancel</Button>
+                                  <Button variant="secondary">Close</Button>
                                 </DialogClose>
                                 <Button
                                   variant="destructive"
@@ -508,7 +508,11 @@
                             >Create Poll</Button
                           >
                           <DialogClose as-child>
-                            <Button variant="secondary">Cancel</Button>
+                            <Button
+                              variant="secondary"
+                              @click="hideCreatePollDialog"
+                              >Close</Button
+                            >
                           </DialogClose>
                         </DialogFooter>
                       </DialogContent>
@@ -648,6 +652,7 @@
                       </ScrollArea>
                       <DialogFooter>
                         <Button
+                          class="mt-2"
                           variant="outline"
                           @click="confirmSelectedTimeslot"
                           :disabled="confirmedTimeslot.length === 0"
@@ -657,7 +662,7 @@
                         <DialogClose as-child>
                           <Button
                             variant="destructive"
-                            class="bg-red-600 text-white hover:bg-red-700 hover:text-white"
+                            class="bg-red-600 text-white hover:bg-red-700 hover:text-white mt-2"
                             @click="closeFinalisedTimingDialog"
                           >
                             Close
@@ -1012,7 +1017,11 @@
                         </div>
                         <DialogFooter>
                           <DialogClose as-child>
-                            <Button variant="secondary">Close</Button>
+                            <Button
+                              variant="secondary"
+                              @click="hideCreatePollDialog"
+                              >Close</Button
+                            >
                           </DialogClose>
                           <Button
                             @click="createPoll"
@@ -1058,15 +1067,16 @@
                       </ol>
                     </div>
                   </ScrollArea>
-                  <Dialog :open="selectFinalisedTimeslotDialog">
+                  <Dialog :open="showFinalisedTimingDialog">
                     <DialogTrigger as-child>
                       <Button
+                        @click="finalisedTimingDialog"
                         size="lg"
                         class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
-                        >Confirm Timeslot</Button
+                        >Select Finalised Timeslot</Button
                       >
                     </DialogTrigger>
-                    <DialogContent class="w-5/6 rounded-md h-fit">
+                    <DialogContent class="w-5/6 rounded-md">
                       <DialogHeader>
                         <DialogTitle>Confirm Timeslot</DialogTitle>
                         <DialogDescription
@@ -1076,7 +1086,7 @@
                           page.</DialogDescription
                         >
                       </DialogHeader>
-                      <ScrollArea class="h-[40rem]">
+                      <ScrollArea class="max-h-[500px]">
                         <TooltipProvider :delayDuration="200">
                           <table
                             class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
@@ -1168,6 +1178,7 @@
                         </Button>
                         <DialogClose as-child>
                           <Button
+                          @click="closeFinalisedTimingDialog"
                             variant="destructive"
                             class="bg-red-600 text-white hover:bg-red-700 hover:text-white"
                           >
@@ -1273,7 +1284,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+} from "@/components/ui/alert-dialog";
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -1494,6 +1505,10 @@ function removeOption(index) {
 
 function createPollDialog() {
   showCreatePollDialog.value = true;
+}
+
+function hideCreatePollDialog() {
+  showCreatePollDialog.value = false;
 }
 
 async function createPoll() {
