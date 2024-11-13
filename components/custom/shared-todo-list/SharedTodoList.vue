@@ -381,7 +381,6 @@ async function getProjectTitle() {
     return "";
   }
   title.value = projectTitle || "";
-  console.log(title.value);
 }
 
 const handleRealTimeChange = (payload) => {
@@ -414,7 +413,6 @@ const handleRealTimeChange = (payload) => {
         ...data.value.slice(index + 1),
       ];
     }
-    console.log("Deleted Todo:", oldTodo);
   }
 };
 

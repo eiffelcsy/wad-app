@@ -472,7 +472,7 @@ const fetchUpcomingEvents = async () => {
 
   // If no events are found in the participants table
   if (!participantData || participantData.length === 0) {
-    console.log("No upcoming events found for this user.");
+    // console.log("No upcoming events found for this user.");
     upcomingEvents.value = [];
     return;
   }

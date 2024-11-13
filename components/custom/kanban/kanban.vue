@@ -198,8 +198,6 @@ const setupRealTimeSubscription = () => {
       "postgres_changes",
       { event: "*", schema: "public", table: "todos" },
       async (payload) => {
-        console.log("Change received!", payload);
-
         await fetchTasks();
       }
     )

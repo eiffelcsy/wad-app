@@ -204,7 +204,6 @@ const fetchProjects = async () => {
     return;
   }
 
-  // console.log("associated projects: " + associatedProjects)
   // fetch details about a project that the user is in
   const projectIds = associatedProjects?.map((p) => p.project_id);
   const { data: projectDetails, error: projectDetailsError } = await supabase

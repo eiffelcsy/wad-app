@@ -644,9 +644,6 @@ const submitEvent = async () => {
 
   // Set shareable link
   shareableLink.value = `${window.location.origin}/event/${eventCode.value}`;
-
-  console.log("shareableLink set:", shareableLink.value);
-
   // Only show dialog once the shareableLink is confirmed to be set
   if (shareableLink.value) {
     showDialog.value = true;

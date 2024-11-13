@@ -76,7 +76,6 @@ async function fetchTeamMembers(projectId) {
   } else {
     teamMembers.value = data || [];
   }
-  console.log("all team members: " + teamMembers.value)
 } 
 
 
@@ -91,7 +90,7 @@ async function toggleTaskStatus(todoId: string, currentStatus: string) {
   if (error) {
     console.error('Error updating task status:', error)
   } else {
-    console.log(`Task ${todoId} status updated to ${newStatus}`)
+    // console.log(`Task ${todoId} status updated to ${newStatus}`)
     // You might want to refetch data or update local state here after the status update
   }
 }
@@ -106,23 +105,19 @@ async function deleteTask(todoId: string) {
   if (error) {
     console.error('Error deleting task:', error)
   } else {
-    console.log(`Task ${todoId} deleted successfully`)
+    // console.log(`Task ${todoId} deleted successfully`)
     window.location.reload();
   }
 }
 
 // Function to edit task (you can expand this based on your needs)
 async function editTask(todo: { id: string; title: string; status: string; assigned_to: string }) {
-  console.log("editing!!")
   editForm.value = { ...todo } // Populate the form with the task data
 
   const projectId = await fetchProjectId(todo.id);
   if (projectId) {
     await fetchTeamMembers(projectId);
   }
-  console.log("Todo ID:", todo.id); // Check `id` - correct
-  console.log("Project ID:", projectId); // Check `projectId` - correct
-  console.log("Todo object:", todo);
 
   // Pre-select the assigned member based on their name from the todo's `assigned_to`
   // selectedMember.value = teamMembers.value.find((member) => member.name === todo.assigned_to) || { name: "" };
@@ -139,7 +134,6 @@ async function saveChanges() {
     return; 
   }
   // Sync selected member
-  console.log('selected member is: '+ selectedMember.value);
   editForm.value.assigned_to = selectedMember.value.assigned_to;
   editForm.value.assignee_name = selectedMember.value.assignee_name;
   const { error } = await supabase
@@ -155,7 +149,7 @@ async function saveChanges() {
   if (error) {
     console.error('Error updating task:', error)
   } else {
-    console.log(`Task ${editForm.value.id} updated successfully`)
+    // console.log(`Task ${editForm.value.id} updated successfully`)
     isDialogOpen.value = false // Close the dialog after saving
   }
 }

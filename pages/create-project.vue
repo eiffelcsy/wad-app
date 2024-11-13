@@ -322,7 +322,6 @@ async function handleCreateProject() {
         projectMemberError.message
       );
     } else {
-      console.log("Project created successfully!");
       navigateTo(`/project/${projectId}`);
     }
   }

@@ -324,7 +324,6 @@ onMounted(async () => {
     console.error("Supabase client not initialized");
     return;
   }
-  console.log(currentCode);
   // Fetch current event details from the database
   const { data: findEvent, error: findEventError } = await supabase
     .from("events")
@@ -345,8 +344,6 @@ onMounted(async () => {
     dateRange.value.start = parseDate(findEvent.start_date);
     dateRange.value.end = parseDate(findEvent.end_date);
     numberOfParticipants.value = findEvent.number_of_participants;
-
-    console.log(dateRange.value);
   }
 });
 
@@ -384,9 +381,6 @@ async function updateEvent() {
     // Parse and format the time in 24-hour format
     const adjustedStartTime = dayjs(startTimeString, "hh:mm A").format("HH:mm");
     const adjustedEndTime = dayjs(endTimeString, "hh:mm A").format("HH:mm");
-
-    console.log("Parsed start time (24hr):", adjustedStartTime);
-    console.log("Parsed end time (24hr):", adjustedEndTime);
 
     updates = {
       title: title.value,

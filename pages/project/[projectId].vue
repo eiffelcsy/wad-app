@@ -192,7 +192,6 @@ const saveProjectTitle = async () => {
     // Spread `project.value` to create a new reference and update the title
 
     isDialogOpen.value = false; // Close dialog after successful save
-    console.log("✅ Project title updated successfully.");
   } catch (err) {
     console.error("❌ Unexpected error updating project title:", err);
   }
@@ -230,7 +229,6 @@ const deleteProject = async (projectId) => {
     }
 
     projects.value = projects.value.filter((p) => p.id !== projectId);
-    console.log("Project and associated members deleted successfully.");
   } catch (err) {
     console.error("Unexpected error deleting project:", err);
   }

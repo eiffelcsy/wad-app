@@ -330,7 +330,6 @@ const fetchEvents = async () => {
   if (eventError) {
     console.error("Error fetching event data:", eventError);
   } else {
-    console.log("Fetched Events Data:", eventData);
     events.value = eventData;
   }
 };

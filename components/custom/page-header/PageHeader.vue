@@ -177,7 +177,7 @@ const logout = async () => {
   if (error) {
     console.error("Error logging out:", error.message); // Logs the error if something goes wrong
   } else {
-    console.log("Logged out successfully!");
+    // console.log("Logged out successfully!");
     location.reload();
   }
 };

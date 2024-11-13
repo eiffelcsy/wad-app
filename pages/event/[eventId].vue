@@ -2319,9 +2319,9 @@ async function confirmSelectedTimeslot() {
     });
 
     participants_userIds.value.forEach(async (id) => {
-      console.log(id);
+      // console.log(id);
       const { data, error } = await supabase
-        .from("notifications")
+        .from("notifications")  
         .insert([
           {
             user_id: id,

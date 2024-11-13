@@ -155,7 +155,6 @@ onMounted(async () => {
         if (roleError) {
             console.error("Error fetching user role:", roleError.message);
         } else {
-            console.log("User role:", memberData.role);
             userRole.value = memberData.role;
         }
     }

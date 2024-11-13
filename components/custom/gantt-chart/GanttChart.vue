@@ -296,8 +296,6 @@ const setupRealTimeSubscription = () => {
       "postgres_changes",
       { event: "*", schema: "public", table: "todos" },
       async (payload) => {
-        console.log("Change received!", payload);
-
         await fetchData();
       }
     )
@@ -350,7 +348,6 @@ async function fetchData() {
   // Group tasks by "task_group"
   const groups = {};
   data.forEach((todo) => {
-    console.log(todo)
     const groupName = todo.task_group;
     if (!groups[groupName]) {
       groups[groupName] = {
@@ -530,9 +527,10 @@ async function updateTaskProgress(taskId, newProgress) {
 
     if (error) {
       console.error("Error updating progress:", error);
-    } else {
-      console.log("Progress updated successfully:", data, newProgress);
-    }
+    } 
+    // else {
+    //   console.log("Progress updated successfully:", data, newProgress);
+    // }
   } catch (error) {
     console.error("Unexpected error:", error);
   }
