@@ -344,6 +344,7 @@ const copyLink = () => {
     description: "Team link successfully copied to clipboard.",
     variant: "success",
   });
+};
 </script>
 
 <style scoped>
