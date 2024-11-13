@@ -1,52 +1,29 @@
 <template>
   <div>
     <PageHeader v-if="user" class="dark:bg-zinc-950" />
-    <div
-      v-else
-      class="flex flex-row justify-between py-4 px-8 md:px-12 lg:px-16 bg-zinc-50 dark:bg-zinc-950 border-b"
-    >
+    <div v-else class="flex flex-row justify-between py-4 px-8 md:px-12 lg:px-16 bg-zinc-50 dark:bg-zinc-950 border-b">
       <div class="flex flex-row items-center">
-        <NuxtImg
-          src="/images/logo_light.png"
-          class="size-12 mr-2"
-          v-if="$colorMode.value === 'light'"
-        />
-        <NuxtImg
-          src="/images/logo_dark.png"
-          class="size-12 mr-2"
-          v-if="$colorMode.value === 'dark'"
-        />
-        <h1
-          v-if="!isMobile"
-          class="text-xl font-bold tracking-wider title-fade-in-left"
-        >
+        <NuxtImg src="/images/logo_light.png" class="size-12 mr-2" v-if="$colorMode.value === 'light'" />
+        <NuxtImg src="/images/logo_dark.png" class="size-12 mr-2" v-if="$colorMode.value === 'dark'" />
+        <h1 v-if="!isMobile" class="text-xl font-bold tracking-wider title-fade-in-left">
           Meet<span class="text-indigo-600 dark:text-indigo-500">L</span>ah
         </h1>
       </div>
       <div class="flex flex-row items-center">
-        <Button
-          @click="toLogin"
-          variant="outline"
-          class="border-zinc-300 dark:border-zinc-600 login-button-animation mr-2"
-        >
+        <Button @click="toLogin" variant="outline"
+          class="border-zinc-300 dark:border-zinc-600 login-button-animation mr-2">
           <EnterIcon class="w-4 h-4 mr-2" />Login
         </Button>
-        <Button
-          @click="toRegister"
-          class="w-28 button-fade-in-left bg-indigo-600 hover:bg-indigo-700 start-button-animation text-white"
-        >
+        <Button @click="toRegister"
+          class="w-28 button-fade-in-left bg-indigo-600 hover:bg-indigo-700 start-button-animation text-white">
           Get Started
         </Button>
       </div>
     </div>
     <div class="min-h-screen bg-zinc-50 dark:bg-black">
-      <div
-        class="py-6 md:py-8 mx-auto container xl:w-[1200px] flex flex-row justify-between"
-      >
+      <div class="py-6 md:py-8 mx-auto container xl:w-[1200px] flex flex-row justify-between">
         <div>
-          <h1
-            class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold"
-          >
+          <h1 class="text-3xl lg:text-4xl text-zinc-800 dark:text-zinc-100 font-semibold">
             {{ event_title }}
           </h1>
           <p class="text-base text-zinc-400 dark:text-zinc-500 mt-1">
@@ -63,25 +40,19 @@
           <EditEvent />
           <AlertDialog v-if="isCreator">
             <AlertDialogTrigger as-child>
-              <Button
-                class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
-                v-if="!isMobile"
-              >
+              <Button class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+                v-if="!isMobile">
                 Delete Event
               </Button>
-              <Button
-                size="icon"
+              <Button size="icon"
                 class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
-                v-if="isMobile"
-              >
+                v-if="isMobile">
                 <Trash2 class="size-5" />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle
-                  >Are you sure you want to delete this event?</AlertDialogTitle
-                >
+                <AlertDialogTitle>Are you sure you want to delete this event?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. Once deleted, the event will be
                   permanently removed.
@@ -89,35 +60,26 @@
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  class="bg-red-700 text-white hover:bg-red-900"
-                  @click="confirmDelete"
-                  >Delete</AlertDialogAction
-                >
+                <AlertDialogAction class="bg-red-700 text-white hover:bg-red-900" @click="confirmDelete">Delete
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
           <AlertDialog v-else>
             <AlertDialogTrigger as-child>
-              <Button
-                class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
-                v-if="!isMobile"
-              >
+              <Button class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
+                v-if="!isMobile">
                 Leave Event
               </Button>
-              <Button
-                size="icon"
+              <Button size="icon"
                 class="ml-2 border border-red-200 dark:border-red-900 bg-red-700 text-white hover:bg-red-900"
-                v-if="isMobile"
-              >
+                v-if="isMobile">
                 <Trash2 class="size-5" />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle
-                  >Are you sure you want to leave this event?</AlertDialogTitle
-                >
+                <AlertDialogTitle>Are you sure you want to leave this event?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. Once you leave the event, you
                   will have to rejoin and indicate availability again.
@@ -125,11 +87,8 @@
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  class="bg-red-700 text-white hover:bg-red-900"
-                  @click="confirmLeave"
-                  >Leave</AlertDialogAction
-                >
+                <AlertDialogAction class="bg-red-700 text-white hover:bg-red-900" @click="confirmLeave">Leave
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -150,65 +109,45 @@
                 <Card class="lg:w-80 xl:w-96">
                   <CardHeader>
                     <CardTitle>Your Availability</CardTitle>
-                    <CardDescription
-                      >Indicate blocks of time when you are
-                      <span class="font-bold text-red-300 text-lg"
-                        >unavailable</span
-                      >. Tap to select start cell, then tap again to select end
+                    <CardDescription>Indicate blocks of time when you are
+                      <span class="font-bold text-red-300 text-lg">unavailable</span>. Tap to select start cell, then
+                      tap again to select end
                       cell and all the cells in between.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div class="w-full flex items-center justify-center">
                       <!-- Interval Grid -->
-                      <table
-                        class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-                      >
+                      <table class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1">
                         <thead>
                           <tr>
                             <th class="pb-0.5"></th>
-                            <th
-                              v-for="(date, dateIndex) in dates"
-                              :key="dateIndex"
-                              class="text-sm font-medium pb-0.5"
-                            >
+                            <th v-for="(date, dateIndex) in dates" :key="dateIndex" class="text-sm font-medium pb-0.5">
                               {{ formatDate(date)[0] }} <br />
                               {{ formatDate(date)[1] }}
                             </th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr
-                            v-for="(time, timeIndex) in times"
-                            :key="timeIndex"
-                          >
-                            <td
-                              v-if="timeIndex % 2 == 0"
-                              class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
-                            >
+                          <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                            <td v-if="timeIndex % 2 == 0"
+                              class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700">
                               {{ time }}
                             </td>
                             <td v-else></td>
-                            <td
-                              v-for="(date, dateIndex) in dates"
-                              :key="dateIndex"
+                            <td v-for="(date, dateIndex) in dates" :key="dateIndex"
                               @mousedown="startSelection(dateIndex, timeIndex)"
-                              @mouseover="dragSelection(dateIndex, timeIndex)"
-                              @mouseup="endSelection"
+                              @mouseover="dragSelection(dateIndex, timeIndex)" @mouseup="endSelection"
                               @touchstart.prevent="
                                 tapSelection(dateIndex, timeIndex)
-                              "
-                              class="h-6 p-0 text-center interval-cell"
-                            >
-                              <div
-                                :class="[
-                                  'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950',
-                                  isSelected(dateIndex, timeIndex)
-                                    ? getMergedClass(dateIndex, timeIndex) +
-                                      ' selected merged'
-                                    : 'rounded-lg',
-                                ]"
-                              ></div>
+                                " class="h-6 p-0 text-center interval-cell">
+                              <div :class="[
+                                'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950',
+                                isSelected(dateIndex, timeIndex)
+                                  ? getMergedClass(dateIndex, timeIndex) +
+                                  ' selected merged'
+                                  : 'rounded-lg',
+                              ]"></div>
                             </td>
                           </tr>
                         </tbody>
@@ -221,52 +160,36 @@
                 <Card class="lg:w-80 xl:w-96">
                   <CardHeader>
                     <CardTitle>Overall Availability</CardTitle>
-                    <CardDescription
-                      >View the
-                      <span class="font-bold text-green-400 text-lg"
-                        >availability</span
-                      >
+                    <CardDescription>View the
+                      <span class="font-bold text-green-400 text-lg">availability</span>
                       of everyone in the event. Find a timeslot that suits
-                      everyone's schedule.</CardDescription
-                    >
+                      everyone's schedule.
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <TooltipProvider :delayDuration="200">
                       <div class="w-full flex items-center justify-center">
                         <!-- Heatmap Grid -->
-                        <table
-                          class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-                        >
+                        <table class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1">
                           <thead>
                             <tr>
                               <th class="pb-0.5"></th>
-                              <th
-                                v-for="(date, dateIndex) in dates"
-                                :key="dateIndex"
-                                class="text-sm font-medium pb-0.5"
-                              >
+                              <th v-for="(date, dateIndex) in dates" :key="dateIndex"
+                                class="text-sm font-medium pb-0.5">
                                 {{ formatDate(date)[0] }} <br />
                                 {{ formatDate(date)[1] }}
                               </th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr
-                              v-for="(time, timeIndex) in times"
-                              :key="timeIndex"
-                            >
-                              <td
-                                v-if="timeIndex % 2 == 0"
-                                class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
-                              >
+                            <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                              <td v-if="timeIndex % 2 == 0"
+                                class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700">
                                 {{ time }}
                               </td>
                               <td v-else></td>
-                              <td
-                                v-for="(date, dateIndex) in dates"
-                                :key="dateIndex"
-                                class="h-6 p-0 text-center heatmap-cell"
-                              >
+                              <td v-for="(date, dateIndex) in dates" :key="dateIndex"
+                                class="h-6 p-0 text-center heatmap-cell">
                                 <Tooltip>
                                   <TooltipTrigger as-child>
                                     <div
@@ -276,8 +199,7 @@
                                           dateIndex,
                                           timeIndex
                                         ),
-                                      }"
-                                    >
+                                      }">
                                       {{
                                         getAvailabilityCount(
                                           dateIndex,
@@ -311,30 +233,23 @@
               <Card class="lg:w-80 xl:w-96 h-fit">
                 <CardHeader>
                   <CardTitle>Recommended Timeslots</CardTitle>
-                  <CardDescription
-                    >Below are the top 10 timeslots with the highest
+                  <CardDescription>Below are the top 10 timeslots with the highest
                     <span class="font-bold text-green-400">availability</span>
-                    among everyone.</CardDescription
-                  >
+                    among everyone.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ScrollArea class="h-72">
                     <div class="w-full flex items-center justify-center">
                       <ol>
-                        <li
-                          v-for="{
-                            date,
-                            startTime,
-                            endTime,
-                            availability,
-                          } in getRecommendedTimeBlocks()"
-                          :key="timeslot"
-                          class="flex items-center space-x-2 mb-2"
-                        >
+                        <li v-for="{
+                          date,
+                          startTime,
+                          endTime,
+                          availability,
+                        } in getRecommendedTimeBlocks()" :key="timeslot" class="flex items-center space-x-2 mb-2">
                           <!-- Date portion with box, slight curves, and padding -->
-                          <div
-                            class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
-                          >
+                          <div class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm">
                             {{ formatDate(date).join(" ") }} {{ startTime }} -
                             {{ endTime }}
                           </div>
@@ -350,18 +265,13 @@
               </Card>
               <Dialog>
                 <DialogTrigger as-child>
-                  <Button size="lg" class="w-full" variant="outline"
-                    >View Recommended Locations</Button
-                  >
+                  <Button size="lg" class="w-full" variant="outline">View Recommended Locations</Button>
                 </DialogTrigger>
                 <DialogContent class="w-5/6 rounded-md">
                   <DialogHeader>
                     <DialogTitle>Location Suggestions</DialogTitle>
-                    <DialogDescription
-                      >Suggested meeting & eating spots for your event, based on
-                      participant locations. Add your own location to see
-                      suggestions.</DialogDescription
-                    >
+                    <DialogDescription>Suggested meeting & eating spots for your event, based on
+                      participant locations. Add your own location to see suggestions.</DialogDescription>
                   </DialogHeader>
                   <GoogleMaps :eventId="event_id" />
                   <DialogFooter>
@@ -389,11 +299,7 @@
                         <div v-if="canDeletePoll(poll)">
                           <Dialog>
                             <DialogTrigger as-child>
-                              <Button
-                                size="icon"
-                                class="size-8"
-                                variant="ghost"
-                              >
+                              <Button size="icon" class="size-8" variant="ghost">
                                 <Trash2 class="size-5 text-red-600" />
                               </Button>
                             </DialogTrigger>
@@ -407,12 +313,9 @@
                               </DialogHeader>
                               <DialogFooter>
                                 <DialogClose as-child>
-                                  <Button variant="secondary">Close</Button>
+                                  <Button variant="secondary">Cancel</Button>
                                 </DialogClose>
-                                <Button
-                                  variant="destructive"
-                                  @click="deletePoll(poll.id)"
-                                >
+                                <Button variant="destructive" @click="deletePoll(poll.id)">
                                   Delete
                                 </Button>
                               </DialogFooter>
@@ -422,31 +325,34 @@
                       </div>
                       <div v-if="!hasUserVoted(poll)">
                         <!-- Voting Options -->
-                        <div
-                          v-for="option in poll.poll_options"
-                          :key="option.id"
-                        >
-                          <Button
-                            @click="vote(poll.id, option.id)"
-                            class="my-1"
-                          >
+                        <div v-for="option in poll.poll_options" :key="option.id">
+                          <Button @click="vote(poll.id, option.id)" class="my-1">
                             {{ option.option_text }}
                           </Button>
                         </div>
                       </div>
+                      <!-- Poll Results -->
                       <div v-else>
-                        <!-- Poll Results -->
-                        <div
-                          v-for="option in poll.poll_options"
-                          :key="option.id"
-                          class="flex justify-between my-1"
-                        >
-                          <span>{{ option.option_text }}</span>
-                          <span
-                            >{{ getVoteCount(poll.id, option.id) }} votes</span
-                          >
+                        <div v-for="option in poll.poll_options" :key="option.id" class="flex items-center my-2">
+                          <!-- Option text area (aligned based on the longest text) -->
+                          <div class="min-w-[100px] mr-2">
+                            <span>{{ option.option_text }}</span>
+                          </div>
+
+                          <!-- Percentage bar container -->
+                          <div class="flex-grow bg-gray-200 rounded-full overflow-hidden h-6 relative">
+                            <div class="bg-black h-full flex items-center justify-center text-white text-sm"
+                              :style="{ width: `${getVotePercentage(poll.id, option.id)}%` }">
+                              {{ getVotePercentage(poll.id, option.id) }}%
+                            </div>
+                          </div>
+
+                          <!-- Vote count display -->
+                          <span class="ml-2 text-black">{{ getVoteCount(poll.id, option.id) }} votes</span>
                         </div>
                       </div>
+
+
                     </div>
                   </div>
                   <div v-else>
@@ -454,65 +360,36 @@
                   </div>
                   <!-- Create Poll Button (only for event creator) -->
                   <div v-if="isCreator">
-                    <Dialog :open="showCreatePollDialog">
+                    <Dialog>
                       <DialogTrigger as-child>
-                        <Button
-                          @click="createPollDialog"
-                          class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white"
-                          >Create New Poll</Button
-                        >
+                        <Button class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white">Create New
+                          Poll</Button>
                       </DialogTrigger>
                       <DialogContent class="w-5/6 rounded-md">
                         <DialogHeader>
                           <DialogTitle>Create a New Poll</DialogTitle>
-                          <DialogDescription
-                            >Gather the opinions of your event
-                            participants.</DialogDescription
-                          >
+                          <DialogDescription>Gather the opinions of your event
+                            participants.</DialogDescription>
                         </DialogHeader>
                         <div class="my-4">
-                          <Input
-                            v-model="newPollQuestion"
-                            placeholder="Poll Question"
-                          />
+                          <Input v-model="newPollQuestion" placeholder="Poll Question" />
                           <div class="mt-2">
-                            <div
-                              v-for="(option, index) in newPollOptions"
-                              :key="index"
-                              class="flex items-center my-1"
-                            >
-                              <Input
-                                v-model="newPollOptions[index]"
-                                placeholder="Option Text"
-                              />
-                              <Button
-                                size="icon"
-                                variant="outline"
-                                class="ml-2"
-                                @click="removeOption(index)"
-                                ><Minus class="size-4"
-                              /></Button>
+                            <div v-for="(option, index) in newPollOptions" :key="index" class="flex items-center my-1">
+                              <Input v-model="newPollOptions[index]" placeholder="Option Text" />
+                              <Button size="icon" variant="outline" class="ml-2" @click="removeOption(index)">
+                                <Minus class="size-4" />
+                              </Button>
                             </div>
-                            <Button
-                              class="mt-2 w-full text-zinc-400"
-                              variant="ghost"
-                              @click="addOption"
-                              ><Plus class="size-4 mr-2" /> Add Option</Button
-                            >
+                            <Button class="mt-2 w-full text-zinc-400" variant="ghost" @click="addOption">
+                              <Plus class="size-4 mr-2" /> Add Option
+                            </Button>
                           </div>
                         </div>
                         <DialogFooter>
-                          <Button
-                            @click="createPoll"
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white mt-2"
-                            >Create Poll</Button
-                          >
+                          <Button @click="createPoll" class="bg-indigo-600 hover:bg-indigo-700 text-white mt-2">Create
+                            Poll</Button>
                           <DialogClose as-child>
-                            <Button
-                              variant="secondary"
-                              @click="hideCreatePollDialog"
-                              >Close</Button
-                            >
+                            <Button variant="secondary">Cancel</Button>
                           </DialogClose>
                         </DialogFooter>
                       </DialogContent>
@@ -524,25 +401,18 @@
                 <CardHeader>
                   <div class="flex flex-row justify-between">
                     <CardTitle>Event Participants</CardTitle>
-                    <CardTitle
-                      >{{ event_participants.length }} /
-                      {{ participants_num }}</CardTitle
-                    >
+                    <CardTitle>{{ event_participants.length }} /
+                      {{ participants_num }}</CardTitle>
                   </div>
-                  <CardDescription
-                    >View all participants who have joined this event
-                    below.</CardDescription
-                  >
+                  <CardDescription>View all participants who have joined this event
+                    below.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ScrollArea class="h-48 mb-8">
                     <div class="w-full flex items-center justify-center">
                       <ol class="w-full">
-                        <li
-                          v-for="participant in event_participants"
-                          :key="Object.keys(participant)[0]"
-                          class="flex text-xl space-x-2 mb-2"
-                        >
+                        <li v-for="participant in event_participants" :key="Object.keys(participant)[0]"
+                          class="flex text-xl space-x-2 mb-2">
                           {{ Object.keys(participant)[0] }}
                         </li>
                       </ol>
@@ -550,61 +420,41 @@
                   </ScrollArea>
                   <Dialog :open="showFinalisedTimingDialog">
                     <DialogTrigger as-child>
-                      <Button
-                        @click="finalisedTimingDialog"
-                        size="lg"
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
-                        >Select Finalised Timeslot</Button
-                      >
+                      <Button @click="finalisedTimingDialog" size="lg"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white">Select Finalised Timeslot</Button>
                     </DialogTrigger>
                     <DialogContent class="w-5/6 rounded-md h-fit">
                       <DialogHeader>
                         <DialogTitle>Confirm Timeslot</DialogTitle>
-                        <DialogDescription
-                          >Tentatively lock in a timeslot and notify
+                        <DialogDescription>Tentatively lock in a timeslot and notify
                           participants who have an account with MeetLah. The
                           timeslot will also be visible on this event's main
-                          page.</DialogDescription
-                        >
+                          page.</DialogDescription>
                       </DialogHeader>
-                      <ScrollArea class="h-[40rem] max-h-80">
+                      <ScrollArea class="h-[40rem]">
                         <TooltipProvider :delayDuration="300">
-                          <table
-                            class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-                          >
+                          <table class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1">
                             <thead>
                               <tr>
                                 <th class="pb-0.5"></th>
-                                <th
-                                  v-for="(date, dateIndex) in dates"
-                                  :key="dateIndex"
-                                  class="text-sm font-medium pb-0.5"
-                                >
+                                <th v-for="(date, dateIndex) in dates" :key="dateIndex"
+                                  class="text-sm font-medium pb-0.5">
                                   {{ formatDate(date)[0] }} <br />
                                   {{ formatDate(date)[1] }}
                                 </th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr
-                                v-for="(time, timeIndex) in times"
-                                :key="timeIndex"
-                              >
-                                <td
-                                  v-if="timeIndex % 2 == 0"
-                                  class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
-                                >
+                              <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                                <td v-if="timeIndex % 2 == 0"
+                                  class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700">
                                   {{ time }}
                                 </td>
                                 <td v-else></td>
-                                <td
-                                  v-for="(date, dateIndex) in dates"
-                                  :key="dateIndex"
-                                  class="h-6 p-0 text-center heatmap-cell cursor-pointer"
-                                  @click="
+                                <td v-for="(date, dateIndex) in dates" :key="dateIndex"
+                                  class="h-6 p-0 text-center heatmap-cell cursor-pointer" @click="
                                     selectConfirmTimeslot(dateIndex, timeIndex)
-                                  "
-                                >
+                                    ">
                                   <Tooltip>
                                     <TooltipTrigger as-child>
                                       <div
@@ -614,17 +464,15 @@
                                             dateIndex,
                                             timeIndex
                                           ),
-                                        }"
-                                        :class="[
+                                        }" :class="[
                                           isConfirmed(dateIndex, timeIndex)
                                             ? 'bg-indigo-600 text-white' +
-                                              getConfirmMergedClass(
-                                                dateIndex,
-                                                timeIndex
-                                              )
+                                            getConfirmMergedClass(
+                                              dateIndex,
+                                              timeIndex
+                                            )
                                             : 'rounded-md',
-                                        ]"
-                                      >
+                                        ]">
                                         {{
                                           getAvailabilityCount(
                                             dateIndex,
@@ -651,20 +499,12 @@
                         </TooltipProvider>
                       </ScrollArea>
                       <DialogFooter>
-                        <Button
-                          class="mt-2"
-                          variant="outline"
-                          @click="confirmSelectedTimeslot"
-                          :disabled="confirmedTimeslot.length === 0"
-                        >
+                        <Button variant="outline" @click="confirmSelectedTimeslot"
+                          :disabled="confirmedTimeslot.length === 0">
                           Confirm Selected Timeslot
                         </Button>
                         <DialogClose as-child>
-                          <Button
-                            variant="destructive"
-                            class="bg-red-600 text-white hover:bg-red-700 hover:text-white mt-2"
-                            @click="closeFinalisedTimingDialog"
-                          >
+                          <Button variant="destructive">
                             Close
                           </Button>
                         </DialogClose>
@@ -679,26 +519,18 @@
             <Card class="lg:w-80 xl:w-96 h-fit">
               <CardHeader>
                 <CardTitle>Your Availability</CardTitle>
-                <CardDescription
-                  >Indicate blocks of time when you are
-                  <span class="font-bold text-red-300 text-lg">unavailable</span
-                  >. Click and drag to select blocks.
+                <CardDescription>Indicate blocks of time when you are
+                  <span class="font-bold text-red-300 text-lg">unavailable</span>. Click and drag to select blocks.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div class="w-full flex items-center justify-center">
                   <!-- Interval Grid -->
-                  <table
-                    class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-                  >
+                  <table class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1">
                     <thead>
                       <tr>
                         <th class="pb-0.5"></th>
-                        <th
-                          v-for="(date, dateIndex) in dates"
-                          :key="dateIndex"
-                          class="text-sm font-medium pb-0.5"
-                        >
+                        <th v-for="(date, dateIndex) in dates" :key="dateIndex" class="text-sm font-medium pb-0.5">
                           {{ formatDate(date)[0] }} <br />
                           {{ formatDate(date)[1] }}
                         </th>
@@ -706,33 +538,23 @@
                     </thead>
                     <tbody>
                       <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                        <td
-                          v-if="timeIndex % 2 == 0"
-                          class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
-                        >
+                        <td v-if="timeIndex % 2 == 0"
+                          class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700">
                           {{ time }}
                         </td>
                         <td v-else></td>
-                        <td
-                          v-for="(date, dateIndex) in dates"
-                          :key="dateIndex"
+                        <td v-for="(date, dateIndex) in dates" :key="dateIndex"
                           @mousedown="startSelection(dateIndex, timeIndex)"
-                          @mouseover="dragSelection(dateIndex, timeIndex)"
-                          @mouseup="endSelection"
-                          @touchstart.prevent="
+                          @mouseover="dragSelection(dateIndex, timeIndex)" @mouseup="endSelection" @touchstart.prevent="
                             tapSelection(dateIndex, timeIndex)
-                          "
-                          class="h-6 p-0 text-center interval-cell"
-                        >
-                          <div
-                            :class="[
-                              'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 transition-all duration-300 ease-in-out',
-                              isSelected(dateIndex, timeIndex)
-                                ? getMergedClass(dateIndex, timeIndex) +
-                                  ' selected merged'
-                                : 'rounded-lg',
-                            ]"
-                          ></div>
+                            " class="h-6 p-0 text-center interval-cell">
+                          <div :class="[
+                            'h-full w-full flex items-center justify-center border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 transition-all duration-300 ease-in-out',
+                            isSelected(dateIndex, timeIndex)
+                              ? getMergedClass(dateIndex, timeIndex) +
+                              ' selected merged'
+                              : 'rounded-lg',
+                          ]"></div>
                         </td>
                       </tr>
                     </tbody>
@@ -743,31 +565,22 @@
             <Card class="lg:w-80 xl:w-96 h-fit">
               <CardHeader>
                 <CardTitle>Overall Availability</CardTitle>
-                <CardDescription
-                  >View the
-                  <span class="font-bold text-green-400 text-lg"
-                    >availability</span
-                  >
+                <CardDescription>View the
+                  <span class="font-bold text-green-400 text-lg">availability</span>
                   of everyone in the event. <br />
                   Find a timeslot that suits everyone's
-                  schedule.</CardDescription
-                >
+                  schedule.
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <TooltipProvider :delayDuration="200">
                   <div class="w-full flex items-center justify-center">
                     <!-- Heatmap Grid -->
-                    <table
-                      class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-                    >
+                    <table class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1">
                       <thead>
                         <tr>
                           <th class="pb-0.5"></th>
-                          <th
-                            v-for="(date, dateIndex) in dates"
-                            :key="dateIndex"
-                            class="text-sm font-medium pb-0.5"
-                          >
+                          <th v-for="(date, dateIndex) in dates" :key="dateIndex" class="text-sm font-medium pb-0.5">
                             {{ formatDate(date)[0] }} <br />
                             {{ formatDate(date)[1] }}
                           </th>
@@ -775,18 +588,13 @@
                       </thead>
                       <tbody>
                         <tr v-for="(time, timeIndex) in times" :key="timeIndex">
-                          <td
-                            v-if="timeIndex % 2 == 0"
-                            class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
-                          >
+                          <td v-if="timeIndex % 2 == 0"
+                            class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700">
                             {{ time }}
                           </td>
                           <td v-else></td>
-                          <td
-                            v-for="(date, dateIndex) in dates"
-                            :key="dateIndex"
-                            class="h-6 p-0 text-center heatmap-cell"
-                          >
+                          <td v-for="(date, dateIndex) in dates" :key="dateIndex"
+                            class="h-6 p-0 text-center heatmap-cell">
                             <Tooltip>
                               <TooltipTrigger as-child>
                                 <div
@@ -796,8 +604,7 @@
                                       dateIndex,
                                       timeIndex
                                     ),
-                                  }"
-                                >
+                                  }">
                                   {{
                                     getAvailabilityCount(dateIndex, timeIndex)
                                   }}
@@ -826,30 +633,23 @@
               <Card class="lg:w-80 xl:w-96 h-fit">
                 <CardHeader>
                   <CardTitle>Recommended Timeslots</CardTitle>
-                  <CardDescription
-                    >Below are the top 10 timeslots with the highest
+                  <CardDescription>Below are the top 10 timeslots with the highest
                     <span class="font-bold text-green-400">availability</span>
-                    among everyone.</CardDescription
-                  >
+                    among everyone.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ScrollArea class="h-72">
                     <div class="w-full flex items-center justify-center">
                       <ol>
-                        <li
-                          v-for="{
-                            date,
-                            startTime,
-                            endTime,
-                            availability,
-                          } in getRecommendedTimeBlocks()"
-                          :key="timeslot"
-                          class="flex items-center space-x-2 mb-2"
-                        >
+                        <li v-for="{
+                          date,
+                          startTime,
+                          endTime,
+                          availability,
+                        } in getRecommendedTimeBlocks()" :key="timeslot" class="flex items-center space-x-2 mb-2">
                           <!-- Date portion with box, slight curves, and padding -->
-                          <div
-                            class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
-                          >
+                          <div class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm">
                             {{ formatDate(date).join(" ") }}
                             <p>{{ startTime }} - {{ endTime }}</p>
                           </div>
@@ -865,19 +665,15 @@
               </Card>
               <Dialog>
                 <DialogTrigger as-child>
-                  <Button size="lg" class="w-full" variant="outline"
-                    >View Recommended Locations</Button
-                  >
+                  <Button size="lg" class="w-full" variant="outline">View Recommended Locations</Button>
                 </DialogTrigger>
                 <DialogContent class="w-5/6 rounded-md">
                   <DialogHeader>
                     <DialogTitle>Location Suggestions</DialogTitle>
-                    <DialogDescription
-                      >Suggested meeting & eating spots for your event, based on
-                      participant locations.</DialogDescription
-                    >
+                    <DialogDescription>Suggested meeting & eating spots for your event, based on
+                      participant locations.</DialogDescription>
                   </DialogHeader>
-                  <GoogleMaps :eventId="event_id" />
+                  <GoogleMaps :eventId=event_id />
                   <DialogFooter>
                     <DialogClose as-child>
                       <Button type="button" variant="secondary"> Close </Button>
@@ -903,11 +699,7 @@
                         <div v-if="canDeletePoll(poll)">
                           <Dialog>
                             <DialogTrigger as-child>
-                              <Button
-                                size="icon"
-                                class="size-8"
-                                variant="ghost"
-                              >
+                              <Button size="icon" class="size-8" variant="ghost">
                                 <Trash2 class="size-5 text-red-600" />
                               </Button>
                             </DialogTrigger>
@@ -923,10 +715,7 @@
                                 <DialogClose as-child>
                                   <Button variant="secondary">Cancel</Button>
                                 </DialogClose>
-                                <Button
-                                  variant="destructive"
-                                  @click="deletePoll(poll.id)"
-                                >
+                                <Button variant="destructive" @click="deletePoll(poll.id)">
                                   Delete
                                 </Button>
                               </DialogFooter>
@@ -936,31 +725,34 @@
                       </div>
                       <div v-if="!hasUserVoted(poll)">
                         <!-- Voting Options -->
-                        <div
-                          v-for="option in poll.poll_options"
-                          :key="option.id"
-                        >
-                          <Button 
-                            @click="vote(poll.id, option.id)"
-                            class="my-1 w-full"
-                          >
+                        <div v-for="option in poll.poll_options" :key="option.id">
+                          <Button @click="vote(poll.id, option.id)" class="my-1 w-full">
                             {{ option.option_text }}
                           </Button>
                         </div>
                       </div>
+                      <!-- Poll Results -->
                       <div v-else>
-                        <!-- Poll Results -->
-                        <div
-                          v-for="option in poll.poll_options"
-                          :key="option.id"
-                          class="flex justify-between my-1"
-                        >
-                          <span>{{ option.option_text }}</span>
-                          <span
-                            >{{ getVoteCount(poll.id, option.id) }} votes</span
-                          >
+                        <div v-for="option in poll.poll_options" :key="option.id" class="flex items-center my-2">
+                          <!-- Option text area (aligned based on the longest text) -->
+                          <div class="min-w-[100px] mr-2">
+                            <span>{{ option.option_text }}</span>
+                          </div>
+
+                          <!-- Percentage bar container -->
+                          <div class="flex-grow bg-gray-200 rounded-full overflow-hidden h-6 relative">
+                            <div class="bg-black h-full flex items-center justify-center text-white text-sm"
+                              :style="{ width: `${getVotePercentage(poll.id, option.id)}%` }">
+                              {{ getVotePercentage(poll.id, option.id) }}%
+                            </div>
+                          </div>
+
+                          <!-- Vote count display -->
+                          <span class="ml-2 text-black">{{ getVoteCount(poll.id, option.id) }} votes</span>
                         </div>
                       </div>
+
+
                     </div>
                   </div>
                   <div v-else>
@@ -970,72 +762,41 @@
                   <div v-if="isCreator">
                     <Dialog :open="showCreatePollDialog">
                       <DialogTrigger as-child>
-                        <Button
-                          @click="createPollDialog"
-                          class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white"
-                          >Create New Poll</Button
-                        >
+                        <Button @click="createPollDialog"
+                          class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white">Create New Poll</Button>
                       </DialogTrigger>
                       <DialogContent class="w-5/6 rounded-md">
                         <DialogHeader>
                           <DialogTitle>Create a New Poll</DialogTitle>
-                          <DialogDescription
-                            >Gather the opinions of your event
-                            participants.</DialogDescription
-                          >
+                          <DialogDescription>Gather the opinions of your event
+                            participants.</DialogDescription>
                         </DialogHeader>
                         <div class="my-4">
-                          <Input
-                            v-model="newPollQuestion"
-                            placeholder="Poll Question"
-                          />
+                          <Input v-model="newPollQuestion" placeholder="Poll Question" />
                           <div class="mt-2">
-                            <div
-                              v-for="(option, index) in newPollOptions"
-                              :key="index"
-                              class="flex items-center my-1"
-                            >
-                              <Input
-                                v-model="newPollOptions[index]"
-                                placeholder="Option Text"
-                              />
-                              <Button
-                                size="icon"
-                                variant="outline"
-                                class="ml-2"
-                                @click="removeOption(index)"
-                                ><Minus class="size-4"
-                              /></Button>
+                            <div v-for="(option, index) in newPollOptions" :key="index" class="flex items-center my-1">
+                              <Input v-model="newPollOptions[index]" placeholder="Option Text" />
+                              <Button size="icon" variant="outline" class="ml-2" @click="removeOption(index)">
+                                <Minus class="size-4" />
+                              </Button>
                             </div>
-                            <Button
-                              class="mt-2 w-full text-zinc-400"
-                              variant="ghost"
-                              @click="addOption"
-                              ><Plus class="size-4 mr-2" /> Add Option</Button
-                            >
+                            <Button class="mt-2 w-full text-zinc-400" variant="ghost" @click="addOption">
+                              <Plus class="size-4 mr-2" /> Add Option
+                            </Button>
                           </div>
                         </div>
                         <DialogFooter>
                           <DialogClose as-child>
-                            <Button
-                              variant="secondary"
-                              @click="hideCreatePollDialog"
-                              >Close</Button
-                            >
+                            <Button variant="secondary">Close</Button>
                           </DialogClose>
-                          <Button
-                            @click="createPoll"
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white"
-                            >Create Poll</Button
-                          >
+                          <Button @click="createPoll" class="bg-indigo-600 hover:bg-indigo-700 text-white">Create
+                            Poll</Button>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
                   </div>
                   <div v-else>
-                    <Button disabled class="w-full mt-4 text-sm"
-                      >Log in as event creator to create a poll</Button
-                    >
+                    <Button disabled class="w-full mt-4 text-sm">Log in as event creator to create a poll</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -1043,86 +804,59 @@
                 <CardHeader>
                   <div class="flex flex-row justify-between">
                     <CardTitle>Event Participants</CardTitle>
-                    <CardTitle
-                      >{{ event_participants.length }} /
-                      {{ participants_num }}</CardTitle
-                    >
+                    <CardTitle>{{ event_participants.length }} /
+                      {{ participants_num }}</CardTitle>
                   </div>
-                  <CardDescription
-                    >View all participants who have joined this event
-                    below.</CardDescription
-                  >
+                  <CardDescription>View all participants who have joined this event
+                    below.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ScrollArea class="h-48 mb-8">
                     <div class="w-full flex items-center justify-center">
                       <ol class="w-full">
-                        <li
-                          v-for="participant in event_participants"
-                          :key="Object.keys(participant)[0]"
-                          class="flex text-xl space-x-2 mb-2"
-                        >
+                        <li v-for="participant in event_participants" :key="Object.keys(participant)[0]"
+                          class="flex text-xl space-x-2 mb-2">
                           {{ Object.keys(participant)[0] }}
                         </li>
                       </ol>
                     </div>
                   </ScrollArea>
-                  <Dialog :open="showFinalisedTimingDialog">
+                  <Dialog>
                     <DialogTrigger as-child>
-                      <Button
-                        @click="finalisedTimingDialog"
-                        size="lg"
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
-                        >Select Finalised Timeslot</Button
-                      >
+                      <Button size="lg" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white">Confirm
+                        Timeslot</Button>
                     </DialogTrigger>
-                    <DialogContent class="w-5/6 rounded-md">
+                    <DialogContent class="w-5/6 rounded-md h-fit">
                       <DialogHeader>
                         <DialogTitle>Confirm Timeslot</DialogTitle>
-                        <DialogDescription
-                          >Tentatively lock in a timeslot and notify
+                        <DialogDescription>Tentatively lock in a timeslot and notify
                           participants who have an account with MeetLah. The
                           timeslot will also be visible on this event's main
-                          page.</DialogDescription
-                        >
+                          page.</DialogDescription>
                       </DialogHeader>
-                      <ScrollArea class="max-h-[500px]">
+                      <ScrollArea class="h-[40rem]">
                         <TooltipProvider :delayDuration="200">
-                          <table
-                            class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
-                          >
+                          <table class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1">
                             <thead>
                               <tr>
                                 <th class="pb-0.5"></th>
-                                <th
-                                  v-for="(date, dateIndex) in dates"
-                                  :key="dateIndex"
-                                  class="text-sm font-medium pb-0.5"
-                                >
+                                <th v-for="(date, dateIndex) in dates" :key="dateIndex"
+                                  class="text-sm font-medium pb-0.5">
                                   {{ formatDate(date).join(" ") }}
                                 </th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr
-                                v-for="(time, timeIndex) in times"
-                                :key="timeIndex"
-                              >
-                                <td
-                                  v-if="timeIndex % 2 == 0"
-                                  class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700"
-                                >
+                              <tr v-for="(time, timeIndex) in times" :key="timeIndex">
+                                <td v-if="timeIndex % 2 == 0"
+                                  class="w-10 border-t pl-2 pr-1 border-zinc-300 dark:border-zinc-700">
                                   {{ time }}
                                 </td>
                                 <td v-else></td>
-                                <td
-                                  v-for="(date, dateIndex) in dates"
-                                  :key="dateIndex"
-                                  class="h-6 p-0 text-center heatmap-cell cursor-pointer"
-                                  @click="
+                                <td v-for="(date, dateIndex) in dates" :key="dateIndex"
+                                  class="h-6 p-0 text-center heatmap-cell cursor-pointer" @click="
                                     selectConfirmTimeslot(dateIndex, timeIndex)
-                                  "
-                                >
+                                    ">
                                   <Tooltip>
                                     <TooltipTrigger as-child>
                                       <div
@@ -1132,17 +866,15 @@
                                             dateIndex,
                                             timeIndex
                                           ),
-                                        }"
-                                        :class="[
+                                        }" :class="[
                                           isConfirmed(dateIndex, timeIndex)
                                             ? 'bg-indigo-600 text-white' +
-                                              getConfirmMergedClass(
-                                                dateIndex,
-                                                timeIndex
-                                              )
+                                            getConfirmMergedClass(
+                                              dateIndex,
+                                              timeIndex
+                                            )
                                             : 'rounded-md',
-                                        ]"
-                                      >
+                                        ]">
                                         {{
                                           getAvailabilityCount(
                                             dateIndex,
@@ -1169,19 +901,12 @@
                         </TooltipProvider>
                       </ScrollArea>
                       <DialogFooter>
-                        <Button
-                          variant="outline"
-                          @click="confirmSelectedTimeslot"
-                          :disabled="confirmedTimeslot.length === 0"
-                        >
+                        <Button variant="outline" @click="confirmSelectedTimeslot"
+                          :disabled="confirmedTimeslot.length === 0">
                           Confirm Selected Timeslot
                         </Button>
                         <DialogClose as-child>
-                          <Button
-                          @click="closeFinalisedTimingDialog"
-                            variant="destructive"
-                            class="bg-red-600 text-white hover:bg-red-700 hover:text-white"
-                          >
+                          <Button variant="destructive" class="bg-red-600 text-white hover:bg-red-700 hover:text-white">
                             Close
                           </Button>
                         </DialogClose>
@@ -1200,24 +925,15 @@
                 <DialogDescription class="text-left">
                   Please enter your display name to continue. If you have joined
                   this event previously, enter your previous display name.<br />
-                  <span v-if="!user" class="text-red-600"
-                    >Remember your display name
+                  <span v-if="!user" class="text-red-600">Remember your display name
                     <span class="font-bold">(case-sensitive)</span>, you will
-                    need it to log back into this event.</span
-                  >
+                    need it to log back into this event.</span>
                 </DialogDescription>
               </DialogHeader>
-              <Input
-                v-model="newDisplayName"
-                placeholder="Enter your display name"
-                class="my-4"
-              />
+              <Input v-model="newDisplayName" placeholder="Enter your display name" class="my-4" />
 
               <div class="flex justify-end">
-                <Button
-                  @click="saveDisplayName"
-                  class="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black"
-                >
+                <Button @click="saveDisplayName" class="bg-zinc-800 dark:bg-zinc-200 text-white dark:text-black">
                   Save
                 </Button>
               </div>
@@ -1284,7 +1000,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog'
 
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
@@ -1507,11 +1223,8 @@ function createPollDialog() {
   showCreatePollDialog.value = true;
 }
 
-function hideCreatePollDialog() {
-  showCreatePollDialog.value = false;
-}
-
 async function createPoll() {
+
   if (!newPollQuestion.value.trim()) {
     toast({
       title: "Invalid Input",
@@ -1560,7 +1273,8 @@ async function createPoll() {
       description: "Successfully created a poll.",
       variant: "success",
     });
-  }
+
+  };
 
   // Insert options
   const optionsData = newPollOptions.value.map((optionText) => ({
@@ -1593,6 +1307,7 @@ async function createPoll() {
 function getVoteCount(pollId, optionId) {
   const poll = polls.value.find((p) => p.id === pollId);
   if (!poll) return 0;
+
   return poll.poll_votes.filter((vote) => vote.option_id === optionId).length;
 }
 
@@ -1628,6 +1343,16 @@ function canDeletePoll(poll) {
 
   // Allow if the user is the event creator or the poll creator
   return isCreator.value || poll.created_by === user.value.id;
+}
+
+function getVotePercentage(pollId, optionId) {
+  const poll = polls.value.find((p) => p.id === pollId);
+  if (!poll) return 0;
+
+  const optionVoteCount = poll.poll_votes.filter((vote) => vote.option_id === optionId).length;
+  const totalVotes = poll.poll_votes.length;
+
+  return totalVotes > 0 ? Math.round((optionVoteCount / totalVotes) * 100) : 0;
 }
 
 async function fetchParticipants() {
@@ -2283,14 +2008,10 @@ function getAvailableParticipantNames(dateIndex, timeIndex) {
 
   return names;
 }
-function closeFinalisedTimingDialog() {
-  showFinalisedTimingDialog.value = false;
-  console.log("showFinalisedTimingDialog: ", showFinalisedTimingDialog.value);
-}
 
 function finalisedTimingDialog() {
   showFinalisedTimingDialog.value = true;
-  console.log("showFinalisedTimingDialog: ", showFinalisedTimingDialog.value);
+  console.log("showFinalisedTimingDialog: ", showFinalisedTimingDialog.value)
 }
 
 function isConfirmed(dateIndex, timeIndex) {
@@ -2333,7 +2054,6 @@ function selectConfirmTimeslot(dateIndex, timeIndex) {
 }
 
 async function confirmSelectedTimeslot() {
-  console.log("CONFIRM TIMESLOT WORKING");
   if (confirmedTimeslot.value.length === 0) {
     toast({
       title: "No Timeslot Selected",
@@ -2363,15 +2083,13 @@ async function confirmSelectedTimeslot() {
     const [hour, minute] = lastInterval.time.split(":").map(Number);
     const newMinute = (minute + 30) % 60;
     const newHour = hour + Math.floor((minute + 30) / 60);
-    endTime = `${String(newHour).padStart(2, "0")}:${String(newMinute).padStart(
-      2,
-      "0"
-    )}`;
+    endTime = `${String(newHour).padStart(2, "0")}:${String(
+      newMinute
+    ).padStart(2, "0")}`;
   }
 
-  confirmedTimeslotString.value = `${formatDate(firstInterval.date)} ${
-    firstInterval.time
-  } - ${endTime}`;
+  confirmedTimeslotString.value = `${formatDate(firstInterval.date)} ${firstInterval.time
+    } - ${endTime}`;
 
   const { data: confirmedTimeslotData, error: confirmedTimeslotError } =
     await supabase
@@ -2388,7 +2106,7 @@ async function confirmSelectedTimeslot() {
     });
 
     showFinalisedTimingDialog.value = false;
-    console.log("showFinalisedTimingDialog: ", showFinalisedTimingDialog.value);
+    console.log("showFinalisedTimingDialog: ", showFinalisedTimingDialog.value)
 
     participants_userIds.value.forEach(async (id) => {
       // console.log(id);
@@ -2414,6 +2132,7 @@ async function confirmSelectedTimeslot() {
     console.error(confirmedTimeslotError.message);
   }
 }
+
 
 function getConfirmMergedClass(dateIndex, timeIndex) {
   const hasAbove = timeIndex > 0 && isConfirmed(dateIndex, timeIndex - 1);
@@ -2453,7 +2172,8 @@ const toRegister = () => {
 <style scoped>
 .interval-cell {
   cursor: pointer;
-  user-select: none; /* Prevent text selection while dragging */
+  user-select: none;
+  /* Prevent text selection while dragging */
 }
 
 .interval-cell .selected {
