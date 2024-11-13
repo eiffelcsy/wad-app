@@ -2018,7 +2018,6 @@ function getRecommendedTimeBlocks() {
           if (end + 1 < times.value.length) {
             endTime = times.value[end + 1];
           } else {
-            // Calculate end time by adding 30 minutes to the last timeslot
             const [hour, minute] = times.value[end].split(":").map(Number);
             const newMinute = (minute + 30) % 60;
             const newHour = hour + Math.floor((minute + 30) / 60);
@@ -2284,9 +2283,27 @@ async function confirmSelectedTimeslot() {
   const firstInterval = intervalsSelected[0];
   const lastInterval = intervalsSelected[intervalsSelected.length - 1];
 
+  // Calculate the timeIndex of the last interval
+  const lastIntervalIndex =
+    confirmedTimeslot.value[confirmedTimeslot.value.length - 1];
+  const timeIndex = lastIntervalIndex % times.value.length;
+
+  // Determine the end time using the same logic as in getRecommendedTimeBlocks()
+  let endTime;
+  if (timeIndex + 1 < times.value.length) {
+    endTime = times.value[timeIndex + 1];
+  } else {
+    const [hour, minute] = lastInterval.time.split(":").map(Number);
+    const newMinute = (minute + 30) % 60;
+    const newHour = hour + Math.floor((minute + 30) / 60);
+    endTime = `${String(newHour).padStart(2, "0")}:${String(
+      newMinute
+    ).padStart(2, "0")}`;
+  }
+
   confirmedTimeslotString.value = `${formatDate(firstInterval.date)} ${
     firstInterval.time
-  } - ${lastInterval.time}`;
+  } - ${endTime}`;
 
   const { data: confirmedTimeslotData, error: confirmedTimeslotError } =
     await supabase
@@ -2326,6 +2343,7 @@ async function confirmSelectedTimeslot() {
     console.error(confirmedTimeslotError.message);
   }
 }
+
 
 function getConfirmMergedClass(dateIndex, timeIndex) {
   const hasAbove = timeIndex > 0 && isConfirmed(dateIndex, timeIndex - 1);
