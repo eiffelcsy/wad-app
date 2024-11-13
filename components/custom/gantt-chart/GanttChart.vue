@@ -161,7 +161,7 @@
                                 ></div>
                               </PopoverTrigger>
                               <PopoverContent>
-                                <Label for="progress">Progress</Label>
+                                <Label for="progress">Progress %</Label>
                                 <div class="flex gap-2 items-center">
                                   <NumberField
                                     id="progress"
@@ -182,6 +182,7 @@
                                     Save
                                   </Button>
                                 </div>
+                                <p v-if="errorMessage" class="text-red-500">{{ errorMessage }}</p>
                               </PopoverContent>
                             </Popover>
                           </TooltipTrigger>
@@ -281,6 +282,7 @@ const expandedGroups = ref({});
 const timelineStartDate = ref(new Date());
 const timelineEndDate = ref(new Date());
 const channels = ref(null);
+const errorMessage = ref(null);
 
 // Function to toggle group expansion
 const toggleGroup = (groupId) => {
@@ -513,6 +515,12 @@ const getInitials = (name) => {
 };
 
 async function updateTaskProgress(taskId, newProgress) {
+  if (newProgress < 0 || newProgress >100){
+    errorMessage.value = "Must be between 0 - 100"
+  }
+  else{
+    errorMessage.value = "";
+  
   try {
     const { data, error } = await supabase
       .from("todos")
@@ -528,7 +536,7 @@ async function updateTaskProgress(taskId, newProgress) {
   } catch (error) {
     console.error("Unexpected error:", error);
   }
-}
+}}
 </script>
 
 <style scoped>
