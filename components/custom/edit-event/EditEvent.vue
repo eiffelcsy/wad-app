@@ -236,47 +236,6 @@
   </Dialog>
 </template>
 
-<style scoped>
-/* Dialog content styling with max width fixed */
-.dialog-content {
-  width: 100%;
-  max-width: 600px;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* Content wrapper within dialog */
-.content-wrapper {
-  width: 100%;
-  max-width: 100%;
-}
-
-/* Prevent horizontal scrolling on container */
-.scroll-container {
-  width: 100%;
-  max-width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-/* Fixed width for elements to ensure no scaling */
-.fixed-width-content {
-  max-width: 600px;
-  width: 100%;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  box-sizing: border-box;
-}
-
-/* Apply box-sizing universally */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-</style>
-
 <script setup>
 import dayjs from "dayjs";
 import { parseDate } from "@internationalized/date";
@@ -416,3 +375,44 @@ async function updateEvent() {
   console.log(updates);
 }
 </script>
+
+<style scoped>
+/* Dialog content styling with max width fixed */
+.dialog-content {
+  width: 100%;
+  max-width: 600px;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Content wrapper within dialog */
+.content-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Prevent horizontal scrolling on container */
+.scroll-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Fixed width for elements to ensure no scaling */
+.fixed-width-content {
+  max-width: 600px;
+  width: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+}
+
+/* Apply box-sizing universally */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+</style>

@@ -130,10 +130,6 @@
 </template>
 
 <script setup>
-/**
- * Importing necessary functions and components from Vue, Radix Icons,
- * and custom components for toast notifications and navigation.
- */
 import { h, ref, onMounted, watch } from "vue";
 import { useRoute } from 'vue-router';
 import { ArrowLeftIcon } from "@radix-icons/vue";
@@ -154,7 +150,6 @@ const password = ref("");
 const confirmPassword = ref("");
 const authType = ref(""); // Determines whether the form is for login or registration
 const passwordMismatch = ref(false); // Tracks if passwords match during registration
-const isDark = ref(false); // Tracks dark mode state
 const googleButton = ref(null); // Reference to the Google Sign-In button container
 
 /**

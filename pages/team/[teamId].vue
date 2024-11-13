@@ -303,22 +303,6 @@ const team_description = ref("");
 const teamProjects = ref([]);
 const searchQuery = ref("");
 
-// Computed property to check if the user can edit the team (if they are 'owner' or 'admin')
-const canEditTeam = computed(() => {
-  return allMembers.value.some(
-    (member) =>
-      member.user_id === user.id &&
-      (member.role === "owner" || member.role === "admin")
-  );
-});
-
-// Computed property to check if the user is an owner
-const isOwner = computed(() => {
-  return allMembers.value.some(
-    (member) => member.user_id === user.id && member.role === "owner"
-  );
-});
-
 // Filtered lists for each tab based on the search query
 const filteredAllMembers = computed(() => {
   if (!searchQuery.value) return allMembers.value;

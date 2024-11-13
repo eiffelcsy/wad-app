@@ -10,9 +10,7 @@
         >
           New Team
         </h1>
-        <p
-          class="text-base text-zinc-400 dark:text-zinc-500"
-        >
+        <p class="text-base text-zinc-400 dark:text-zinc-500">
           Create your own team by filling in the details below.
         </p>
       </div>
@@ -41,7 +39,10 @@
                     v-model="teamName"
                     class="w-full h-12 text-sm sm:text-base p-2 sm:p-3"
                   />
-                  <div v-if="errors.teamName" class="error absolute text-xs mt-1">
+                  <div
+                    v-if="errors.teamName"
+                    class="error absolute text-xs mt-1"
+                  >
                     {{ errors.teamName }}
                   </div>
                 </div>
@@ -68,7 +69,9 @@
               </CardContent>
             </Card>
           </div>
-          <Button @click="nextView" class="mt-6 md:mt-8 lg:mt-10 w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+          <Button
+            @click="nextView"
+            class="mt-6 md:mt-8 lg:mt-10 w-full bg-indigo-600 hover:bg-indigo-700 text-white"
             >Next</Button
           >
         </div>
@@ -90,12 +93,20 @@
             </p>
             <div class="mt-6 space-y-2">
               <div>
-                <strong class="text-zinc-800 dark:text-zinc-100">Team Name: </strong>
-                <span class="text-zinc-700 dark:text-zinc-300">{{ teamName }}</span>
+                <strong class="text-zinc-800 dark:text-zinc-100"
+                  >Team Name:
+                </strong>
+                <span class="text-zinc-700 dark:text-zinc-300">{{
+                  teamName
+                }}</span>
               </div>
               <div v-if="description">
-                <strong class="text-zinc-800 dark:text-zinc-100">Description: </strong>
-                <span class="text-zinc-700 dark:text-zinc-300">{{ description }}</span>
+                <strong class="text-zinc-800 dark:text-zinc-100"
+                  >Description:
+                </strong>
+                <span class="text-zinc-700 dark:text-zinc-300">{{
+                  description
+                }}</span>
               </div>
             </div>
           </div>
@@ -103,7 +114,9 @@
             <Button @click="prevView" variant="outline" class="w-full mr-2"
               >Back</Button
             >
-            <Button @click="submitTeam" class="w-full ml-2 bg-green-600 text-white"
+            <Button
+              @click="submitTeam"
+              class="w-full ml-2 bg-green-600 text-white"
               >Create Team</Button
             >
           </div>
@@ -141,20 +154,31 @@
       </Dialog>
     </div>
     <PageFooter />
+    <Toaster />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, type Ref } from 'vue';
-import { navigateTo } from 'nuxt/app';
-import { PageHeader } from '@/components/custom/page-header';
-import { PageFooter } from '@/components/custom/page-footer';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
-import { Copy } from 'lucide-vue-next';
+import { ref, type Ref } from "vue";
+import { navigateTo } from "nuxt/app";
+import { PageHeader } from "@/components/custom/page-header";
+import { PageFooter } from "@/components/custom/page-footer";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Copy } from "lucide-vue-next";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { Toaster } from "@/components/ui/toast";
 
 const supabase = useSupabaseClient();
 
@@ -163,12 +187,12 @@ interface Errors {
   description?: string;
 }
 
-const teamName = ref<string>(''); // Initialize team name
-const description = ref<string>(''); // Initialize description
+const teamName = ref<string>(""); // Initialize team name
+const description = ref<string>(""); // Initialize description
 const currentView = ref<number>(1); // Keeps track of the current view
 const errors = ref<Errors>({}); // Holds errors related to input fields
 const teamCode = ref<string | null>(null); // Team code generated
-const shareableLink = ref<string>(''); // Shareable team link
+const shareableLink = ref<string>(""); // Shareable team link
 const showDialog = ref<boolean>(false); // Control dialog visibility
 const user = useSupabaseUser().value; // Current user info from Supabase
 
@@ -178,7 +202,7 @@ const validateCurrentView = (): boolean => {
 
   if (currentView.value === 1) {
     if (!teamName.value.trim()) {
-      errors.value.teamName = 'Team Name is required.';
+      errors.value.teamName = "Team Name is required.";
     }
   }
 
@@ -198,24 +222,25 @@ const prevView = () => {
 
 // Generate unique team code
 const generateTeamCode = async (): Promise<string | null> => {
-  let code = '';
+  let code = "";
   let exists = true;
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   while (exists) {
-    code = '';
+    code = "";
     for (let i = 0; i < 6; i++) {
       code += characters.charAt(Math.floor(Math.random() * characters.length));
     }
 
     // Check if code exists in Supabase table
     const { data, error } = await supabase
-      .from('teams')
-      .select('code')
-      .eq('code', code);
+      .from("teams")
+      .select("code")
+      .eq("code", code);
 
     if (error) {
-      console.error('Error checking team code:', error);
+      console.error("Error checking team code:", error);
       return null;
     }
 
@@ -233,7 +258,11 @@ const submitTeam = async () => {
   teamCode.value = await generateTeamCode();
 
   if (!teamCode.value) {
-    alert('Failed to generate team code. Please try again.');
+    toast({
+      title: "Failed to generate team code.",
+      description: "Please try again.",
+      variant: "destructive",
+    });
     return;
   }
 
@@ -248,30 +277,38 @@ const submitTeam = async () => {
   try {
     // Insert the new team into the 'teams' table
     const { data: newTeam, error: teamError } = await supabase
-      .from('teams')
+      .from("teams")
       .insert([teamData])
       .select() // Retrieve the inserted data to get the 'id'
       .single();
 
     if (teamError || !newTeam) {
-      console.error('Error creating team:', teamError);
-      alert('Failed to create team. Please try again.');
+      console.error("Error creating team:", teamError);
+      toast({
+        title: "Failed to create team.",
+        description: "Please try again.",
+        variant: "destructive",
+      });
       return;
     }
 
     // Insert the creator as the "owner" in the 'team_members' table
     const teamId = newTeam.id; // Use the id of the newly created team
 
-    const { error: memberError } = await supabase.from('team_members').insert({
+    const { error: memberError } = await supabase.from("team_members").insert({
       team_id: teamId,
       user_id: user?.id,
-      role: 'owner', // Set the role as "owner" for the team creator
+      role: "owner", // Set the role as "owner" for the team creator
       added_at: new Date().toISOString(),
     });
 
     if (memberError) {
-      console.error('Error adding creator to team_members:', memberError);
-      alert('Failed to add team creator as a member. Please try again.');
+      console.error("Error adding creator to team_members:", memberError);
+      toast({
+        title: "Failed to add team creator as a member.",
+        description: "Please try again.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -283,8 +320,12 @@ const submitTeam = async () => {
       showDialog.value = true;
     }
   } catch (e) {
-    console.error('Unexpected error:', e.message);
-    alert('An unexpected error occurred. Please try again.');
+    console.error("Unexpected error:", e.message);
+    toast({
+      title: "An unexpected error occurred.",
+      description: "Please try again.",
+      variant: "destructive",
+    });
   }
 };
 
@@ -297,8 +338,11 @@ const closeDialog = () => {
 // Copy the shareable link to clipboard
 const copyLink = () => {
   navigator.clipboard.writeText(shareableLink.value);
-  alert('Link copied to clipboard!');
-};
+  toast({
+    title: "Copy Link Successful!",
+    description: "Team link successfully copied to clipboard.",
+    variant: "success",
+  });
 </script>
 
 <style scoped>
