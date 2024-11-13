@@ -54,7 +54,7 @@
                     >No Teams Found.</TableCell
                   >
                 </TableRow>
-                <TableRow v-for="team in filteredTeams" :key="team.id">
+                <TableRow v-for="team in filteredTeams" :key="team.id"  @click="viewTeam(team.code)">
                   <TableCell>{{ team.team_name }}</TableCell>
                   <TableCell>{{ team.membersCount }}</TableCell>
                   <TableCell>{{ formatDate(team.created_at) }}</TableCell>
