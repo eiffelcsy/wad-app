@@ -359,7 +359,8 @@
                     <DialogTitle>Location Suggestions</DialogTitle>
                     <DialogDescription
                       >Suggested meeting & eating spots for your event, based on
-                      participant locations. Add your own location to see suggestions.</DialogDescription
+                      participant locations. Add your own location to see
+                      suggestions.</DialogDescription
                     >
                   </DialogHeader>
                   <GoogleMaps :eventId="event_id" />
@@ -408,12 +409,12 @@
                                 <DialogClose as-child>
                                   <Button variant="secondary">Cancel</Button>
                                 </DialogClose>
-                                  <Button
-                                    variant="destructive"
-                                    @click="deletePoll(poll.id)"
-                                  >
-                                    Delete
-                                  </Button>
+                                <Button
+                                  variant="destructive"
+                                  @click="deletePoll(poll.id)"
+                                >
+                                  Delete
+                                </Button>
                               </DialogFooter>
                             </DialogContent>
                           </Dialog>
@@ -453,9 +454,10 @@
                   </div>
                   <!-- Create Poll Button (only for event creator) -->
                   <div v-if="isCreator">
-                    <Dialog>
+                    <Dialog :open="showCreatePollDialog">
                       <DialogTrigger as-child>
                         <Button
+                          @click="createPollDialog"
                           class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white"
                           >Create New Poll</Button
                         >
@@ -544,7 +546,8 @@
                   </ScrollArea>
                   <Dialog :open="showFinalisedTimingDialog">
                     <DialogTrigger as-child>
-                      <Button @click="finalisedTimingDialog"
+                      <Button
+                        @click="finalisedTimingDialog"
                         size="lg"
                         class="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
                         >Select Finalised Timeslot</Button
@@ -560,7 +563,7 @@
                           page.</DialogDescription
                         >
                       </DialogHeader>
-                      <ScrollArea class="h-[40rem]">
+                      <ScrollArea class="h-[40rem] max-h-80">
                         <TooltipProvider :delayDuration="300">
                           <table
                             class="w-full table-auto border-separate border-spacing-y-0.5 border-spacing-x-1"
@@ -645,7 +648,6 @@
                       </ScrollArea>
                       <DialogFooter>
                         <Button
-                          
                           variant="outline"
                           @click="confirmSelectedTimeslot"
                           :disabled="confirmedTimeslot.length === 0"
@@ -653,7 +655,11 @@
                           Confirm Selected Timeslot
                         </Button>
                         <DialogClose as-child>
-                          <Button variant="destructive">
+                          <Button
+                            variant="destructive"
+                            class="bg-red-600 text-white hover:bg-red-700 hover:text-white"
+                            @click="closeFinalisedTimingDialog"
+                          >
                             Close
                           </Button>
                         </DialogClose>
@@ -839,7 +845,7 @@
                           <div
                             class="border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
                           >
-                            {{ formatDate(date).join(" ") }} 
+                            {{ formatDate(date).join(" ") }}
                             <p>{{ startTime }} - {{ endTime }}</p>
                           </div>
                           <!-- Availability in green, following format "[count] people available" -->
@@ -866,7 +872,7 @@
                       participant locations.</DialogDescription
                     >
                   </DialogHeader>
-                  <GoogleMaps :eventId=event_id />
+                  <GoogleMaps :eventId="event_id" />
                   <DialogFooter>
                     <DialogClose as-child>
                       <Button type="button" variant="secondary"> Close </Button>
@@ -959,7 +965,8 @@
                   <div v-if="isCreator">
                     <Dialog :open="showCreatePollDialog">
                       <DialogTrigger as-child>
-                        <Button @click="createPollDialog"
+                        <Button
+                          @click="createPollDialog"
                           class="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white"
                           >Create New Poll</Button
                         >
@@ -1017,7 +1024,9 @@
                     </Dialog>
                   </div>
                   <div v-else>
-                    <Button disabled class="w-full mt-4 text-sm">Log in as event creator to create a poll</Button>
+                    <Button disabled class="w-full mt-4 text-sm"
+                      >Log in as event creator to create a poll</Button
+                    >
                   </div>
                 </CardContent>
               </Card>
@@ -1049,7 +1058,7 @@
                       </ol>
                     </div>
                   </ScrollArea>
-                  <Dialog>
+                  <Dialog :open="selectFinalisedTimeslotDialog">
                     <DialogTrigger as-child>
                       <Button
                         size="lg"
@@ -1158,7 +1167,10 @@
                           Confirm Selected Timeslot
                         </Button>
                         <DialogClose as-child>
-                          <Button variant="destructive" class="bg-red-600 text-white hover:bg-red-700 hover:text-white">
+                          <Button
+                            variant="destructive"
+                            class="bg-red-600 text-white hover:bg-red-700 hover:text-white"
+                          >
                             Close
                           </Button>
                         </DialogClose>
@@ -1480,12 +1492,11 @@ function removeOption(index) {
   }
 }
 
-function createPollDialog(){
+function createPollDialog() {
   showCreatePollDialog.value = true;
 }
 
 async function createPoll() {
-
   if (!newPollQuestion.value.trim()) {
     toast({
       title: "Invalid Input",
@@ -1524,7 +1535,7 @@ async function createPoll() {
     });
   }
 
- if (!pollError){
+  if (!pollError) {
     console.log("Successfully created a poll.");
     showCreatePollDialog.value = false;
     console.log(showCreatePollDialog.value);
@@ -1534,8 +1545,7 @@ async function createPoll() {
       description: "Successfully created a poll.",
       variant: "success",
     });
-    
-  };
+  }
 
   // Insert options
   const optionsData = newPollOptions.value.map((optionText) => ({
@@ -2258,10 +2268,14 @@ function getAvailableParticipantNames(dateIndex, timeIndex) {
 
   return names;
 }
+function closeFinalisedTimingDialog() {
+  showFinalisedTimingDialog.value = false;
+  console.log("showFinalisedTimingDialog: ", showFinalisedTimingDialog.value);
+}
 
-function finalisedTimingDialog(){
+function finalisedTimingDialog() {
   showFinalisedTimingDialog.value = true;
-  console.log("showFinalisedTimingDialog: ",showFinalisedTimingDialog.value)
+  console.log("showFinalisedTimingDialog: ", showFinalisedTimingDialog.value);
 }
 
 function isConfirmed(dateIndex, timeIndex) {
@@ -2304,6 +2318,7 @@ function selectConfirmTimeslot(dateIndex, timeIndex) {
 }
 
 async function confirmSelectedTimeslot() {
+  console.log("CONFIRM TIMESLOT WORKING");
   if (confirmedTimeslot.value.length === 0) {
     toast({
       title: "No Timeslot Selected",
@@ -2333,9 +2348,10 @@ async function confirmSelectedTimeslot() {
     const [hour, minute] = lastInterval.time.split(":").map(Number);
     const newMinute = (minute + 30) % 60;
     const newHour = hour + Math.floor((minute + 30) / 60);
-    endTime = `${String(newHour).padStart(2, "0")}:${String(
-      newMinute
-    ).padStart(2, "0")}`;
+    endTime = `${String(newHour).padStart(2, "0")}:${String(newMinute).padStart(
+      2,
+      "0"
+    )}`;
   }
 
   confirmedTimeslotString.value = `${formatDate(firstInterval.date)} ${
@@ -2357,12 +2373,12 @@ async function confirmSelectedTimeslot() {
     });
 
     showFinalisedTimingDialog.value = false;
-    console.log("showFinalisedTimingDialog: ",showFinalisedTimingDialog.value)
+    console.log("showFinalisedTimingDialog: ", showFinalisedTimingDialog.value);
 
     participants_userIds.value.forEach(async (id) => {
       // console.log(id);
       const { data, error } = await supabase
-        .from("notifications")  
+        .from("notifications")
         .insert([
           {
             user_id: id,
@@ -2383,7 +2399,6 @@ async function confirmSelectedTimeslot() {
     console.error(confirmedTimeslotError.message);
   }
 }
-
 
 function getConfirmMergedClass(dateIndex, timeIndex) {
   const hasAbove = timeIndex > 0 && isConfirmed(dateIndex, timeIndex - 1);

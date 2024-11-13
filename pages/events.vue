@@ -130,7 +130,7 @@
                         >No Events Found.</TableCell
                       >
                     </TableRow>
-                    <TableRow v-for="event in allEvents" :key="event.id">
+                    <TableRow v-for="event in allEvents" :key="event.id" @click="goToEvent(event.code)">
                       <TableCell>{{ event.title }}</TableCell>
                       <TableCell
                         >{{ event.start_date }} to

@@ -134,120 +134,125 @@
     </Dialog>
 
     <!-- Drawer for creating new task (for mobile) -->
-    <Drawer v-else v-model:open="isOpen" class="max-h-screen">
+    <Drawer v-else v-model:open="isOpen" class="h-screen max-h-screen">
       <DrawerTrigger as-child>
         <!-- Empty Trigger -->
       </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader class="pb-0">
-          <DrawerTitle>Create New Task</DrawerTitle>
-        </DrawerHeader>
-        <div class="grid gap-6 p-8 pb-10">
-          <div class="grid gap-2">
-            <input autofocus class="hidden" />
-            <Label html-for="new-task-title">Task Title</Label>
-            <Input
-              id="new-task-title"
-              v-model="newTaskTitle"
-              placeholder="Enter task title"
-            />
-          </div>
-          <RadioGroup default-value="task" v-model="taskType">
-            <div class="flex items-center space-x-5">
-              <RadioGroupItem id="task" value="task" />
-              <Label for="task">Task</Label>
+      <DrawerContent class="h-5/6 max-h-screen">
+        <ScrollArea class="h-screen max-h-screen">
+          <DrawerHeader class="pb-0">
+            <DrawerTitle>Create New Task</DrawerTitle>
+          </DrawerHeader>
+          <div class="grid gap-6 p-8 pb-10">
+            <div class="grid gap-2">
+              <input autofocus class="hidden" />
+              <Label html-for="new-task-title">Task Title</Label>
+              <Input
+                id="new-task-title"
+                v-model="newTaskTitle"
+                placeholder="Enter task title"
+              />
             </div>
-            <div class="flex items-center space-x-2">
-              <RadioGroupItem id="milestone" value="milestone" />
-              <Label for="milestone">Milestone</Label>
+            <RadioGroup default-value="task" v-model="taskType">
+              <div class="flex items-center space-x-3">
+                <RadioGroupItem id="task" value="task" />
+                <Label for="task" class="text-left">Task</Label>
+              </div>
+              <div class="flex items-center space-x-3">
+                <RadioGroupItem id="milestone" value="milestone" />
+                <Label for="milestone" class="text-left">Milestone</Label>
+              </div>
+            </RadioGroup>
+            <div v-if="taskType === 'task'">
+              <Label for="dateRange">Task Date Range</Label>
+              <p class="float-right text-xs pt-1.5 dark:text-zinc-500">
+                *Optional
+              </p>
+              <RangeCalendar
+                v-model="dateValue"
+                :weekday-format="'short'"
+                class="rounded-md grid items-center justify-center border w-full mx-auto"
+              />
             </div>
-          </RadioGroup>
-          <div v-if="taskType === 'task'">
-            <Label for="dateRange">Task Date Range</Label>
-            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">
-              *Optional
-            </p>
-            <RangeCalendar
-              v-model="dateValue"
-              :weekday-format="'short'"
-              class="rounded-md grid items-center justify-center border w-full mx-auto"
-            />
-          </div>
-          <div v-if="taskType === 'milestone'">
-            <Label for="dateRange">Milestone Due Date</Label>
-            <p class="float-right text-xs pt-1.5 dark:text-zinc-500">
-              *Optional
-            </p>
-            <Calendar
-              v-model="dateValue.start"
-              :weekday-format="'short'"
-              class="rounded-md grid items-center justify-center border w-full mx-auto"
-            />
-          </div>
-          <div>
-            <Label for="taskGroup">Task Group</Label>
-            <Select v-model="selectedTaskGroup">
-              <SelectTrigger>
-                <span v-if="selectedTaskGroup">
-                  {{ selectedTaskGroup }}
-                </span>
-                <span v-else class="text-zinc-500 dark:text-zinc-400">
-                  Select a group
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <span v-for="group in taskGroups">
-                    <SelectItem v-if="group" :key="group" :value="group">
-                      {{ group }}
-                    </SelectItem>
+            <div v-if="taskType === 'milestone'">
+              <Label for="dateRange">Milestone Due Date</Label>
+              <p class="float-right text-xs pt-1.5 dark:text-zinc-500">
+                *Optional
+              </p>
+              <Calendar
+                v-model="dateValue.start"
+                :weekday-format="'short'"
+                class="rounded-md grid items-center justify-center border w-full mx-auto"
+              />
+            </div>
+            <div>
+              <Label for="taskGroup">Task Group</Label>
+              <Select v-model="selectedTaskGroup">
+                <SelectTrigger>
+                  <span v-if="selectedTaskGroup">
+                    {{ selectedTaskGroup }}
                   </span>
-                </SelectGroup>
-                <Separator class="my-4" label="Or" />
-                <div class="flex w-full items-center gap-2 px-2 pb-2">
-                  <Input
-                    v-model="newTaskGroup"
-                    placeholder="Add new task group..."
-                  />
-                  <Button @click="addNewTaskGroup" size="icon" variant="outline"
-                    ><PlusIcon class="w-4 h-4"
-                  /></Button>
-                </div>
-              </SelectContent>
-            </Select>
+                  <span v-else class="text-zinc-500 dark:text-zinc-400">
+                    Select a group
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <span v-for="group in taskGroups">
+                      <SelectItem v-if="group" :key="group" :value="group">
+                        {{ group }}
+                      </SelectItem>
+                    </span>
+                  </SelectGroup>
+                  <Separator class="my-4" label="Or" />
+                  <div class="flex w-full items-center gap-2 px-2 pb-2">
+                    <Input
+                      v-model="newTaskGroup"
+                      placeholder="Add new task group..."
+                    />
+                    <Button
+                      @click="addNewTaskGroup"
+                      size="icon"
+                      variant="outline"
+                      ><PlusIcon class="w-4 h-4"
+                    /></Button>
+                  </div>
+                </SelectContent>
+              </Select>
+            </div>
+            <div class="grid gap-2">
+              <Label html-for="assignee">Assign to</Label>
+              <Select v-model="selectedMember">
+                <SelectTrigger>
+                  <span v-if="selectedMember.name">
+                    {{ selectedMember.name }}
+                  </span>
+                  <span v-else class="text-zinc-500 dark:text-zinc-400">
+                    Select a member
+                  </span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Members</SelectLabel>
+                    <SelectItem
+                      v-for="member in members"
+                      :key="member.name"
+                      :value="{ name: member.name, id: member.user_id }"
+                    >
+                      {{ member.name }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              @click="createNewTask"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white"
+            >
+              Save Task
+            </Button>
           </div>
-          <div class="grid gap-2">
-            <Label html-for="assignee">Assign to</Label>
-            <Select v-model="selectedMember">
-              <SelectTrigger>
-                <span v-if="selectedMember.name">
-                  {{ selectedMember.name }}
-                </span>
-                <span v-else class="text-zinc-500 dark:text-zinc-400">
-                  Select a member
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Members</SelectLabel>
-                  <SelectItem
-                    v-for="member in members"
-                    :key="member.name"
-                    :value="{ name: member.name, id: member.user_id }"
-                  >
-                    {{ member.name }}
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button
-            @click="createNewTask"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white"
-          >
-            Save Task
-          </Button>
-        </div>
+        </ScrollArea>
       </DrawerContent>
     </Drawer>
   </div>
@@ -308,7 +313,7 @@ const taskType = ref("task");
 const start = today(getLocalTimeZone());
 const end = start.add({ days: 7 });
 const newTaskGroup = ref("");
-const title = ref({ title: ""});
+const title = ref({ title: "" });
 
 const dateValue = ref({
   start,
